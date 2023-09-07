@@ -32,6 +32,7 @@ import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.foundation.Foundation;
 import org.kordamp.ikonli.hawcons.HawconsFilled;
 import org.kordamp.ikonli.hawcons.HawconsStroke;
+import org.kordamp.ikonli.icomoon.Icomoon;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
@@ -209,7 +210,8 @@ public enum Pack {
             ),
             Arrays.stream(BoxiconsSolid.values()).map(solid -> (Ikon) solid)
     ).toArray(Ikon[]::new)),
-    ENTYPO("Entypo", Entypo.values());
+    ENTYPO("Entypo", Entypo.values()),
+    ICOMOON("Icomoon", Icomoon.values());
 
     private final String description;
     private final Ikon[] ikons;

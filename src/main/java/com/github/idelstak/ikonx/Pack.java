@@ -2,12 +2,15 @@ package com.github.idelstak.ikonx;
 
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.devicons.Devicons;
+import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.hawconsstroke.HawconsStroke;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
 import org.kordamp.ikonli.ionicons4.Ionicons4Material;
@@ -73,7 +76,10 @@ public enum Pack {
                             Arrays.stream(Material2SharpMZ.values()).map(sharpMZ -> (Ikon) sharpMZ)
                     )
             )
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    DASH_ICONS("Dash Icons", Dashicons.values()),
+    ELUSIVE("Elusive", Elusive.values()),
+    HAWCONS_STROKE("Hawcons Stroke", HawconsStroke.values());
 
     private final String description;
     private final Ikon[] ikons;

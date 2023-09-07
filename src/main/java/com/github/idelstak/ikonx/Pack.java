@@ -37,6 +37,7 @@ import org.kordamp.ikonli.mapicons.Mapicons;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.metrizeicons.MetrizeIcons;
 import org.kordamp.ikonli.microns.Microns;
 import org.kordamp.ikonli.ociicons.Ociicons;
 import org.kordamp.ikonli.octicons.Octicons;
@@ -166,7 +167,8 @@ public enum Pack {
             Arrays.stream(HawconsStroke.values()).map(stroke -> (Ikon) stroke)
 
     ).toArray(Ikon[]::new)),
-    MAP_ICONS("Map Icons", Mapicons.values());
+    MAP_ICONS("Map Icons", Mapicons.values()),
+    METRIZE_ICONS("Metrize Icons", MetrizeIcons.values());
 
     private final String description;
     private final Ikon[] ikons;

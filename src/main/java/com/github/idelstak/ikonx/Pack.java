@@ -33,6 +33,7 @@ import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
 import org.kordamp.ikonli.linecons.Linecons;
 import org.kordamp.ikonli.maki.Maki;
 import org.kordamp.ikonli.maki2.Maki2;
+import org.kordamp.ikonli.mapicons.Mapicons;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
@@ -164,7 +165,8 @@ public enum Pack {
             Arrays.stream(HawconsFilled.values()).map(filled -> (Ikon) filled),
             Arrays.stream(HawconsStroke.values()).map(stroke -> (Ikon) stroke)
 
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    MAP_ICONS("Map Icons", Mapicons.values());
 
     private final String description;
     private final Ikon[] ikons;

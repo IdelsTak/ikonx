@@ -19,6 +19,8 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.foundation.Foundation;
+import org.kordamp.ikonli.hawcons.HawconsFilled;
+import org.kordamp.ikonli.hawcons.HawconsStroke;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
@@ -157,7 +159,12 @@ public enum Pack {
     MICRONS("Microns", Microns.values()),
     LIGATURE_SYMBOLS("Ligature Symbols", LigatureSymbols.values()),
     BPMN("Bpmn", Bpmn.values()),
-    TYPICONS("Typicons", Typicons.values());
+    TYPICONS("Typicons", Typicons.values()),
+    HAWCONS("Hawcons", Stream.concat(
+            Arrays.stream(HawconsFilled.values()).map(filled -> (Ikon) filled),
+            Arrays.stream(HawconsStroke.values()).map(stroke -> (Ikon) stroke)
+
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;

@@ -18,6 +18,7 @@ import org.kordamp.ikonli.ionicons4.Ionicons4Material;
 import org.kordamp.ikonli.lineawesome.LineAwesomeBrands;
 import org.kordamp.ikonli.lineawesome.LineAwesomeRegular;
 import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
+import org.kordamp.ikonli.linecons.Linecons;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
@@ -99,7 +100,8 @@ public enum Pack {
                     Arrays.stream(UniconsMonochrome.values()).map(monochrome -> (Ikon) monochrome)
             ),
             Arrays.stream(UniconsSolid.values()).map(solid -> (Ikon) solid)
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    LINECONS("Linecons", Linecons.values());
 
     private final String description;
     private final Ikon[] ikons;
@@ -116,20 +118,16 @@ public enum Pack {
                 .orElseThrow();
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public Ikon[] getIkons() {
         return copy(ikons);
-    }
-
-    private static Ikon[] copy(Ikon[] ikons) {
-        return Arrays.copyOf(ikons, ikons.length);
     }
 
     @Override
     public String toString() {
         return description;
+    }
+
+    private static Ikon[] copy(Ikon[] ikons) {
+        return Arrays.copyOf(ikons, ikons.length);
     }
 }

@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
@@ -14,8 +13,11 @@ import org.controlsfx.control.StatusBar;
 import org.kordamp.ikonli.Ikon;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class IconViewController {
+    private static final Logger LOG = Logger.getLogger(IconViewController.class.getName());
     private static final int FILTER_LEN = 2;
     private final List<PackIkon> packIkons;
 
@@ -36,16 +38,23 @@ public class IconViewController {
     protected void initialize() {
         packCombo.setTitle("Selected icon packs: ");
         packCombo.setShowCheckedCount(true);
-        packCombo.getItems().setAll(Pack.values());
+
+        Comparator<Pack> packComparator = (p1, p2) -> Comparator.comparing(Pack::toString).compare(p1, p2);
+        List<Pack> packs = Arrays.stream(Pack.values())
+                .sorted(packComparator)
+                .toList();
+        LOG.log(Level.INFO, "sorted pack values: {0}", packs);
+
+        packCombo.getItems().setAll(packs);
         Platform.runLater(packCombo.getCheckModel()::checkAll);
 
         packCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends Pack> change) -> {
-                while (change.next()){
-                    packIkons.clear();
-                    change.getList().forEach(this::setPackIkons);
+            while (change.next()) {
+                packIkons.clear();
+                change.getList().forEach(this::setPackIkons);
 
-                    updateData(searchField.getText());
-                }
+                updateData(searchField.getText());
+            }
         });
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> updateData(newValue));
@@ -74,7 +83,7 @@ public class IconViewController {
             col.getStyleClass().add("align-center");
         }
 
-        Arrays.stream(Pack.values()).forEach(this::setPackIkons);
+        packs.forEach(this::setPackIkons);
 
         updateData(null);
     }

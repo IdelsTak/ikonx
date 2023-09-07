@@ -9,8 +9,7 @@
     <name>IkonX</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
+        <maven.compiler.release>20</maven.compiler.release>
         <exec.mainClass>com.github.idelstak.ikonx.Main</exec.mainClass>
         <javafx.version>20.0.1</javafx.version>
         <ikonli.version>12.3.1</ikonli.version>
@@ -304,6 +303,27 @@
 
     <build>
         <plugins>
+            <!-- Adds license headers -->
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>4.2</version>
+                <configuration>
+                    <header>${basedir}/LICENSE</header>
+                    <includes>
+                        <include>src/main/java/**</include>
+                        <include>src/test/java/**</include>
+                    </includes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>format</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

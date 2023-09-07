@@ -2,9 +2,9 @@
 
 ## Why IkonX Exists
 
-Finding the right icon for your JavaFX project can be a hassle. I know the struggle. See, there are more than 6000 icons spread across 55 different icon packs in Ikonli. That's a lot of icon codes to comb through!
+Finding the right icon for your JavaFX project can be a hassle. I know the struggle. See, there are more than 6000 icons spread across 55 different icon packs in [Ikonli](https://github.com/kordamp/ikonli). That's a lot of icon codes to comb through!
 
-I was inspired by the AltantaFX sampler, which made browsing Material icons a breeze. So, I decided to take it a step further. I created IkonX - the Icon Pack Browser. With this tool, you can easily search, preview, and copy icon codes from **all** available icon packs. No more digging through endless documents to find that perfect icon.
+I was inspired by the [AltantaFX sampler](https://downloads.hydraulic.dev/atlantafx/sampler/download.html), which made browsing Material icons a breeze. So, I decided to take it a step further. I created IkonX - the Icon Pack Browser. With this tool, you can easily search, preview, and copy icon codes from **all** available icon packs. No more digging through endless documents to find that perfect icon.
 
 ![Screenshot](assets/screenshot_2023-09-07_16-29-46.png)
 
@@ -48,8 +48,8 @@ IkonX is licensed under the [MIT License](https://opensource.org/license/mit/).
 
 ## Credits
 
-- Huge thanks to the creators and contributors of the Ikonli library.
-- Shoutout to the AltantaFX team for inspiring this project.
+- Huge thanks to the creators and contributors of the [Ikonli](https://github.com/kordamp/ikonli) library.
+- Shoutout to [AltantaFX](https://mkpaz.github.io/atlantafx) for inspiring this project.
 
 ## Questions?
 

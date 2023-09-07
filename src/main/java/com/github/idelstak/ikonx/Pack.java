@@ -16,6 +16,7 @@ import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.elusive.Elusive;
+import org.kordamp.ikonli.entypo.Entypo;
 import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.fileicons.FileIcons;
@@ -207,7 +208,8 @@ public enum Pack {
                     Arrays.stream(BoxiconsRegular.values()).map(regular -> (Ikon) regular)
             ),
             Arrays.stream(BoxiconsSolid.values()).map(solid -> (Ikon) solid)
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    ENTYPO("Entypo", Entypo.values());
 
     private final String description;
     private final Ikon[] ikons;

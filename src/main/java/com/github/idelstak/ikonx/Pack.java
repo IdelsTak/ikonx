@@ -26,6 +26,7 @@ import org.kordamp.ikonli.lineawesome.LineAwesomeBrands;
 import org.kordamp.ikonli.lineawesome.LineAwesomeRegular;
 import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
 import org.kordamp.ikonli.linecons.Linecons;
+import org.kordamp.ikonli.maki.Maki;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
@@ -134,7 +135,8 @@ public enum Pack {
     ).toArray(Ikon[]::new)),
     SUBWAY("Subway", Subway.values()),
     SIMPLE_LINE_ICONS("Simple Line Icons", SimpleLineIcons.values()),
-    FILE_ICONS("File Icons", FileIcons.values());
+    FILE_ICONS("File Icons", FileIcons.values()),
+    MAKI("Maki", Maki.values());
 
     private final String description;
     private final Ikon[] ikons;

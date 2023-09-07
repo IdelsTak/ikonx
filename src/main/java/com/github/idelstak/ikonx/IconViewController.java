@@ -78,11 +78,9 @@ public class IconViewController {
 
         selectAllToggle.setOnAction(event -> {
             if (selectAllToggle.isSelected()) {
-                LOG.log(Level.INFO, "selecting all...");
                 Platform.runLater(packCombo.getCheckModel()::checkAll);
             } else {
                 Pack firstPack = packCombo.getItems().get(0);
-                LOG.log(Level.INFO, "selecting {0}...", firstPack);
                 Platform.runLater(() -> {
                     IndexedCheckModel<Pack> checkModel = packCombo.getCheckModel();
                     checkModel.clearChecks();

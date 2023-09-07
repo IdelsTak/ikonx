@@ -16,6 +16,10 @@ import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.fileicons.FileIcons;
+import org.kordamp.ikonli.fluentui.FluentUiFilledAL;
+import org.kordamp.ikonli.fluentui.FluentUiFilledMZ;
+import org.kordamp.ikonli.fluentui.FluentUiRegularAL;
+import org.kordamp.ikonli.fluentui.FluentUiRegularMZ;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
@@ -179,7 +183,17 @@ public enum Pack {
 
     ).toArray(Ikon[]::new)),
     RUNESTRO_ICONS("Runestro Icons", Runestroicons.values()),
-    PAYMENT_FONT("Payment Font", PaymentFont.values());
+    PAYMENT_FONT("Payment Font", PaymentFont.values()),
+    FLUENT_UI("Fluent UI", Stream.concat(
+            Stream.concat(
+                    Arrays.stream(FluentUiFilledAL.values()).map(filledAL -> (Ikon) filledAL),
+                    Arrays.stream(FluentUiFilledMZ.values()).map(filledMZ -> (Ikon) filledMZ)
+            ),
+            Stream.concat(
+                    Arrays.stream(FluentUiRegularAL.values()).map(regularAL -> (Ikon) regularAL),
+                    Arrays.stream(FluentUiRegularMZ.values()).map(regularMZ -> (Ikon) regularMZ)
+            )
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;
@@ -201,4 +215,4 @@ public enum Pack {
     private static Ikon[] copy(Ikon[] ikons) {
         return Arrays.copyOf(ikons, ikons.length);
     }
-}
+    }

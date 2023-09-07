@@ -1,6 +1,8 @@
 package com.github.idelstak.ikonx;
 
 import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.antdesignicons.AntDesignIconsFilled;
+import org.kordamp.ikonli.antdesignicons.AntDesignIconsOutlined;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.captainicon.Captainicon;
 import org.kordamp.ikonli.carbonicons.CarbonIcons;
@@ -121,7 +123,12 @@ public enum Pack {
             Arrays.stream(RemixiconMZ.values()).map(mz -> (Ikon) mz)
 
     ).toArray(Ikon[]::new)),
-    ION_ICONS("Ion Icons", Ionicons.values());
+    ION_ICONS("Ion Icons", Ionicons.values()),
+    ANT_DESIGN_ICONS("Ant Design Icons", Stream.concat(
+            Arrays.stream(AntDesignIconsFilled.values()).map(filled -> (Ikon) filled),
+            Arrays.stream(AntDesignIconsOutlined.values()).map(outlined -> (Ikon) outlined)
+
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;

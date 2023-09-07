@@ -4,6 +4,7 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.antdesignicons.AntDesignIconsFilled;
 import org.kordamp.ikonli.antdesignicons.AntDesignIconsOutlined;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.bpmn.Bpmn;
 import org.kordamp.ikonli.captainicon.Captainicon;
 import org.kordamp.ikonli.carbonicons.CarbonIcons;
 import org.kordamp.ikonli.codicons.Codicons;
@@ -153,7 +154,8 @@ public enum Pack {
     SIMPLE_ICONS("Simple Icons", SimpleIcons.values()),
     FOUNDATION("Foundation", Foundation.values()),
     MICRONS("Microns", Microns.values()),
-    LIGATURE_SYMBOLS("Ligature Symbols", LigatureSymbols.values());
+    LIGATURE_SYMBOLS("Ligature Symbols", LigatureSymbols.values()),
+    BPMN("Bpmn", Bpmn.values());
 
     private final String description;
     private final Ikon[] ikons;

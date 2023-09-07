@@ -128,6 +128,11 @@
             <artifactId>ikonli-captainicon-pack</artifactId>
             <version>12.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-jamicons-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
         <!-- GemsFX -->
         <dependency>
             <groupId>com.dlsc.gemsfx</groupId>

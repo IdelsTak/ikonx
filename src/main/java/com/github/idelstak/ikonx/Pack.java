@@ -34,6 +34,7 @@ import org.kordamp.ikonli.openiconic.Openiconic;
 import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.remixicon.RemixiconMZ;
+import org.kordamp.ikonli.simplelineicons.SimpleLineIcons;
 import org.kordamp.ikonli.subway.Subway;
 import org.kordamp.ikonli.themify.Themify;
 import org.kordamp.ikonli.unicons.UniconsLine;
@@ -130,7 +131,8 @@ public enum Pack {
             Arrays.stream(AntDesignIconsOutlined.values()).map(outlined -> (Ikon) outlined)
 
     ).toArray(Ikon[]::new)),
-    SUBWAY("Subway", Subway.values());
+    SUBWAY("Subway", Subway.values()),
+    SIMPLE_LINE_ICONS("Simple Line Icons", SimpleLineIcons.values());
 
     private final String description;
     private final Ikon[] ikons;

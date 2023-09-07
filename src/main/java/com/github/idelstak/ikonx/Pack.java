@@ -22,6 +22,7 @@ import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.octicons.Octicons;
+import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
 import org.kordamp.ikonli.themify.Themify;
 import org.kordamp.ikonli.weathericons.WeatherIcons;
 import org.kordamp.ikonli.websymbols.Websymbols;
@@ -87,7 +88,8 @@ public enum Pack {
     THEMIFY("Themify", Themify.values()),
     OCTICONS("Octicons", Octicons.values()),
     WEB_SYMBOLS("Web Symbols", Websymbols.values()),
-    CARBON_ICONS("Carbon Icons", CarbonIcons.values());
+    CARBON_ICONS("Carbon Icons", CarbonIcons.values()),
+    PRESTA_SHOP_ICONS("Presta Shop Icons", PrestaShopIcons.values());
 
     private final String description;
     private final Ikon[] ikons;

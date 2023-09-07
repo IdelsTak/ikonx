@@ -65,6 +65,7 @@ import org.kordamp.ikonli.weathericons.WeatherIcons;
 import org.kordamp.ikonli.websymbols.Websymbols;
 import org.kordamp.ikonli.whhg.WhhgAL;
 import org.kordamp.ikonli.whhg.WhhgMZ;
+import org.kordamp.ikonli.win10.Win10;
 import org.kordamp.ikonli.zondicons.Zondicons;
 
 import java.util.Arrays;
@@ -193,7 +194,8 @@ public enum Pack {
                     Arrays.stream(FluentUiRegularAL.values()).map(regularAL -> (Ikon) regularAL),
                     Arrays.stream(FluentUiRegularMZ.values()).map(regularMZ -> (Ikon) regularMZ)
             )
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    WIN_10("Win 10", Win10.values());
 
     private final String description;
     private final Ikon[] ikons;

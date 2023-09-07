@@ -25,6 +25,7 @@ import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.octicons.Octicons;
+import org.kordamp.ikonli.openiconic.Openiconic;
 import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
 import org.kordamp.ikonli.themify.Themify;
 import org.kordamp.ikonli.unicons.UniconsLine;
@@ -106,7 +107,8 @@ public enum Pack {
     CAPTAIN_ICON("Captain Icon", Captainicon.values()),
     JAM("Jam", Jam.values()),
     ZOND_ICONS("Zond Icons", Zondicons.values()),
-    FEATHER("Feather", Feather.values());
+    FEATHER("Feather", Feather.values()),
+    OPENICONIC("Openiconic", Openiconic.values());
 
     private final String description;
     private final Ikon[] ikons;

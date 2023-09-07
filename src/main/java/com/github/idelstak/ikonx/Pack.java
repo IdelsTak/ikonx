@@ -2,6 +2,7 @@ package com.github.idelstak.ikonx;
 
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.captainicon.Captainicon;
 import org.kordamp.ikonli.carbonicons.CarbonIcons;
 import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.devicons.Devicons;
@@ -101,7 +102,8 @@ public enum Pack {
             ),
             Arrays.stream(UniconsSolid.values()).map(solid -> (Ikon) solid)
     ).toArray(Ikon[]::new)),
-    LINECONS("Linecons", Linecons.values());
+    LINECONS("Linecons", Linecons.values()),
+    CAPTAIN_ICON("Captain Icon", Captainicon.values());
 
     private final String description;
     private final Ikon[] ikons;

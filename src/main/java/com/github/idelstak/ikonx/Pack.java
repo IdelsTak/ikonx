@@ -8,6 +8,8 @@ import org.kordamp.ikonli.bpmn.Bpmn;
 import org.kordamp.ikonli.captainicon.Captainicon;
 import org.kordamp.ikonli.carbonicons.CarbonIcons;
 import org.kordamp.ikonli.codicons.Codicons;
+import org.kordamp.ikonli.coreui.CoreUiBrands;
+import org.kordamp.ikonli.coreui.CoreUiFree;
 import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.elusive.Elusive;
@@ -168,7 +170,12 @@ public enum Pack {
 
     ).toArray(Ikon[]::new)),
     MAP_ICONS("Map Icons", Mapicons.values()),
-    METRIZE_ICONS("Metrize Icons", MetrizeIcons.values());
+    METRIZE_ICONS("Metrize Icons", MetrizeIcons.values()),
+    CORE_UI("Core UI", Stream.concat(
+            Arrays.stream(CoreUiBrands.values()).map(brands -> (Ikon) brands),
+            Arrays.stream(CoreUiFree.values()).map(free -> (Ikon) free)
+
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;

@@ -29,3 +29,16 @@
 .text-small {
   -fx-font-size: 0.8em;
 }
+
+.select-all-toggle .ikonli-font-icon {
+  -fx-icon-code: bi-check2-all;
+  -fx-icon-size: 24px;
+  -fx-pref-width: 24px;
+  -fx-pref-height: 24px;
+  -fx-min-width: 24px;
+  -fx-min-height: 24px;
+}
+
+.select-all-toggle:selected .ikonli-font-icon {
+  -fx-icon-code: bi-check2;
+}

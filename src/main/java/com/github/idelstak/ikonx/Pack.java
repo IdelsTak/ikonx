@@ -14,6 +14,7 @@ import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
 import org.kordamp.ikonli.ionicons4.Ionicons4Material;
@@ -55,7 +56,7 @@ public enum Pack {
             Arrays.stream(FontAwesomeSolid.values()).map(solid -> (Ikon) solid)
     ).toArray(Ikon[]::new)),
     EVA_ICONS("Eva Icons", Evaicons.values()),
-    ION_ICONS("Ion Icons 4", Stream.concat(
+    ION_ICONS_4("Ion Icons 4", Stream.concat(
             Stream.concat(
                     Arrays.stream(Ionicons4IOS.values()).map(ios -> (Ikon) ios),
                     Arrays.stream(Ionicons4Logo.values()).map(logo -> (Ikon) logo)
@@ -119,7 +120,8 @@ public enum Pack {
             Arrays.stream(RemixiconAL.values()).map(al -> (Ikon) al),
             Arrays.stream(RemixiconMZ.values()).map(mz -> (Ikon) mz)
 
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    ION_ICONS("Ion Icons", Ionicons.values());
 
     private final String description;
     private final Ikon[] ikons;

@@ -88,7 +88,7 @@ public class IconViewController {
         updateData(null);
     }
 
-    private <T extends Ikon> void setPackIkons(Pack pack) {
+    private void setPackIkons(Pack pack) {
         packIkons.addAll(Arrays.stream(pack.getIkons()).map(ikon -> new PackIkon(pack, ikon)).toList());
     }
 

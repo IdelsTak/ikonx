@@ -167,4 +167,4 @@ public enum Pack {
     private static Ikon[] copy(Ikon[] ikons) {
         return Arrays.copyOf(ikons, ikons.length);
     }
-    }
+}

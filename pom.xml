@@ -188,6 +188,11 @@
             <artifactId>ikonli-maki-pack</artifactId>
             <version>12.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-maki2-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
         <!-- GemsFX -->
         <dependency>
             <groupId>com.dlsc.gemsfx</groupId>

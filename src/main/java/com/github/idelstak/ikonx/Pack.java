@@ -47,6 +47,7 @@ import org.kordamp.ikonli.openiconic.Openiconic;
 import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.remixicon.RemixiconMZ;
+import org.kordamp.ikonli.runestroicons.Runestroicons;
 import org.kordamp.ikonli.simpleicons.SimpleIcons;
 import org.kordamp.ikonli.simplelineicons.SimpleLineIcons;
 import org.kordamp.ikonli.subway.Subway;
@@ -175,7 +176,8 @@ public enum Pack {
             Arrays.stream(CoreUiBrands.values()).map(brands -> (Ikon) brands),
             Arrays.stream(CoreUiFree.values()).map(free -> (Ikon) free)
 
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    RUNESTRO_ICONS("Runestro Icons", Runestroicons.values());
 
     private final String description;
     private final Ikon[] ikons;

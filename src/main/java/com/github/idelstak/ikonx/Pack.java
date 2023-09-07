@@ -4,6 +4,9 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.antdesignicons.AntDesignIconsFilled;
 import org.kordamp.ikonli.antdesignicons.AntDesignIconsOutlined;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.boxicons.BoxiconsLogos;
+import org.kordamp.ikonli.boxicons.BoxiconsRegular;
+import org.kordamp.ikonli.boxicons.BoxiconsSolid;
 import org.kordamp.ikonli.bpmn.Bpmn;
 import org.kordamp.ikonli.captainicon.Captainicon;
 import org.kordamp.ikonli.carbonicons.CarbonIcons;
@@ -197,7 +200,14 @@ public enum Pack {
             )
     ).toArray(Ikon[]::new)),
     WIN_10("Win 10", Win10.values()),
-    FONTELICO("Fontelico", Fontelico.values());
+    FONTELICO("Fontelico", Fontelico.values()),
+    BOX_ICONS("Box Icons", Stream.concat(
+            Stream.concat(
+                    Arrays.stream(BoxiconsLogos.values()).map(logos -> (Ikon) logos),
+                    Arrays.stream(BoxiconsRegular.values()).map(regular -> (Ikon) regular)
+            ),
+            Arrays.stream(BoxiconsSolid.values()).map(solid -> (Ikon) solid)
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;

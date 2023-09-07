@@ -24,6 +24,7 @@ import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.fontelico.Fontelico;
 import org.kordamp.ikonli.foundation.Foundation;
 import org.kordamp.ikonli.hawcons.HawconsFilled;
 import org.kordamp.ikonli.hawcons.HawconsStroke;
@@ -195,7 +196,8 @@ public enum Pack {
                     Arrays.stream(FluentUiRegularMZ.values()).map(regularMZ -> (Ikon) regularMZ)
             )
     ).toArray(Ikon[]::new)),
-    WIN_10("Win 10", Win10.values());
+    WIN_10("Win 10", Win10.values()),
+    FONTELICO("Fontelico", Fontelico.values());
 
     private final String description;
     private final Ikon[] ikons;

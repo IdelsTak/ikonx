@@ -2,12 +2,20 @@ package com.github.idelstak.ikonx;
 
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
+import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
+import org.kordamp.ikonli.ionicons4.Ionicons4Material;
+import org.kordamp.ikonli.lineawesome.LineAwesomeBrands;
+import org.kordamp.ikonli.lineawesome.LineAwesomeRegular;
+import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.weathericons.WeatherIcons;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -24,7 +32,23 @@ public enum Pack {
                     Arrays.stream(FontAwesomeRegular.values()).map(regular -> (Ikon) regular)
             ),
             Arrays.stream(FontAwesomeSolid.values()).map(solid -> (Ikon) solid)
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    EVA_ICONS("Eva Icons", Evaicons.values()),
+    ION_ICONS("Ion Icons 4", Stream.concat(
+            Stream.concat(
+                    Arrays.stream(Ionicons4IOS.values()).map(ios -> (Ikon) ios),
+                    Arrays.stream(Ionicons4Logo.values()).map(logo -> (Ikon) logo)
+            ),
+            Arrays.stream(Ionicons4Material.values()).map(material -> (Ikon) material)
+    ).toArray(Ikon[]::new)),
+    LINE_AWESOME("Line Awesome", Stream.concat(
+            Stream.concat(
+                    Arrays.stream(LineAwesomeBrands.values()).map(brands -> (Ikon) brands),
+                    Arrays.stream(LineAwesomeRegular.values()).map(regular -> (Ikon) regular)
+            ),
+            Arrays.stream(LineAwesomeSolid.values()).map(solid -> (Ikon) solid)
+    ).toArray(Ikon[]::new)),
+    WEATHER_ICONS("Weather Icons", WeatherIcons.values());
 
     private final String description;
     private final Ikon[] ikons;

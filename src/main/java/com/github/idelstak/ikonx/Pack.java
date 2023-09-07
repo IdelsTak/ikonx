@@ -49,6 +49,7 @@ import org.kordamp.ikonli.mapicons.Mapicons;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.medicons.Medicons;
 import org.kordamp.ikonli.metrizeicons.MetrizeIcons;
 import org.kordamp.ikonli.microns.Microns;
 import org.kordamp.ikonli.ociicons.Ociicons;
@@ -211,7 +212,8 @@ public enum Pack {
             Arrays.stream(BoxiconsSolid.values()).map(solid -> (Ikon) solid)
     ).toArray(Ikon[]::new)),
     ENTYPO("Entypo", Entypo.values()),
-    ICOMOON("Icomoon", Icomoon.values());
+    ICOMOON("Icomoon", Icomoon.values()),
+    MED_ICONS("Med Icons", Medicons.values());
 
     private final String description;
     private final Ikon[] ikons;

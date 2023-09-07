@@ -44,6 +44,7 @@ import org.kordamp.ikonli.microns.Microns;
 import org.kordamp.ikonli.ociicons.Ociicons;
 import org.kordamp.ikonli.octicons.Octicons;
 import org.kordamp.ikonli.openiconic.Openiconic;
+import org.kordamp.ikonli.paymentfont.PaymentFont;
 import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.remixicon.RemixiconMZ;
@@ -177,7 +178,8 @@ public enum Pack {
             Arrays.stream(CoreUiFree.values()).map(free -> (Ikon) free)
 
     ).toArray(Ikon[]::new)),
-    RUNESTRO_ICONS("Runestro Icons", Runestroicons.values());
+    RUNESTRO_ICONS("Runestro Icons", Runestroicons.values()),
+    PAYMENT_FONT("Payment Font", PaymentFont.values());
 
     private final String description;
     private final Ikon[] ikons;

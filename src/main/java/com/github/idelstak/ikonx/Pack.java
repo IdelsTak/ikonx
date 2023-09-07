@@ -12,7 +12,6 @@ import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
-import org.kordamp.ikonli.hawconsstroke.HawconsStroke;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
 import org.kordamp.ikonli.ionicons4.Ionicons4Material;
@@ -90,7 +89,6 @@ public enum Pack {
     ).toArray(Ikon[]::new)),
     DASH_ICONS("Dash Icons", Dashicons.values()),
     ELUSIVE("Elusive", Elusive.values()),
-    HAWCONS_STROKE("Hawcons Stroke", HawconsStroke.values()),
     THEMIFY("Themify", Themify.values()),
     OCTICONS("Octicons", Octicons.values()),
     WEB_SYMBOLS("Web Symbols", Websymbols.values()),

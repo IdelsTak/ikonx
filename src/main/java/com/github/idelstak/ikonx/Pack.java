@@ -4,6 +4,7 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
 import org.kordamp.ikonli.captainicon.Captainicon;
 import org.kordamp.ikonli.carbonicons.CarbonIcons;
+import org.kordamp.ikonli.codicons.Codicons;
 import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.elusive.Elusive;
@@ -108,7 +109,8 @@ public enum Pack {
     JAM("Jam", Jam.values()),
     ZOND_ICONS("Zond Icons", Zondicons.values()),
     FEATHER("Feather", Feather.values()),
-    OPENICONIC("Openiconic", Openiconic.values());
+    OPENICONIC("Openiconic", Openiconic.values()),
+    CODICONS("Codicons", Codicons.values());
 
     private final String description;
     private final Ikon[] ikons;

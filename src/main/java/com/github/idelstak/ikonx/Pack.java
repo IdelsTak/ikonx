@@ -2,6 +2,7 @@ package com.github.idelstak.ikonx;
 
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.carbonicons.CarbonIcons;
 import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.elusive.Elusive;
@@ -85,7 +86,8 @@ public enum Pack {
     HAWCONS_STROKE("Hawcons Stroke", HawconsStroke.values()),
     THEMIFY("Themify", Themify.values()),
     OCTICONS("Octicons", Octicons.values()),
-    WEB_SYMBOLS("Web Symbols", Websymbols.values());
+    WEB_SYMBOLS("Web Symbols", Websymbols.values()),
+    CARBON_ICONS("Carbon Icons", CarbonIcons.values());
 
     private final String description;
     private final Ikon[] ikons;

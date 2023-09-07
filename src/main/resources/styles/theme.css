@@ -1,0 +1,31 @@
+.icon-browser {
+  -fx-border-color: transparent;
+  -color-cell-border: transparent;
+}
+
+.icon-browser > .column-header-background {
+  -fx-max-height: 0;
+  -fx-pref-height: 0;
+  -fx-min-height: 0;
+}
+
+.icon-browser .table-row-cell {
+  -fx-cell-size: 80px;
+}
+
+.icon-browser .table-row-cell .icon-label {
+  -fx-padding: 10px;
+  -fx-cursor: hand;
+}
+
+.icon-browser .ikonli-font-icon {
+  -fx-icon-size: 36px;
+}
+
+.icon-browser .table-row-cell > .table-cell.table-column.align-center {
+  -fx-alignment: BASELINE_CENTER;
+}
+
+.text-small {
+  -fx-font-size: 0.8em;
+}

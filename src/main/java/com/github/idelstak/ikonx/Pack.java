@@ -2,6 +2,7 @@ package com.github.idelstak.ikonx;
 
 import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
+import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
@@ -14,6 +15,7 @@ import org.kordamp.ikonli.lineawesome.LineAwesomeBrands;
 import org.kordamp.ikonli.lineawesome.LineAwesomeRegular;
 import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
 import org.kordamp.ikonli.material.Material;
+import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
 import org.kordamp.ikonli.weathericons.WeatherIcons;
 
@@ -48,7 +50,30 @@ public enum Pack {
             ),
             Arrays.stream(LineAwesomeSolid.values()).map(solid -> (Ikon) solid)
     ).toArray(Ikon[]::new)),
-    WEATHER_ICONS("Weather Icons", WeatherIcons.values());
+    WEATHER_ICONS("Weather Icons", WeatherIcons.values()),
+    DEVI_ICONS("Devi Icons", Devicons.values()),
+    MATERIAL_2("Material 2", Stream.concat(
+            Stream.concat(
+                    Stream.concat(
+                            Arrays.stream(Material2AL.values()).map(al -> (Ikon) al),
+                            Arrays.stream(Material2MZ.values()).map(mz -> (Ikon) mz)
+                    ),
+                    Stream.concat(
+                            Arrays.stream(Material2OutlinedAL.values()).map(outlinedAL -> (Ikon) outlinedAL),
+                            Arrays.stream(Material2OutlinedMZ.values()).map(outlinedMZ -> (Ikon) outlinedMZ)
+                    )
+            ),
+            Stream.concat(
+                    Stream.concat(
+                            Arrays.stream(Material2RoundAL.values()).map(roundAL -> (Ikon) roundAL),
+                            Arrays.stream(Material2RoundMZ.values()).map(roundMZ -> (Ikon) roundMZ)
+                    ),
+                    Stream.concat(
+                            Arrays.stream(Material2SharpAL.values()).map(sharpAL -> (Ikon) sharpAL),
+                            Arrays.stream(Material2SharpMZ.values()).map(sharpMZ -> (Ikon) sharpMZ)
+                    )
+            )
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;

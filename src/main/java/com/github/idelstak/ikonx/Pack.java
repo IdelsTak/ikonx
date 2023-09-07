@@ -45,6 +45,7 @@ import org.kordamp.ikonli.simpleicons.SimpleIcons;
 import org.kordamp.ikonli.simplelineicons.SimpleLineIcons;
 import org.kordamp.ikonli.subway.Subway;
 import org.kordamp.ikonli.themify.Themify;
+import org.kordamp.ikonli.typicons.Typicons;
 import org.kordamp.ikonli.unicons.UniconsLine;
 import org.kordamp.ikonli.unicons.UniconsMonochrome;
 import org.kordamp.ikonli.unicons.UniconsSolid;
@@ -155,7 +156,8 @@ public enum Pack {
     FOUNDATION("Foundation", Foundation.values()),
     MICRONS("Microns", Microns.values()),
     LIGATURE_SYMBOLS("Ligature Symbols", LigatureSymbols.values()),
-    BPMN("Bpmn", Bpmn.values());
+    BPMN("Bpmn", Bpmn.values()),
+    TYPICONS("Typicons", Typicons.values());
 
     private final String description;
     private final Ikon[] ikons;

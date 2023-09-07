@@ -17,6 +17,7 @@ import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
+import org.kordamp.ikonli.foundation.Foundation;
 import org.kordamp.ikonli.ionicons.Ionicons;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
@@ -147,7 +148,8 @@ public enum Pack {
             Arrays.stream(WhhgMZ.values()).map(mz -> (Ikon) mz)
 
     ).toArray(Ikon[]::new)),
-    SIMPLE_ICONS("Simple Icons", SimpleIcons.values());
+    SIMPLE_ICONS("Simple Icons", SimpleIcons.values()),
+    FOUNDATION("Foundation", Foundation.values());
 
     private final String description;
     private final Ikon[] ikons;

@@ -20,6 +20,7 @@ import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.octicons.Octicons;
 import org.kordamp.ikonli.themify.Themify;
 import org.kordamp.ikonli.weathericons.WeatherIcons;
 
@@ -81,7 +82,8 @@ public enum Pack {
     DASH_ICONS("Dash Icons", Dashicons.values()),
     ELUSIVE("Elusive", Elusive.values()),
     HAWCONS_STROKE("Hawcons Stroke", HawconsStroke.values()),
-    THEMIFY("Themify", Themify.values());
+    THEMIFY("Themify", Themify.values()),
+    OCTICONS("Octicons", Octicons.values());
 
     private final String description;
     private final Ikon[] ikons;

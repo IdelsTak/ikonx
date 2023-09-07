@@ -37,6 +37,7 @@ import org.kordamp.ikonli.openiconic.Openiconic;
 import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
 import org.kordamp.ikonli.remixicon.RemixiconAL;
 import org.kordamp.ikonli.remixicon.RemixiconMZ;
+import org.kordamp.ikonli.simpleicons.SimpleIcons;
 import org.kordamp.ikonli.simplelineicons.SimpleLineIcons;
 import org.kordamp.ikonli.subway.Subway;
 import org.kordamp.ikonli.themify.Themify;
@@ -145,7 +146,8 @@ public enum Pack {
             Arrays.stream(WhhgAL.values()).map(al -> (Ikon) al),
             Arrays.stream(WhhgMZ.values()).map(mz -> (Ikon) mz)
 
-    ).toArray(Ikon[]::new));
+    ).toArray(Ikon[]::new)),
+    SIMPLE_ICONS("Simple Icons", SimpleIcons.values());
 
     private final String description;
     private final Ikon[] ikons;

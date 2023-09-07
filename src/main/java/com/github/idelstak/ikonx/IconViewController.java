@@ -4,13 +4,16 @@ import com.dlsc.gemsfx.SearchTextField;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.text.Text;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.IndexedCheckModel;
 import org.controlsfx.control.StatusBar;
-import org.kordamp.ikonli.Ikon;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -22,9 +25,13 @@ public class IconViewController {
     private final List<PackIkon> packIkons;
 
     @FXML
+    private SearchTextField searchField;
+    @FXML
     private CheckComboBox<Pack> packCombo;
     @FXML
-    private SearchTextField searchField;
+    private ToggleButton selectAllToggle;
+    @FXML
+    private Tooltip selectTip;
     @FXML
     private TableView<List<PackIkon>> iconsTable;
     @FXML
@@ -36,6 +43,8 @@ public class IconViewController {
 
     @FXML
     protected void initialize() {
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> updateData(newValue));
+
         packCombo.setTitle("Selected icon packs: ");
         packCombo.setShowCheckedCount(true);
 
@@ -46,18 +55,45 @@ public class IconViewController {
         LOG.log(Level.INFO, "sorted pack values: {0}", packs);
 
         packCombo.getItems().setAll(packs);
-        Platform.runLater(packCombo.getCheckModel()::checkAll);
+        Platform.runLater(() -> packCombo.getCheckModel().check(0));
 
         packCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends Pack> change) -> {
             while (change.next()) {
                 packIkons.clear();
-                change.getList().forEach(this::setPackIkons);
+                ObservableList<? extends Pack> checkedPacks = change.getList();
+
+                Platform.runLater(() -> {
+                    if (selectAllToggle.isSelected()) {
+                        selectAllToggle.setSelected(checkedPacks.size() == packCombo.getItems().size());
+                    }
+
+                    updateSelectTipText();
+                });
+
+                checkedPacks.forEach(this::setPackIkons);
 
                 updateData(searchField.getText());
             }
         });
 
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> updateData(newValue));
+        selectAllToggle.setOnAction(event -> {
+            if (selectAllToggle.isSelected()) {
+                LOG.log(Level.INFO, "selecting all...");
+                Platform.runLater(packCombo.getCheckModel()::checkAll);
+            } else {
+                Pack firstPack = packCombo.getItems().get(0);
+                LOG.log(Level.INFO, "selecting {0}...", firstPack);
+                Platform.runLater(() -> {
+                    IndexedCheckModel<Pack> checkModel = packCombo.getCheckModel();
+                    checkModel.clearChecks();
+                    checkModel.check(firstPack);
+                });
+            }
+
+            updateSelectTipText();
+        });
+
+        updateSelectTipText();
 
         iconsTable.setPlaceholder(new Text("No result found"));
 
@@ -86,6 +122,10 @@ public class IconViewController {
         packs.forEach(this::setPackIkons);
 
         updateData(null);
+    }
+
+    private void updateSelectTipText() {
+        selectTip.setText(selectAllToggle.isSelected() ? "Select first" : "Select all");
     }
 
     private void setPackIkons(Pack pack) {

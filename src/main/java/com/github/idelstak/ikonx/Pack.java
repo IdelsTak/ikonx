@@ -45,6 +45,8 @@ import org.kordamp.ikonli.unicons.UniconsMonochrome;
 import org.kordamp.ikonli.unicons.UniconsSolid;
 import org.kordamp.ikonli.weathericons.WeatherIcons;
 import org.kordamp.ikonli.websymbols.Websymbols;
+import org.kordamp.ikonli.whhg.WhhgAL;
+import org.kordamp.ikonli.whhg.WhhgMZ;
 import org.kordamp.ikonli.zondicons.Zondicons;
 
 import java.util.Arrays;
@@ -138,7 +140,12 @@ public enum Pack {
     SIMPLE_LINE_ICONS("Simple Line Icons", SimpleLineIcons.values()),
     FILE_ICONS("File Icons", FileIcons.values()),
     MAKI("Maki", Maki.values()),
-    MAKI_2("Maki 2", Maki2.values());
+    MAKI_2("Maki 2", Maki2.values()),
+    WHHG("Whhg", Stream.concat(
+            Arrays.stream(WhhgAL.values()).map(al -> (Ikon) al),
+            Arrays.stream(WhhgMZ.values()).map(mz -> (Ikon) mz)
+
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;

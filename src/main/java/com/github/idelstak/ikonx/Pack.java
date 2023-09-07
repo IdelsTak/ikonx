@@ -29,6 +29,8 @@ import org.kordamp.ikonli.ociicons.Ociicons;
 import org.kordamp.ikonli.octicons.Octicons;
 import org.kordamp.ikonli.openiconic.Openiconic;
 import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
+import org.kordamp.ikonli.remixicon.RemixiconAL;
+import org.kordamp.ikonli.remixicon.RemixiconMZ;
 import org.kordamp.ikonli.themify.Themify;
 import org.kordamp.ikonli.unicons.UniconsLine;
 import org.kordamp.ikonli.unicons.UniconsMonochrome;
@@ -112,7 +114,12 @@ public enum Pack {
     FEATHER("Feather", Feather.values()),
     OPENICONIC("Openiconic", Openiconic.values()),
     CODICONS("Codicons", Codicons.values()),
-    OCI_ICONS("Oci Icons", Ociicons.values());
+    OCI_ICONS("Oci Icons", Ociicons.values()),
+    REMIX_ICON("Remix Icon", Stream.concat(
+            Arrays.stream(RemixiconAL.values()).map(al -> (Ikon) al),
+            Arrays.stream(RemixiconMZ.values()).map(mz -> (Ikon) mz)
+
+    ).toArray(Ikon[]::new));
 
     private final String description;
     private final Ikon[] ikons;
@@ -134,4 +141,4 @@ public enum Pack {
     private static Ikon[] copy(Ikon[] ikons) {
         return Arrays.copyOf(ikons, ikons.length);
     }
-}
+    }

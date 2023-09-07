@@ -32,6 +32,7 @@ import org.kordamp.ikonli.maki2.Maki2;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.microns.Microns;
 import org.kordamp.ikonli.ociicons.Ociicons;
 import org.kordamp.ikonli.octicons.Octicons;
 import org.kordamp.ikonli.openiconic.Openiconic;
@@ -149,7 +150,8 @@ public enum Pack {
 
     ).toArray(Ikon[]::new)),
     SIMPLE_ICONS("Simple Icons", SimpleIcons.values()),
-    FOUNDATION("Foundation", Foundation.values());
+    FOUNDATION("Foundation", Foundation.values()),
+    MICRONS("Microns", Microns.values());
 
     private final String description;
     private final Ikon[] ikons;

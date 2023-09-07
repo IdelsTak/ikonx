@@ -25,6 +25,7 @@ import org.kordamp.ikonli.linecons.Linecons;
 import org.kordamp.ikonli.material.Material;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.MaterialDesign;
+import org.kordamp.ikonli.ociicons.Ociicons;
 import org.kordamp.ikonli.octicons.Octicons;
 import org.kordamp.ikonli.openiconic.Openiconic;
 import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
@@ -110,7 +111,8 @@ public enum Pack {
     ZOND_ICONS("Zond Icons", Zondicons.values()),
     FEATHER("Feather", Feather.values()),
     OPENICONIC("Openiconic", Openiconic.values()),
-    CODICONS("Codicons", Codicons.values());
+    CODICONS("Codicons", Codicons.values()),
+    OCI_ICONS("Oci Icons", Ociicons.values());
 
     private final String description;
     private final Ikon[] ikons;

@@ -85,11 +85,6 @@
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-hawconsstroke-pack</artifactId>
-            <version>11.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-themify-pack</artifactId>
             <version>12.3.1</version>
         </dependency>

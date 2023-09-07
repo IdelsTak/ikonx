@@ -8,6 +8,7 @@ import org.kordamp.ikonli.dashicons.Dashicons;
 import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.evaicons.Evaicons;
+import org.kordamp.ikonli.feather.Feather;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
@@ -31,9 +32,9 @@ import org.kordamp.ikonli.unicons.UniconsMonochrome;
 import org.kordamp.ikonli.unicons.UniconsSolid;
 import org.kordamp.ikonli.weathericons.WeatherIcons;
 import org.kordamp.ikonli.websymbols.Websymbols;
+import org.kordamp.ikonli.zondicons.Zondicons;
 
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public enum Pack {
@@ -103,7 +104,9 @@ public enum Pack {
     ).toArray(Ikon[]::new)),
     LINECONS("Linecons", Linecons.values()),
     CAPTAIN_ICON("Captain Icon", Captainicon.values()),
-    JAM("Jam", Jam.values());
+    JAM("Jam", Jam.values()),
+    ZOND_ICONS("Zond Icons", Zondicons.values()),
+    FEATHER("Feather", Feather.values());
 
     private final String description;
     private final Ikon[] ikons;
@@ -111,13 +114,6 @@ public enum Pack {
     Pack(String description, Ikon[] ikons) {
         this.description = description;
         this.ikons = copy(ikons);
-    }
-
-    public static Pack from(String text) {
-        return Arrays.stream(values())
-                .filter(pack -> Objects.equals(pack.description, text))
-                .findFirst()
-                .orElseThrow();
     }
 
     public Ikon[] getIkons() {

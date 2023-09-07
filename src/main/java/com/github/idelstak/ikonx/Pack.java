@@ -23,6 +23,7 @@ import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
 import org.kordamp.ikonli.ionicons4.Ionicons4Material;
 import org.kordamp.ikonli.jam.Jam;
+import org.kordamp.ikonli.ligaturesymbols.LigatureSymbols;
 import org.kordamp.ikonli.lineawesome.LineAwesomeBrands;
 import org.kordamp.ikonli.lineawesome.LineAwesomeRegular;
 import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
@@ -151,7 +152,8 @@ public enum Pack {
     ).toArray(Ikon[]::new)),
     SIMPLE_ICONS("Simple Icons", SimpleIcons.values()),
     FOUNDATION("Foundation", Foundation.values()),
-    MICRONS("Microns", Microns.values());
+    MICRONS("Microns", Microns.values()),
+    LIGATURE_SYMBOLS("Ligature Symbols", LigatureSymbols.values());
 
     private final String description;
     private final Ikon[] ikons;

@@ -288,6 +288,11 @@
             <artifactId>ikonli-icomoon-pack</artifactId>
             <version>12.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-medicons-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
         <!-- GemsFX -->
         <dependency>
             <groupId>com.dlsc.gemsfx</groupId>

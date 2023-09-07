@@ -12,6 +12,7 @@ import org.kordamp.ikonli.devicons.Devicons;
 import org.kordamp.ikonli.elusive.Elusive;
 import org.kordamp.ikonli.evaicons.Evaicons;
 import org.kordamp.ikonli.feather.Feather;
+import org.kordamp.ikonli.fileicons.FileIcons;
 import org.kordamp.ikonli.fontawesome.FontAwesome;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
@@ -132,7 +133,8 @@ public enum Pack {
 
     ).toArray(Ikon[]::new)),
     SUBWAY("Subway", Subway.values()),
-    SIMPLE_LINE_ICONS("Simple Line Icons", SimpleLineIcons.values());
+    SIMPLE_LINE_ICONS("Simple Line Icons", SimpleLineIcons.values()),
+    FILE_ICONS("File Icons", FileIcons.values());
 
     private final String description;
     private final Ikon[] ikons;

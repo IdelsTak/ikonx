@@ -98,6 +98,11 @@
             <artifactId>ikonli-octicons-pack</artifactId>
             <version>12.3.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-websymbols-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
         <!-- GemsFX -->
         <dependency>
             <groupId>com.dlsc.gemsfx</groupId>

@@ -16,6 +16,7 @@ import org.kordamp.ikonli.hawconsstroke.HawconsStroke;
 import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
 import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
 import org.kordamp.ikonli.ionicons4.Ionicons4Material;
+import org.kordamp.ikonli.jam.Jam;
 import org.kordamp.ikonli.lineawesome.LineAwesomeBrands;
 import org.kordamp.ikonli.lineawesome.LineAwesomeRegular;
 import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
@@ -103,7 +104,8 @@ public enum Pack {
             Arrays.stream(UniconsSolid.values()).map(solid -> (Ikon) solid)
     ).toArray(Ikon[]::new)),
     LINECONS("Linecons", Linecons.values()),
-    CAPTAIN_ICON("Captain Icon", Captainicon.values());
+    CAPTAIN_ICON("Captain Icon", Captainicon.values()),
+    JAM("Jam", Jam.values());
 
     private final String description;
     private final Ikon[] ikons;

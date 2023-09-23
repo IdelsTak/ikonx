@@ -1,3 +1,13 @@
+@font-face {
+  font-family: "Inter";
+  font-weight: 400;
+  src: url('Inter-Regular.ttf') format('truetype');
+}
+
+.root {
+  -fx-font-family: "Inter";
+}
+
 .icon-browser {
   -fx-border-color: transparent;
   -color-cell-border: transparent;

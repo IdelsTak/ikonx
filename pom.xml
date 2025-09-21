@@ -413,9 +413,7 @@
                                 <wrapJar>true</wrapJar>
                                 <disableDirPage>false</disableDirPage>
                                 <productName>IconX</productName>
-                                <txtFileVersion>${version}</txtFileVersion>
                                 <productVersion>1.0.0</productVersion>
-                                <txtProductVersion>1.0.0</txtProductVersion>
 
                                 <internalName>IconX</internalName>
                                 <shortcutName>IconX</shortcutName>

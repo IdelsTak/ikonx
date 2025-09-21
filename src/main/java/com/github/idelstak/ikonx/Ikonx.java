@@ -24,14 +24,17 @@
 
 package com.github.idelstak.ikonx;
 
+import atlantafx.base.theme.PrimerLight;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
- * @author Hiram K. <https://github.com/IdelsTak>
+ * @author Hiram K. <a href="https://github.com/IdelsTak">Link</a>
+ * @Contributor Kapil Kumar <a href="https://github.com/kapilkumar9976">Link</a>
  */
 public class Ikonx extends Application {
 
@@ -44,9 +47,11 @@ public class Ikonx extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
+        Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet()); // updated and upgraded by https://github.com/kapilkumar9976
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle("IkonX - for ikonli v. 12.3.1");
+        primaryStage.initStyle(StageStyle.UNIFIED);
+        primaryStage.setTitle("IkonX - for ikonli v. 12.4.0");
         primaryStage.show();
     }
 }

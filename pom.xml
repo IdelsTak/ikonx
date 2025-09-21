@@ -4,17 +4,19 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.idelstak</groupId>
     <artifactId>ikonx</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>IkonX</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>20</maven.compiler.release>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
+        <maven.compiler.release>25</maven.compiler.release>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <exec.mainClass>com.github.idelstak.ikonx.Main</exec.mainClass>
-        <javafx.version>20.0.1</javafx.version>
-        <ikonli.version>12.3.1</ikonli.version>
+        <javafx.version>25</javafx.version>
+        <ikonli.version>12.4.0</ikonli.version>
+        <jdk.package.path>C:\Program Files\Java\zulu25.28.85-ca-jdk25.0.0-win_x64</jdk.package.path> <!--        change this to your JDK path for building the installer or executable-->
+
     </properties>
 
     <dependencies>
@@ -119,6 +121,11 @@
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-linecons-pack</artifactId>
             <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.mkpaz</groupId>
+            <artifactId>atlantafx-base</artifactId>
+            <version>2.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
@@ -359,6 +366,80 @@
                     </execution>
                 </executions>
             </plugin>
+
+<!--            Added javapackager so it's easy to open or use when building your own product in javafx-->
+            <plugin>
+                <groupId>io.github.fvarrui</groupId>
+                <artifactId>javapackager</artifactId>
+                <version>1.7.6</version> <!-- latest as of now -->
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Your JavaFX main class -->
+                            <mainClass>${exec.mainClass}</mainClass>
+
+                            <!-- Bundle JRE so users don't need Java installed -->
+                            <bundleJre>true</bundleJre>
+                            <customizedJre>true</customizedJre>
+                            <jdkPath>${jdk.package.path}</jdkPath>
+
+                            <licenseFile>LICENSE</licenseFile>
+
+
+                            <!-- Generate Windows installer (exe + optional MSI) -->
+                            <generateInstaller>true</generateInstaller>
+                            <createZipball>false</createZipball>
+
+                            <!-- Target platform -->
+                            <platform>windows</platform>
+
+                            <!-- App metadata -->
+                            <name>IkonX</name>
+                            <displayName>IkonX Desktop</displayName>
+
+                            <version>1.0.0</version>
+                            <description>IkonX</description>
+                            <administratorRequired>false</administratorRequired>
+
+                            <!-- Windows-specific settings -->
+                            <winConfig>
+                                <exeCreationTool>winrun4j</exeCreationTool>
+
+                                <headerType>gui</headerType>
+                                <wrapJar>true</wrapJar>
+                                <disableDirPage>false</disableDirPage>
+                                <productName>IconX</productName>
+                                <txtFileVersion>${version}</txtFileVersion>
+                                <productVersion>1.0.0</productVersion>
+                                <txtProductVersion>1.0.0</txtProductVersion>
+
+                                <internalName>IconX</internalName>
+                                <shortcutName>IconX</shortcutName>
+                                <!--                                <originalFilename>autobot.exe</originalFilename>-->
+                                <internalName>IconX</internalName>
+
+                                <setupMode>askTheUser</setupMode>
+
+                                <disableProgramGroupPage>false</disableProgramGroupPage>
+                                <disableFinishedPage>false</disableFinishedPage>
+                                <disableRunAfterInstall>false</disableRunAfterInstall>
+                                <disableWelcomePage>false</disableWelcomePage>
+
+
+                            </winConfig>
+
+<!--                            You can add similar configurations for macOS and Linux if needed-->
+
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
 </project>

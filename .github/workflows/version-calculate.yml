@@ -18,19 +18,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install xmllint
-        run: sudo apt-get update && sudo apt-get install -y libxml2-utils xmlstarlet jq
+      - name: Install xmlstarlet
+        run: sudo apt-get update && sudo apt-get install -y xmlstarlet
 
       - name: Read current version
         id: current
         run: |
-          VERSION=$(xmllint --xpath "string(//project/version)" pom.xml)
+          VERSION=$(xmlstarlet sel -t -v "/project/version" pom.xml)
+          if [ -z "$VERSION" ]; then
+            echo "Cannot read version from pom.xml"
+            exit 1
+          fi
           echo "value=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Extract version label
         id: label
         run: |
-          LABELS=$(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH")
+          LABELS=$(jq -r '.pull_request.labels[].name // empty' "$GITHUB_EVENT_PATH")
           echo "$LABELS" | grep '^version:' > bump.txt || true
           COUNT=$(wc -l < bump.txt)
           if [ "$COUNT" -ne 1 ]; then
@@ -44,13 +48,20 @@ jobs:
         run: |
           CUR=${{ steps.current.outputs.value }}
           LABEL=${{ steps.label.outputs.value }}
+          if [ -z "$CUR" ]; then
+            echo "Current version is empty, cannot bump"
+            exit 1
+          fi
 
           IFS='.' read MA MI PA <<< "${CUR%%-*}"
-
+          PRE="${CUR#*-}"
           case "$LABEL" in
             version:major) NEXT="$((MA+1)).0.0" ;;
             version:minor) NEXT="$MA.$((MI+1)).0" ;;
             version:patch) NEXT="$MA.$MI.$((PA+1))" ;;
+            version:alpha) NEXT="$MA.$MI.$PA-alpha" ;;
+            version:beta)  NEXT="$MA.$MI.$PA-beta" ;;
+            version:rc)    NEXT="$MA.$MI.$PA-rc" ;;
             *) echo "Unknown label $LABEL"; exit 1 ;;
           esac
 

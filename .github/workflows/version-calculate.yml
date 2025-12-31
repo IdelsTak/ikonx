@@ -1,9 +1,11 @@
 name: Calculate Version
 
 on:
-  pull_request:
-    types: [closed]
-    branches: [master]
+  push:
+    branches: ["master"]
+    
+permissions:
+  contents: write
 
 jobs:
   calculate:

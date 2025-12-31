@@ -1,0 +1,63 @@
+name: Calculate Version
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  calculate:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.version.outputs.next }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Read current version
+        id: current
+        run: |
+          VERSION=$(xmllint --xpath "string(//project/version)" pom.xml)
+          echo "value=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Extract version label
+        id: label
+        run: |
+          LABELS=$(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH")
+          echo "$LABELS" | grep '^version:' > bump.txt || true
+          COUNT=$(wc -l < bump.txt)
+          if [ "$COUNT" -ne 1 ]; then
+            echo "Exactly one version:* label required"
+            exit 1
+          fi
+          echo "value=$(cat bump.txt)" >> $GITHUB_OUTPUT
+
+      - name: Calculate next version
+        id: version
+        run: |
+          CUR=${{ steps.current.outputs.value }}
+          LABEL=${{ steps.label.outputs.value }}
+
+          IFS='.' read MA MI PA <<< "${CUR%%-*}"
+
+          case "$LABEL" in
+            version:major) NEXT="$((MA+1)).0.0" ;;
+            version:minor) NEXT="$MA.$((MI+1)).0" ;;
+            version:patch) NEXT="$MA.$MI.$((PA+1))" ;;
+            *) echo "Unknown label $LABEL"; exit 1 ;;
+          esac
+
+          echo "next=$NEXT" >> $GITHUB_OUTPUT
+
+      - name: Update pom.xml with new version
+        id: update-pom
+        run: |
+          NEXT=${{ steps.version.outputs.next }}
+          echo "Updating pom.xml to version $NEXT"
+          xmlstarlet ed -L -u "/project/version" -v "$NEXT" pom.xml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pom.xml
+          git commit -m "ci: bump version to $NEXT"

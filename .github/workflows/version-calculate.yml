@@ -24,7 +24,7 @@ jobs:
       - name: Read current version
         id: current
         run: |
-          VERSION=$(xmlstarlet sel -t -v "/project/version" pom.xml)
+          VERSION=$(xmlstarlet sel -t -v "/*[local-name()='project']/*[local-name()='version']" pom.xml)
           if [ -z "$VERSION" ]; then
             echo "Cannot read version from pom.xml"
             exit 1
@@ -34,7 +34,7 @@ jobs:
       - name: Extract version label
         id: label
         run: |
-          LABELS=$(jq -r '.pull_request.labels[].name // empty' "$GITHUB_EVENT_PATH")
+          LABELS=$(jq -r '.pull_request.labels[].name' "$GITHUB_EVENT_PATH" || echo "")
           echo "$LABELS" | grep '^version:' > bump.txt || true
           COUNT=$(wc -l < bump.txt)
           if [ "$COUNT" -ne 1 ]; then
@@ -72,7 +72,7 @@ jobs:
         run: |
           NEXT=${{ steps.version.outputs.next }}
           echo "Updating pom.xml to version $NEXT"
-          xmlstarlet ed -L -u "/project/version" -v "$NEXT" pom.xml
+          xmlstarlet ed -L -u "/*[local-name()='project']/*[local-name()='version']" -v "$NEXT" pom.xml
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add pom.xml

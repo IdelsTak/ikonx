@@ -6,7 +6,7 @@ Finding the right icon for your JavaFX project can be a hassle. I know the strug
 
 I was inspired by the [AltantaFX sampler](https://downloads.hydraulic.dev/atlantafx/sampler/download.html), which made browsing Material icons a breeze. So, I decided to take it a step further. I created IkonX - the Icon Pack Browser. With this tool, you can easily search, preview, and copy icon codes from **all** available icon packs. No more digging through endless documents to find that perfect icon.
 
-![Screenshot](assets/screenshot_2023-09-07_16-29-46.png)
+![Screenshot](assets/img.png)
 
 ## What IkonX Does
 

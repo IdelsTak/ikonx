@@ -23,31 +23,64 @@
  */
 package com.github.idelstak.ikonx;
 
-import javafx.application.*;
+import java.io.*;
 import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.stage.*;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.*;
+import org.testfx.api.*;
+import org.testfx.framework.junit5.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * @author Hiram K. <a href="https://github.com/IdelsTak">Link</a>
- * @Contributor Kapil Kumar <a href="https://github.com/kapilkumar9976">Link</a>
- */
-public class Ikonx extends Application {
+@ExtendWith(ApplicationExtension.class)
+public final class IconViewManagerTest extends ApplicationTest {
+
+    private IconViewManager controller;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
         Parent root = loader.load();
-        Scene scene = new Scene(root);
-        //Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet()); // updated and upgraded by https://github.com/kapilkumar9976
-
-        primaryStage.setScene(scene);
-        primaryStage.initStyle(StageStyle.UNIFIED);
-        primaryStage.setTitle("IkonX - for ikonli v. 12.4.0");
-        primaryStage.show();
+        controller = loader.getController();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    @Test
+    void testControllerIsNotNull() {
+        assertNotNull(controller);
+    }
+
+    @Test
+    void testSearchFieldInteraction(FxRobot robot) {
+        // Given
+        String textToType = "search text";
+
+        // When
+        robot.clickOn("#searchField");
+        robot.write(textToType);
+
+        // Then
+        assertEquals(textToType, controller.getSearchText());
+    }
+
+    @Test
+    void testSelectAllToggle(FxRobot robot) {
+        // When
+        robot.clickOn("#selectAllToggle");
+
+        // Then
+        assertEquals(controller.getPackComboBox().getItems().size(), controller.getSelectedPacks().size());
+    }
+
+    @Test
+    void testPackComboBoxSelection(FxRobot robot) {
+        // When
+        robot.clickOn("#packCombo");
+        robot.clickOn(".check-box");
+        
+        // Then
+        assertTrue(controller.getSelectedPacks().isEmpty());
     }
 }

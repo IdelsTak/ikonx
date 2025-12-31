@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 Hiram K
+ * Copyright (c) 2026 Hiram K
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,30 +23,22 @@
  */
 package com.github.idelstak.ikonx;
 
-import com.dlsc.gemsfx.SearchTextField;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.Tooltip;
-import javafx.scene.text.Text;
-import org.controlsfx.control.CheckComboBox;
-import org.controlsfx.control.IndexedCheckModel;
-import org.controlsfx.control.StatusBar;
-
+import com.dlsc.gemsfx.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.logging.*;
+import javafx.application.*;
+import javafx.beans.property.*;
+import javafx.collections.*;
+import javafx.fxml.*;
+import javafx.scene.control.*;
+import javafx.scene.text.*;
+import org.controlsfx.control.*;
 
-public class IconViewController {
-    private static final Logger LOG = Logger.getLogger(IconViewController.class.getName());
+public class IconViewManager implements IconView {
+
+    private static final Logger LOG = Logger.getLogger(IconViewManager.class.getName());
     private static final int FILTER_LEN = 2;
     private final List<PackIkon> packIkons;
-
     @FXML
     private SearchTextField searchField;
     @FXML
@@ -60,27 +52,111 @@ public class IconViewController {
     @FXML
     private StatusBar statusBar;
 
-    public IconViewController() {
+    public IconViewManager() {
         packIkons = new ArrayList<>();
+    }
+
+    /**
+     * Types the given text into the search field.
+     *
+     * @param text The text to type.
+     */
+    public void typeIntoSearchField(String text) {
+        searchField.setText(text);
+    }
+
+    /**
+     * Clicks the select all toggle button.
+     */
+    public void clickSelectAllToggle() {
+        selectAllToggle.fire();
+    }
+
+    @Override
+    public String getSearchText() {
+        return searchField.getText();
+    }
+
+    @Override
+    public ObservableList<Pack> getSelectedPacks() {
+        return packCombo.getCheckModel().getCheckedItems();
+    }
+
+    @Override
+    public void setSearchText(String text) {
+        searchField.setText(text);
+    }
+
+    @Override
+    public void selectAllPacks() {
+        packCombo.getCheckModel().checkAll();
+    }
+
+    @Override
+    public void deselectAllPacks() {
+        packCombo.getCheckModel().clearChecks();
+    }
+
+    @Override
+    public void setPacks(List<Pack> packs) {
+        packCombo.getItems().setAll(packs);
+    }
+
+    @Override
+    public void setTableItems(Collection<List<PackIkon>> items) {
+        iconsTable.getItems().setAll(items);
+    }
+
+    @Override
+    public TableView<List<PackIkon>> getIconsTable() {
+        return iconsTable;
+    }
+
+    @Override
+    public CheckComboBox<Pack> getPackComboBox() {
+        return packCombo;
+    }
+
+    @Override
+    public ToggleButton getSelectAllToggle() {
+        return selectAllToggle;
     }
 
     @FXML
     protected void initialize() {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> updateData(newValue));
+        setupSearchField();
+        setupPackComboBox();
+        setupSelectAllToggle();
+        setupIconsTable();
 
+        List<Pack> packs = Arrays.stream(Pack.values())
+          .sorted(Comparator.comparing(Pack::toString))
+          .toList();
+        packs.forEach(this::setPackIkons);
+
+        updateData(null);
+    }
+
+    private void setupSearchField() {
+        searchField.textProperty().addListener((observable, oldValue, newValue) ->
+          updateData(newValue));
+    }
+
+    private void setupPackComboBox() {
         packCombo.setTitle("Selected icon packs: ");
         packCombo.setShowCheckedCount(true);
 
-        Comparator<Pack> packComparator = (p1, p2) -> Comparator.comparing(Pack::toString).compare(p1, p2);
+        Comparator<Pack> packComparator = Comparator.comparing(Pack::toString);
         List<Pack> packs = Arrays.stream(Pack.values())
-                .sorted(packComparator)
-                .toList();
+          .sorted(packComparator)
+          .toList();
         LOG.log(Level.INFO, "sorted pack values: {0}", packs);
 
-        packCombo.getItems().setAll(packs);
+        setPacks(packs);
         Platform.runLater(() -> packCombo.getCheckModel().check(0));
 
-        packCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends Pack> change) -> {
+        packCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends Pack> change) ->
+        {
             while (change.next()) {
                 packIkons.clear();
                 ObservableList<? extends Pack> checkedPacks = change.getList();
@@ -95,19 +171,20 @@ public class IconViewController {
 
                 checkedPacks.forEach(this::setPackIkons);
 
-                updateData(searchField.getText());
+                updateData(getSearchText());
             }
         });
+    }
 
+    private void setupSelectAllToggle() {
         selectAllToggle.setOnAction(event -> {
             if (selectAllToggle.isSelected()) {
-                Platform.runLater(packCombo.getCheckModel()::checkAll);
+                Platform.runLater(this::selectAllPacks);
             } else {
                 Pack firstPack = packCombo.getItems().get(0);
                 Platform.runLater(() -> {
-                    IndexedCheckModel<Pack> checkModel = packCombo.getCheckModel();
-                    checkModel.clearChecks();
-                    checkModel.check(firstPack);
+                    deselectAllPacks();
+                    packCombo.getCheckModel().check(firstPack);
                 });
             }
 
@@ -115,10 +192,13 @@ public class IconViewController {
         });
 
         updateSelectTipText();
+    }
 
+    private void setupIconsTable() {
         iconsTable.setPlaceholder(new Text("No result found"));
 
-        iconsTable.getItems().addListener((ListChangeListener.Change<? extends List<PackIkon>> change) -> {
+        iconsTable.getItems().addListener((ListChangeListener.Change<? extends List<PackIkon>> change) ->
+        {
             while (change.next()) {
                 statusBar.setText("%d icons".formatted(change.getList().size()));
             }
@@ -127,6 +207,7 @@ public class IconViewController {
         iconsTable.getSelectionModel().setCellSelectionEnabled(true);
 
         for (int i = 0; i < iconsTable.getColumns().size(); i++) {
+            @SuppressWarnings("unchecked")
             TableColumn<List<PackIkon>, PackIkon> col = (TableColumn<List<PackIkon>, PackIkon>) iconsTable.getColumns().get(i);
             int colIndex = i;
 
@@ -139,10 +220,6 @@ public class IconViewController {
             col.setCellFactory(cb -> new FontIconCell());
             col.getStyleClass().add("align-center");
         }
-
-        packs.forEach(this::setPackIkons);
-
-        updateData(null);
     }
 
     private void updateSelectTipText() {
@@ -155,17 +232,18 @@ public class IconViewController {
 
     private void updateData(String filterString) {
         List<PackIkon> displayedIcons = filterString == null || filterString.isBlank() || filterString.length() < FILTER_LEN
-                ? packIkons.stream().toList()
-                : packIkons.stream().filter(packIkon -> containsString(packIkon.ikon().getDescription(), filterString)).toList();
+                                        ? packIkons.stream().toList()
+                                          : packIkons.stream().filter(packIkon ->
+            containsString(packIkon.ikon().getDescription(), filterString)).toList();
 
         Collection<List<PackIkon>> data = partitionList(displayedIcons, iconsTable.getColumns().size());
 
-        iconsTable.getItems().setAll(data);
+        setTableItems(data);
     }
 
     private <T> Collection<List<T>> partitionList(List<T> list, int size) {
         List<List<T>> partitions = new ArrayList<>();
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return partitions;
         }
 

@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 Hiram K
+ * Copyright (c) 2026 Hiram K
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,83 +23,64 @@
  */
 package com.github.idelstak.ikonx;
 
-import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.antdesignicons.AntDesignIconsFilled;
-import org.kordamp.ikonli.antdesignicons.AntDesignIconsOutlined;
-import org.kordamp.ikonli.bootstrapicons.BootstrapIcons;
-import org.kordamp.ikonli.boxicons.BoxiconsLogos;
-import org.kordamp.ikonli.boxicons.BoxiconsRegular;
-import org.kordamp.ikonli.boxicons.BoxiconsSolid;
-import org.kordamp.ikonli.bpmn.Bpmn;
-import org.kordamp.ikonli.captainicon.Captainicon;
-import org.kordamp.ikonli.carbonicons.CarbonIcons;
-import org.kordamp.ikonli.codicons.Codicons;
-import org.kordamp.ikonli.coreui.CoreUiBrands;
-import org.kordamp.ikonli.coreui.CoreUiFree;
-import org.kordamp.ikonli.dashicons.Dashicons;
-import org.kordamp.ikonli.devicons.Devicons;
-import org.kordamp.ikonli.elusive.Elusive;
-import org.kordamp.ikonli.entypo.Entypo;
-import org.kordamp.ikonli.evaicons.Evaicons;
-import org.kordamp.ikonli.feather.Feather;
-import org.kordamp.ikonli.fileicons.FileIcons;
-import org.kordamp.ikonli.fluentui.FluentUiFilledAL;
-import org.kordamp.ikonli.fluentui.FluentUiFilledMZ;
-import org.kordamp.ikonli.fluentui.FluentUiRegularAL;
-import org.kordamp.ikonli.fluentui.FluentUiRegularMZ;
-import org.kordamp.ikonli.fontawesome.FontAwesome;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
-import org.kordamp.ikonli.fontelico.Fontelico;
-import org.kordamp.ikonli.foundation.Foundation;
-import org.kordamp.ikonli.hawcons.HawconsFilled;
-import org.kordamp.ikonli.hawcons.HawconsStroke;
-import org.kordamp.ikonli.icomoon.Icomoon;
-import org.kordamp.ikonli.ionicons.Ionicons;
-import org.kordamp.ikonli.ionicons4.Ionicons4IOS;
-import org.kordamp.ikonli.ionicons4.Ionicons4Logo;
-import org.kordamp.ikonli.ionicons4.Ionicons4Material;
-import org.kordamp.ikonli.jam.Jam;
-import org.kordamp.ikonli.ligaturesymbols.LigatureSymbols;
-import org.kordamp.ikonli.lineawesome.LineAwesomeBrands;
-import org.kordamp.ikonli.lineawesome.LineAwesomeRegular;
-import org.kordamp.ikonli.lineawesome.LineAwesomeSolid;
-import org.kordamp.ikonli.linecons.Linecons;
-import org.kordamp.ikonli.maki.Maki;
-import org.kordamp.ikonli.maki2.Maki2;
-import org.kordamp.ikonli.mapicons.Mapicons;
-import org.kordamp.ikonli.material.Material;
+import java.util.*;
+import java.util.stream.*;
+import org.kordamp.ikonli.*;
+import org.kordamp.ikonli.antdesignicons.*;
+import org.kordamp.ikonli.bootstrapicons.*;
+import org.kordamp.ikonli.boxicons.*;
+import org.kordamp.ikonli.bpmn.*;
+import org.kordamp.ikonli.captainicon.*;
+import org.kordamp.ikonli.carbonicons.*;
+import org.kordamp.ikonli.codicons.*;
+import org.kordamp.ikonli.coreui.*;
+import org.kordamp.ikonli.dashicons.*;
+import org.kordamp.ikonli.devicons.*;
+import org.kordamp.ikonli.elusive.*;
+import org.kordamp.ikonli.entypo.*;
+import org.kordamp.ikonli.evaicons.*;
+import org.kordamp.ikonli.feather.*;
+import org.kordamp.ikonli.fileicons.*;
+import org.kordamp.ikonli.fluentui.*;
+import org.kordamp.ikonli.fontawesome.*;
+import org.kordamp.ikonli.fontawesome5.*;
+import org.kordamp.ikonli.fontelico.*;
+import org.kordamp.ikonli.foundation.*;
+import org.kordamp.ikonli.hawcons.*;
+import org.kordamp.ikonli.icomoon.*;
+import org.kordamp.ikonli.ionicons.*;
+import org.kordamp.ikonli.ionicons4.*;
+import org.kordamp.ikonli.jam.*;
+import org.kordamp.ikonli.ligaturesymbols.*;
+import org.kordamp.ikonli.lineawesome.*;
+import org.kordamp.ikonli.linecons.*;
+import org.kordamp.ikonli.maki.*;
+import org.kordamp.ikonli.maki2.*;
+import org.kordamp.ikonli.mapicons.*;
+import org.kordamp.ikonli.material.*;
 import org.kordamp.ikonli.material2.*;
-import org.kordamp.ikonli.materialdesign.MaterialDesign;
-import org.kordamp.ikonli.medicons.Medicons;
-import org.kordamp.ikonli.metrizeicons.MetrizeIcons;
-import org.kordamp.ikonli.microns.Microns;
-import org.kordamp.ikonli.ociicons.Ociicons;
-import org.kordamp.ikonli.octicons.Octicons;
-import org.kordamp.ikonli.openiconic.Openiconic;
-import org.kordamp.ikonli.paymentfont.PaymentFont;
-import org.kordamp.ikonli.prestashopicons.PrestaShopIcons;
-import org.kordamp.ikonli.remixicon.RemixiconAL;
-import org.kordamp.ikonli.remixicon.RemixiconMZ;
-import org.kordamp.ikonli.runestroicons.Runestroicons;
-import org.kordamp.ikonli.simpleicons.SimpleIcons;
-import org.kordamp.ikonli.simplelineicons.SimpleLineIcons;
-import org.kordamp.ikonli.subway.Subway;
-import org.kordamp.ikonli.themify.Themify;
-import org.kordamp.ikonli.typicons.Typicons;
-import org.kordamp.ikonli.unicons.UniconsLine;
-import org.kordamp.ikonli.unicons.UniconsMonochrome;
-import org.kordamp.ikonli.unicons.UniconsSolid;
-import org.kordamp.ikonli.weathericons.WeatherIcons;
-import org.kordamp.ikonli.websymbols.Websymbols;
-import org.kordamp.ikonli.whhg.WhhgAL;
-import org.kordamp.ikonli.whhg.WhhgMZ;
-import org.kordamp.ikonli.win10.Win10;
-import org.kordamp.ikonli.zondicons.Zondicons;
-
-import java.util.Arrays;
-import java.util.stream.Stream;
+import org.kordamp.ikonli.materialdesign.*;
+import org.kordamp.ikonli.medicons.*;
+import org.kordamp.ikonli.metrizeicons.*;
+import org.kordamp.ikonli.microns.*;
+import org.kordamp.ikonli.ociicons.*;
+import org.kordamp.ikonli.octicons.*;
+import org.kordamp.ikonli.openiconic.*;
+import org.kordamp.ikonli.paymentfont.*;
+import org.kordamp.ikonli.prestashopicons.*;
+import org.kordamp.ikonli.remixicon.*;
+import org.kordamp.ikonli.runestroicons.*;
+import org.kordamp.ikonli.simpleicons.*;
+import org.kordamp.ikonli.simplelineicons.*;
+import org.kordamp.ikonli.subway.*;
+import org.kordamp.ikonli.themify.*;
+import org.kordamp.ikonli.typicons.*;
+import org.kordamp.ikonli.unicons.*;
+import org.kordamp.ikonli.weathericons.*;
+import org.kordamp.ikonli.websymbols.*;
+import org.kordamp.ikonli.whhg.*;
+import org.kordamp.ikonli.win10.*;
+import org.kordamp.ikonli.zondicons.*;
 
 public enum Pack {
     BOOTSTRAP("Bootstrap", BootstrapIcons.values()),

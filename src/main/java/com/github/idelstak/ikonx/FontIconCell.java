@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2023 Hiram K
+ * Copyright (c) 2026 Hiram K
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,19 +23,17 @@
  */
 package com.github.idelstak.ikonx;
 
+import java.util.*;
 import javafx.scene.control.*;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import org.kordamp.ikonli.javafx.FontIcon;
-
-import java.util.List;
+import javafx.scene.input.*;
+import org.kordamp.ikonli.javafx.*;
 
 class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
 
     private final Label root = new Label();
     private final FontIcon fontIcon = new FontIcon();
 
-    public FontIconCell() {
+    FontIconCell() {
         super();
 
         root.setContentDisplay(ContentDisplay.TOP);

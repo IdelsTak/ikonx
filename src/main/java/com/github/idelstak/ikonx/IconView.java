@@ -23,7 +23,30 @@
  */
 package com.github.idelstak.ikonx;
 
-import org.kordamp.ikonli.Ikon;
+import java.util.*;
+import javafx.collections.*;
+import javafx.scene.control.*;
+import org.controlsfx.control.*;
 
-public record PackIkon(Pack pack, Ikon ikon) {
+
+public interface IconView {
+    String getSearchText();
+
+    ObservableList<Pack> getSelectedPacks();
+
+    void setSearchText(String text);
+
+    void selectAllPacks();
+
+    void deselectAllPacks();
+
+    void setPacks(List<Pack> packs);
+
+    void setTableItems(Collection<List<PackIkon>> items);
+
+    TableView<List<PackIkon>> getIconsTable();
+
+    CheckComboBox<Pack> getPackComboBox();
+
+    ToggleButton getSelectAllToggle();
 }

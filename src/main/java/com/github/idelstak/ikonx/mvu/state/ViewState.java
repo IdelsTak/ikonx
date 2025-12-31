@@ -23,7 +23,7 @@
  */
 package com.github.idelstak.ikonx.mvu.state;
 
-import com.github.idelstak.ikonx.*;
+import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.state.ActivityState.Idle;
 import java.util.*;
 

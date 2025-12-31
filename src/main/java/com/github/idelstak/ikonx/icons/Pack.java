@@ -21,7 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx;
+package com.github.idelstak.ikonx.icons;
 
 import java.util.*;
 import java.util.stream.*;

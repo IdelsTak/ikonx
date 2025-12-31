@@ -21,20 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx;
+package com.github.idelstak.ikonx.view;
 
+import com.github.idelstak.ikonx.icons.*;
+import com.github.idelstak.ikonx.mvu.action.*;
 import java.util.*;
+import java.util.function.*;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
 import org.kordamp.ikonli.javafx.*;
 
-class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
+final class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
 
     private final Label root = new Label();
     private final FontIcon fontIcon = new FontIcon();
+    private final Consumer<Action> dispatch;
 
-    FontIconCell() {
+    FontIconCell(Consumer<Action> dispatch) {
         super();
+        this.dispatch = dispatch;
 
         root.setContentDisplay(ContentDisplay.TOP);
         root.setGraphic(fontIcon);
@@ -44,8 +48,9 @@ class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
         fontIcon.iconColorProperty().bind(root.textFillProperty());
 
         root.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 1) {
-                copyIconCodeToClipboard();
+            var currentItem = getItem();
+            if (event.getClickCount() == 1 && currentItem != null) {
+                dispatch.accept(new Action.IconCopied(currentItem.ikon().getDescription()));
             }
         });
     }
@@ -54,29 +59,31 @@ class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
     protected void updateItem(PackIkon packIkon, boolean empty) {
         super.updateItem(packIkon, empty);
 
-        if (packIkon == null) {
+        if (packIkon == null || empty) {
             setGraphic(null);
-            return;
+        } else {
+            var contextMenu = new ContextMenu();
+            var copyItem = new MenuItem("Copy icon code");
+            copyItem.setOnAction(_ ->
+            {
+                dispatch.accept(new Action.IconCopied(packIkon.ikon().getDescription()));
+            });
+            contextMenu.getItems().add(copyItem);
+
+            root.setContextMenu(contextMenu);
+            root.setText(packIkon.ikon().getDescription());
+            fontIcon.setIconCode(packIkon.ikon());
+            setGraphic(root);
         }
 
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem copyItem = new MenuItem("Copy icon code");
-        copyItem.setOnAction(event -> copyIconCodeToClipboard());
-        contextMenu.getItems().add(copyItem);
-        root.setContextMenu(contextMenu);
-
-        root.setText(packIkon.ikon().getDescription());
-        fontIcon.setIconCode(packIkon.ikon());
-        setGraphic(root);
     }
-
-    private void copyIconCodeToClipboard() {
-        String iconCode = fontIcon.getIconCode().getDescription();
-
-        if (iconCode != null && !iconCode.isEmpty()) {
-            ClipboardContent content = new ClipboardContent();
-            content.putString(iconCode);
-            Clipboard.getSystemClipboard().setContent(content);
-        }
-    }
+//    private void copyIconCodeToClipboard() {
+//        String iconCode = fontIcon.getIconCode().getDescription();
+//
+//        if (iconCode != null && !iconCode.isEmpty()) {
+//            ClipboardContent content = new ClipboardContent();
+//            content.putString(iconCode);
+//            Clipboard.getSystemClipboard().setContent(content);
+//        }
+//    }
 }

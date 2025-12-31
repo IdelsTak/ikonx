@@ -23,7 +23,7 @@
  */
 package com.github.idelstak.ikonx.mvu.action;
 
-import com.github.idelstak.ikonx.*;
+import com.github.idelstak.ikonx.icons.*;
 
 public sealed interface Action {
 

@@ -23,7 +23,7 @@
  */
 package com.github.idelstak.ikonx.mvu;
 
-import com.github.idelstak.ikonx.*;
+import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import java.util.*;
@@ -73,10 +73,12 @@ public final class Update {
 
     private ViewState toggle(ViewState state, Action.PackToggled action) {
         var packs = new HashSet<>(state.selectedPacks());
+        var pack = action.pack();
+        
         if (action.isSelected()) {
-            packs.add(action.pack());
+            packs.add(pack);
         } else {
-            packs.remove(action.pack());
+            packs.remove(pack);
         }
 
         var icons = filterIcons(packs, state.searchText());

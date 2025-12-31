@@ -39,13 +39,42 @@ public record ViewState(
         displayedIcons = List.copyOf(displayedIcons);
     }
 
+    public ViewState search(String text) {
+        return new ViewState(text, selectedPacks, displayedIcons, status, statusMessage);
+    }
+
+    public ViewState select(Set<Pack> packs) {
+        return new ViewState(searchText, packs, displayedIcons, status, statusMessage);
+    }
+
+    public ViewState display(List<PackIkon> icons) {
+        return new ViewState(searchText, selectedPacks, icons, status, statusMessage);
+    }
+
+    public ViewState signal(ActivityState state) {
+        return new ViewState(searchText, selectedPacks, displayedIcons, state, statusMessage);
+    }
+
+    public ViewState message(String text) {
+        return new ViewState(searchText, selectedPacks, displayedIcons, status, text);
+    }
+
     public static ViewState initial() {
+        var first = Arrays.stream(Pack.values())
+          .sorted(Comparator.comparing(Enum::name))
+          .findFirst()
+          .orElseThrow();
+
+        var icons = Arrays.stream(first.getIkons())
+          .map(ikon -> new PackIkon(first, ikon))
+          .toList();
+
         return new ViewState(
-          "", // Search text is empty
-          Set.of(), // No packs are selected initially
-          List.of(), // No icons are displayed
-          new Idle(), // Initial status
-          "0 icons" // Status message
+          "",
+          Set.of(first),
+          icons,
+          new Idle(),
+          String.format("%d icons found", icons.size())
         );
     }
 }

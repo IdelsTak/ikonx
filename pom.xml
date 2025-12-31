@@ -321,6 +321,12 @@
       <version>6.0.0-RC3</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.reactivex.rxjava3</groupId>
+      <artifactId>rxjava</artifactId>
+      <version>3.1.11</version>
+      <type>jar</type>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

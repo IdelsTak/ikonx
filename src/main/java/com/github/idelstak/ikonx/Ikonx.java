@@ -23,6 +23,8 @@
  */
 package com.github.idelstak.ikonx;
 
+import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.view.*;
 import javafx.application.*;
 import javafx.fxml.*;
 import javafx.scene.*;
@@ -32,19 +34,28 @@ import javafx.stage.*;
  * @author Hiram K. <a href="https://github.com/IdelsTak">Link</a>
  * @Contributor Kapil Kumar <a href="https://github.com/kapilkumar9976">Link</a>
  */
-public class Ikonx extends Application {
+public final class Ikonx extends Application {
+
+    private IconView controller;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
+        var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
+        var root = loader.<Parent>load();
+        controller = loader.<IconView>getController();
+        controller.initFlow(new StateFlow());
+        var scene = new Scene(root);
         //Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet()); // updated and upgraded by https://github.com/kapilkumar9976
 
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.UNIFIED);
         primaryStage.setTitle("IkonX - for ikonli v. 12.4.0");
         primaryStage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        controller.dispose();
     }
 
     public static void main(String[] args) {

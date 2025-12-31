@@ -33,7 +33,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y xvfb gettext
 
       - name: Run all tests (JUnit + TestFX)
-        run: xvfb-run mvn -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw --batch-mode --update-snapshots verify
+        run: |
+          xvfb-run \
+            mvn -Djava.awt.headless=true \
+                -Dtestfx.robot=glass \
+                -Dtestfx.headless=true \
+                -Dprism.order=sw \
+                --batch-mode \
+                --update-snapshots verify
 
       - name: Upload test results
         if: always()

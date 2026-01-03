@@ -39,7 +39,15 @@ public sealed interface Action {
 
     }
 
-    record IconCopied(String iconCode) implements Action {
+    record CopyIconRequested(String iconCode) implements Action {
+
+    }
+
+    record CopyIconSucceeded(String iconCode) implements Action {
+
+    }
+
+    record CopyIconFailed(String iconCode, Throwable error) implements Action {
 
     }
 }

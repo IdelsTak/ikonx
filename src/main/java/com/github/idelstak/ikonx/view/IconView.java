@@ -41,10 +41,8 @@ import org.pdfsam.rxjavafx.schedulers.*;
 public class IconView {
 
     private final Flow stateFlow;
-    private final LocalClipboard iconClipboard;
     private final ListChangeListener<Pack> checkedListener;
     private Disposable actionsSubscription;
-    private Disposable clipboardSubscription;
     @FXML
     private SearchTextField searchField;
     @FXML
@@ -59,12 +57,7 @@ public class IconView {
     private StatusBar statusBar;
 
     public IconView(Flow stateFlow) {
-        this(stateFlow, new IconClipboard());
-    }
-
-    public IconView(Flow stateFlow, LocalClipboard iconClipboard) {
         this.stateFlow = stateFlow;
-        this.iconClipboard = iconClipboard;
 
         checkedListener = change -> {
             while (change.next()) {
@@ -111,9 +104,6 @@ public class IconView {
         if (actionsSubscription != null && !actionsSubscription.isDisposed()) {
             actionsSubscription.dispose();
         }
-        if (clipboardSubscription != null && !clipboardSubscription.isDisposed()) {
-            clipboardSubscription.dispose();
-        }
     }
 
     @FXML
@@ -125,18 +115,7 @@ public class IconView {
         setupPackCombo();
         setupEventHandlers();
 
-        actionsSubscription = stateFlow.observe()
-          .observeOn(JavaFxScheduler.platform())
-          .map(UpdateResult::state)
-          .subscribe(this::render);
-        clipboardSubscription = stateFlow.observe()
-          .map(UpdateResult::effect)
-          .filter(Optional::isPresent)
-          .map(Optional::get)
-          .ofType(Effect.CopyToClipboard.class)
-          .observeOn(JavaFxScheduler.platform())
-          .map(Effect.CopyToClipboard::text)
-          .subscribe(iconClipboard::copy);
+        actionsSubscription = stateFlow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
     }
 
     private void updateTableItemsPreserveSelection(List<List<PackIkon>> partitioned) {

@@ -66,14 +66,14 @@ final class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
 
             root.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1) {
-                    dispatch.accept(new Action.IconCopied(packIkon.ikon().getDescription()));
+                    dispatch.accept(new Action.CopyIconRequested(packIkon.ikon().getDescription()));
                 }
             });
 
             var contextMenu = new ContextMenu();
             var copyItem = new MenuItem("Copy icon code");
             copyItem.setOnAction(_ ->
-              dispatch.accept(new Action.IconCopied(packIkon.ikon().getDescription())));
+              dispatch.accept(new Action.CopyIconRequested(packIkon.ikon().getDescription())));
             contextMenu.getItems().add(copyItem);
             root.setContextMenu(contextMenu);
 

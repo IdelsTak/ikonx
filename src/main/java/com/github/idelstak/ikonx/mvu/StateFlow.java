@@ -24,24 +24,40 @@
 package com.github.idelstak.ikonx.mvu;
 
 import com.github.idelstak.ikonx.mvu.action.*;
-import io.reactivex.rxjava3.core.Observable;
+import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.view.*;
+import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.subjects.*;
-import java.util.*;
+import org.pdfsam.rxjavafx.schedulers.*;
 
 public final class StateFlow implements Flow {
 
     private final Subject<Action> actions;
-    private final Deque<Action> actionHistory;
     private final Update update;
-    private final Observable<UpdateResult> states;
+    private final Observable<ViewState> states;
 
-    public StateFlow() {
+    public StateFlow(LocalClipboard clipboard) {
         actions = PublishSubject.<Action>create().toSerialized();
-        actionHistory = new ArrayDeque<>();
         update = new Update();
-        states = actions
-          .doOnNext(actionHistory::add)
-          .scan(UpdateResult.initial(), (result, action) -> update.apply(result.state(), action))
+
+        // Side effect stream for clipboard
+        Observable<Action> sideEffects = actions
+          .filter(a -> a instanceof Action.CopyIconRequested)
+          .flatMap(a -> {
+              var request = (Action.CopyIconRequested) a;
+              return Observable.fromCallable(() -> {
+                  clipboard.copy(request.iconCode());
+                  return (Action) new Action.CopyIconSucceeded(request.iconCode());
+              })
+                .subscribeOn(JavaFxScheduler.platform())
+                .onErrorReturn(e -> new Action.CopyIconFailed(request.iconCode(), e));
+          });
+
+        // Merge original actions with side effect results
+        Observable<Action> mergedActions = Observable.merge(actions, sideEffects);
+        
+        states = mergedActions
+          .scan(ViewState.initial(), update::apply)
           .distinctUntilChanged()
           .replay(1)
           .autoConnect();
@@ -53,7 +69,7 @@ public final class StateFlow implements Flow {
     }
 
     @Override
-    public Observable<UpdateResult> observe() {
+    public Observable<ViewState> observe() {
         return states;
     }
 }

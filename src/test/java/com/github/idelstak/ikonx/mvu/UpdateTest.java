@@ -39,7 +39,7 @@ final class UpdateTest {
         var state = ViewState.initial();
         var next = update.apply(state, new Action.SearchChanged("αβ"));
 
-        assertThat(next.state().searchText(), is("αβ"));
+        assertThat(next.searchText(), is("αβ"));
     }
 
     @Test
@@ -50,7 +50,7 @@ final class UpdateTest {
 
         var next = update.apply(state, new Action.SearchChanged("αβ"));
 
-        assertThat(next.state().status(), instanceOf(ActivityState.Idle.class));
+        assertThat(next.status(), instanceOf(ActivityState.Idle.class));
     }
 
     @Test
@@ -64,7 +64,7 @@ final class UpdateTest {
           new Action.PackToggled(pack, true)
         );
 
-        assertThat(next.state().selectedPacks(), hasItem(pack));
+        assertThat(next.selectedPacks(), hasItem(pack));
     }
 
     @Test
@@ -79,7 +79,7 @@ final class UpdateTest {
           new Action.PackToggled(pack, false)
         );
 
-        assertThat(next.state().selectedPacks(), not(hasItem(pack)));
+        assertThat(next.selectedPacks(), not(hasItem(pack)));
     }
 
     @Test
@@ -92,7 +92,7 @@ final class UpdateTest {
           new Action.SelectAllToggled(true)
         );
 
-        assertThat(next.state().selectedPacks(), hasSize(Pack.values().length));
+        assertThat(next.selectedPacks(), hasSize(Pack.values().length));
     }
 
     @Test
@@ -108,7 +108,7 @@ final class UpdateTest {
         var ordered = Arrays.stream(Pack.values())
           .sorted(Comparator.comparing(Enum::name))
           .toList();
-        assertThat(next.state().selectedPacks(), is(Set.of(ordered.getFirst())));
+        assertThat(next.selectedPacks(), is(Set.of(ordered.getFirst())));
     }
 
     @Test
@@ -118,10 +118,10 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.IconCopied("λ")
+          new Action.CopyIconSucceeded("λ")
         );
 
-        assertThat(next.state().status(), instanceOf(ActivityState.Success.class));
+        assertThat(next.status(), instanceOf(ActivityState.Success.class));
     }
 
     @Test
@@ -131,12 +131,12 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.IconCopied("λ")
+          new Action.CopyIconRequested("λ")
         );
 
         assertThat(
-          next.state().statusMessage(),
-          is("Copied 'λ' to clipboard")
+          next.statusMessage(),
+          is("Copying 'λ' to clipboard")
         );
     }
 
@@ -150,6 +150,6 @@ final class UpdateTest {
           new Action.SearchChanged("αβ")
         );
 
-        assertThat(next.state().displayedIcons(), is(empty()));
+        assertThat(next.displayedIcons(), is(empty()));
     }
 }

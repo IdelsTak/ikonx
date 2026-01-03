@@ -31,7 +31,6 @@ public final class IconClipboard implements LocalClipboard {
     public void copy(String text) {
         var content = new ClipboardContent();
         content.putString(text);
-        System.out.println("content = " + content);
         Clipboard.getSystemClipboard().setContent(content);
     }
 }

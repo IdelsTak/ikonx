@@ -39,15 +39,6 @@ public class Ikonx extends Application {
         var root = loader.<Parent>load();
         var scene = new Scene(root);
 
-        primaryStage.setOnCloseRequest(_ -> {
-            var controller = loader.<IconView>getController();
-            if (controller != null) {
-                controller.dispose();
-            }
-            Platform.exit();
-            System.exit(0); // ensures all threads die
-        });
-
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.UNIFIED);
         primaryStage.setTitle("IkonX - for ikonli v. 12.4.0");

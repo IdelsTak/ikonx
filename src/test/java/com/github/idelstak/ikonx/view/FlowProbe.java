@@ -25,7 +25,6 @@ package com.github.idelstak.ikonx.view;
 
 import com.github.idelstak.ikonx.mvu.*;
 import com.github.idelstak.ikonx.mvu.action.*;
-import com.github.idelstak.ikonx.mvu.state.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.*;
 import java.util.*;
@@ -35,8 +34,8 @@ final class FlowProbe implements Flow {
     private final Subject<Action> actions;
     private final Deque<Action> actionHistory;
     private final Update update;
-    private final Observable<ViewState> states;
-    private ViewState currentState;
+    private final Observable<UpdateResult> states;
+    private UpdateResult currentResult;
 
     FlowProbe() {
         actions = PublishSubject.<Action>create().toSerialized();
@@ -44,8 +43,8 @@ final class FlowProbe implements Flow {
         update = new Update();
         states = actions
           .doOnNext(actionHistory::add)
-          .scan(ViewState.initial(), update::apply)
-          .doOnNext(state -> currentState = state)
+          .scan(UpdateResult.initial(), (result, action) -> update.apply(result.state(), action))
+          .doOnNext(result -> currentResult = result)
           .distinctUntilChanged()
           .replay(1)
           .autoConnect();
@@ -57,7 +56,7 @@ final class FlowProbe implements Flow {
     }
 
     @Override
-    public Observable<ViewState> observe() {
+    public Observable<UpdateResult> observe() {
         return states;
     }
 
@@ -72,7 +71,7 @@ final class FlowProbe implements Flow {
         return actionHistory.size();
     }
 
-    ViewState probeState() {
-        return currentState;
+    UpdateResult probeResult() {
+        return currentResult;
     }
 }

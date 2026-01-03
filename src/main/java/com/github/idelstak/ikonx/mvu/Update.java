@@ -37,38 +37,40 @@ public final class Update {
         iconCache = new EnumMap<>(Pack.class);
         for (var pack : Pack.values()) {
             iconCache.put(
-                    pack,
-                    Arrays.stream(pack.getIkons())
-                            .map(ikon -> new PackIkon(pack, ikon))
-                            .toList()
+              pack,
+              Arrays.stream(pack.getIkons())
+                .map(ikon -> new PackIkon(pack, ikon))
+                .toList()
             );
         }
 
         orderedPacks = Arrays.stream(Pack.values())
-                .sorted(Comparator.comparing(Enum::name))
-                .toList();
+          .sorted(Comparator.comparing(Enum::name))
+          .toList();
     }
 
-    public ViewState apply(ViewState state, Action action) {
+    public UpdateResult apply(ViewState state, Action action) {
         return switch (action) {
             case Action.SearchChanged a ->
-                search(state, a);
+                new UpdateResult(search(state, a), Optional.empty());
             case Action.PackToggled a ->
-                toggle(state, a);
+                new UpdateResult(toggle(state, a), Optional.empty());
             case Action.SelectAllToggled a ->
-                toggleAll(state, a);
+                new UpdateResult(toggleAll(state, a), Optional.empty());
+//            case Action.IconCopied a ->
+//                new UpdateResult(copy(state, a), Optional.empty());
             case Action.IconCopied a ->
-                copy(state, a);
+                new UpdateResult(copy(state, a), Optional.of(new Effect.CopyToClipboard(a.iconCode())));
         };
     }
 
     private ViewState search(ViewState state, Action.SearchChanged action) {
         var icons = filterIcons(state.selectedPacks(), action.query());
         return state
-                .search(action.query())
-                .display(icons)
-                .signal(new ActivityState.Idle())
-                .message(String.format("%d icons found", icons.size()));
+          .search(action.query())
+          .display(icons)
+          .signal(new ActivityState.Idle())
+          .message(String.format("%d icons found", icons.size()));
     }
 
     private ViewState toggle(ViewState state, Action.PackToggled action) {
@@ -82,10 +84,10 @@ public final class Update {
 
         var icons = filterIcons(packs, state.searchText());
         return state
-                .select(packs)
-                .display(icons)
-                .signal(new ActivityState.Idle())
-                .message(String.format("%d icons found", icons.size()));
+          .select(packs)
+          .display(icons)
+          .signal(new ActivityState.Idle())
+          .message(String.format("%d icons found", icons.size()));
     }
 
     private ViewState toggleAll(ViewState state, Action.SelectAllToggled action) {
@@ -99,16 +101,16 @@ public final class Update {
 
         var icons = filterIcons(packs, state.searchText());
         return state
-                .select(packs)
-                .display(icons)
-                .signal(new ActivityState.Idle())
-                .message(String.format("%d icons found", icons.size()));
+          .select(packs)
+          .display(icons)
+          .signal(new ActivityState.Idle())
+          .message(String.format("%d icons found", icons.size()));
     }
 
     private ViewState copy(ViewState state, Action.IconCopied action) {
         return state
-                .signal(new ActivityState.Success())
-                .message("Copied '" + action.iconCode() + "' to clipboard");
+          .signal(new ActivityState.Success())
+          .message("Copied '" + action.iconCode() + "' to clipboard");
     }
 
     private List<PackIkon> filterIcons(Set<Pack> selectedPacks, String searchText) {
@@ -117,8 +119,8 @@ public final class Update {
         }
 
         var icons = selectedPacks.stream()
-                .flatMap(pack -> iconCache.get(pack).stream())
-                .toList();
+          .flatMap(pack -> iconCache.get(pack).stream())
+          .toList();
 
         if (searchText == null || searchText.isBlank() || searchText.length() < 2) {
             return icons;
@@ -126,7 +128,7 @@ public final class Update {
 
         var lower = searchText.toLowerCase(Locale.ROOT);
         return icons.stream()
-                .filter(ikon -> ikon.ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
-                .toList();
+          .filter(ikon -> ikon.ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
+          .toList();
     }
 }

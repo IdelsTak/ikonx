@@ -21,20 +21,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.icons;
+package com.github.idelstak.ikonx.mvu;
 
-import org.kordamp.ikonli.*;
+public sealed interface Effect permits Effect.CopyToClipboard {
 
-public record PackIkon(Pack pack, Ikon ikon) {
+    record CopyToClipboard(String text) implements Effect {
 
-    @Override
-    public String toString() {
-        var sb = new StringBuilder();
-        sb.append('{');
-        sb.append(pack);
-        sb.append(", ").append(ikon.getDescription());
-        sb.append('}');
-        return sb.toString();
     }
-    
 }

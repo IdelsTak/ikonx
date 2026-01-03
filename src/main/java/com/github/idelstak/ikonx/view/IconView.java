@@ -30,11 +30,13 @@ import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import io.reactivex.rxjava3.disposables.*;
 import java.util.*;
+import javafx.application.*;
 import javafx.beans.property.*;
 import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
+import javafx.stage.*;
 import org.controlsfx.control.*;
 import org.pdfsam.rxjavafx.schedulers.*;
 
@@ -100,14 +102,19 @@ public class IconView {
         statusBar.setText(state.statusMessage());
     }
 
-    public void dispose() {
-        if (actionsSubscription != null && !actionsSubscription.isDisposed()) {
-            actionsSubscription.dispose();
-        }
-    }
-
     @FXML
     protected void initialize() {
+        Platform.runLater(() -> {
+            var stage = (Stage) searchField.getScene().getWindow();
+            if (stage != null) {
+                stage.setOnCloseRequest(_ -> {
+                    dispose();
+                    Platform.exit();
+                    System.exit(0);
+                });
+            }
+        });
+
         iconsTable.getSelectionModel().setCellSelectionEnabled(true);
         iconsTable.setPlaceholder(new Text("No result found"));
         setupTableColumns();
@@ -116,6 +123,12 @@ public class IconView {
         setupEventHandlers();
 
         actionsSubscription = stateFlow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+    }
+
+    private void dispose() {
+        if (actionsSubscription != null && !actionsSubscription.isDisposed()) {
+            actionsSubscription.dispose();
+        }
     }
 
     private void updateTableItemsPreserveSelection(List<List<PackIkon>> partitioned) {

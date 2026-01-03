@@ -23,23 +23,29 @@
  */
 package com.github.idelstak.ikonx.view;
 
-import com.dlsc.gemsfx.*;
-import com.github.idelstak.ikonx.icons.*;
+import com.dlsc.gemsfx.SearchTextField;
+import com.github.idelstak.ikonx.icons.Pack;
+import com.github.idelstak.ikonx.icons.PackIkon;
 import com.github.idelstak.ikonx.mvu.*;
-import com.github.idelstak.ikonx.mvu.action.*;
-import com.github.idelstak.ikonx.mvu.state.*;
-import io.reactivex.rxjava3.disposables.*;
-import java.util.*;
-import javafx.beans.property.*;
-import javafx.collections.*;
-import javafx.fxml.*;
+import com.github.idelstak.ikonx.mvu.action.Action;
+import com.github.idelstak.ikonx.mvu.state.ViewState;
+import io.reactivex.rxjava3.disposables.Disposable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
+import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
-import org.controlsfx.control.*;
+import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.StatusBar;
 
 public class IconView {
 
-    private StateFlow stateFlow;
+    private final Flow stateFlow;
     private Disposable subscription;
     @FXML
     private SearchTextField searchField;
@@ -54,35 +60,45 @@ public class IconView {
     @FXML
     private StatusBar statusBar;
 
-    public void initFlow(StateFlow stateFlow) {
+    public IconView(Flow stateFlow) {
         this.stateFlow = stateFlow;
-        subscription = stateFlow.observe().subscribe(this::render);
-        setupEventHandlers();
     }
 
     public void render(ViewState state) {
-        if (!searchField.getText().equals(state.searchText())) {
-            searchField.setText(state.searchText());
-        }
-
-        for (var pack : packCombo.getItems()) {
-            var shouldBeChecked = state.selectedPacks().contains(pack);
-            var isChecked = packCombo.getCheckModel().isChecked(pack);
-            if (shouldBeChecked && !isChecked) {
-                packCombo.getCheckModel().check(pack);
-            } else if (!shouldBeChecked && isChecked) {
-                packCombo.getCheckModel().clearCheck(pack);
+        Platform.runLater(() -> {
+            if (!searchField.getText().equals(state.searchText())) {
+                searchField.setText(state.searchText());
             }
-        }
 
-        var allSelected = state.selectedPacks().size() == Pack.values().length;
-        selectAllToggle.setSelected(allSelected);
-        selectTip.setText(allSelected ? "Deselect all" : "Select all");
+            for (var pack : packCombo.getItems()) {
+                var shouldBeChecked = state.selectedPacks().contains(pack);
+                var isChecked = packCombo.getCheckModel().isChecked(pack);
+                if (shouldBeChecked && !isChecked) {
+                    packCombo.getCheckModel().check(pack);
+                } else if (!shouldBeChecked && isChecked) {
+                    packCombo.getCheckModel().clearCheck(pack);
+                }
+            }
 
-        var partitioned = partitionList(state.displayedIcons(), iconsTable.getColumns().size());
-        iconsTable.getItems().setAll(partitioned);
+            var allSelected = state.selectedPacks().size() == Pack.values().length;
+            selectAllToggle.setSelected(allSelected);
+            selectTip.setText(allSelected ? "Deselect all" : "Select all");
 
-        statusBar.setText(state.statusMessage());
+            var partitioned = partitionList(state.displayedIcons(), iconsTable.getColumns().size());
+            var sm = iconsTable.getSelectionModel();
+            var selectedPos = sm.getSelectedCells().isEmpty() ? null : sm.getSelectedCells().get(0);
+            iconsTable.getItems().setAll(partitioned);
+            if (selectedPos != null) {
+                int row = selectedPos.getRow();
+                int col = selectedPos.getColumn();
+                if (row < iconsTable.getItems().size() && col < iconsTable.getColumns().size()) {
+                    sm.clearSelection();
+                    sm.select(row, iconsTable.getColumns().get(col));
+                }
+            }
+
+            statusBar.setText(state.statusMessage());
+        });
     }
 
     public void dispose() {
@@ -93,8 +109,14 @@ public class IconView {
 
     @FXML
     protected void initialize() {
-        setupPackCombo();
+        subscription = stateFlow.observe().subscribe(this::render);
+
+        iconsTable.getSelectionModel().setCellSelectionEnabled(true);
+        iconsTable.setPlaceholder(new Text("No result found"));
+
         setupTableColumns();
+        setupPackCombo();
+        setupEventHandlers();
     }
 
     private void setupEventHandlers() {
@@ -117,14 +139,14 @@ public class IconView {
                 }
             }
         });
-
-        var packs = Arrays.stream(Pack.values()).sorted(Comparator.comparing(Pack::toString)).toList();
-        packCombo.getItems().setAll(packs);
     }
 
     private void setupPackCombo() {
         packCombo.setTitle("Selected icon packs: ");
         packCombo.setShowCheckedCount(true);
+
+        var packs = Arrays.stream(Pack.values()).sorted(Comparator.comparing(Pack::toString)).toList();
+        packCombo.getItems().setAll(packs);
     }
 
     private void setupTableColumns() {
@@ -141,11 +163,9 @@ public class IconView {
             col.setCellFactory(_ -> new FontIconCell(stateFlow::accept));
             col.getStyleClass().add("align-center");
         }
-
-        iconsTable.setPlaceholder(new Text("No result found"));
     }
 
-    private <T> Collection<List<T>> partitionList(List<T> list, int size) {
+    private <T> List<List<T>> partitionList(List<T> list, int size) {
         var partitions = new ArrayList<List<T>>();
         if (list.isEmpty()) {
             return partitions;

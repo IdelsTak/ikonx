@@ -25,38 +25,11 @@ package com.github.idelstak.ikonx.mvu;
 
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
-import io.reactivex.rxjava3.core.Observable;
-import io.reactivex.rxjava3.subjects.*;
-import java.util.*;
+import io.reactivex.rxjava3.core.*;
 
-public final class StateFlow implements Flow {
+public interface Flow {
 
-    private final Subject<Action> actions;
-    private final Deque<Action> actionHistory;
-    private final Update update;
-    private final Observable<ViewState> states;
+    void accept(Action action);
 
-    public StateFlow() {
-        actions = PublishSubject.<Action>create().toSerialized();
-        actionHistory = new ArrayDeque<>();
-        update = new Update();
-        states = actions
-          .doOnNext(actionHistory::add)
-          .scan(ViewState.initial(), update::apply)
-          .doOnNext(state -> {
-          })
-          .distinctUntilChanged()
-          .replay(1)
-          .autoConnect();
-    }
-
-    @Override
-    public void accept(Action action) {
-        actions.onNext(action);
-    }
-
-    @Override
-    public Observable<ViewState> observe() {
-        return states;
-    }
+    Observable<ViewState> observe();
 }

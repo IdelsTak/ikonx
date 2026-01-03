@@ -23,64 +23,88 @@
  */
 package com.github.idelstak.ikonx.view;
 
-import com.github.idelstak.ikonx.view.IconView;
+import com.github.idelstak.ikonx.*;
+import com.github.idelstak.ikonx.mvu.action.*;
 import java.io.*;
 import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.stage.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
+import org.testfx.api.*;
 import org.testfx.framework.junit5.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(ApplicationExtension.class)
-public final class IconViewTest extends ApplicationTest {
+final class IconViewTest {
 
-    private IconView controller;
+    @Test
+    void typingEmitsSearchChanged(FxRobot robot) throws Exception {
+        var flow = launch(robot);
+        var before = flow.probeActionCount();
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
-        Parent root = loader.load();
-        controller = loader.getController();
-        stage.setScene(new Scene(root));
-        stage.show();
+        robot.clickOn("#searchField").write("jalapeño");
+
+        assertInstanceOf(
+          Action.SearchChanged.class,
+          flow.probeLastAfter(before).orElseThrow()
+        );
     }
 
     @Test
-    void testControllerIsNotNull() {
-        assertNotNull(controller);
+    void typingUpdatesSearchTextInState(FxRobot robot) throws Exception {
+        var flow = launch(robot);
+
+        robot.clickOn("#searchField").write("Café");
+
+        assertEquals(
+          "Café",
+          flow.probeState().searchText()
+        );
     }
 
-//    @Test
-//    void testSearchFieldInteraction(FxRobot robot) {
-//        // Given
-//        String textToType = "search text";
-//
-//        // When
-//        robot.clickOn("#searchField");
-//        robot.write(textToType);
-//
-//        // Then
-//        assertEquals(textToType, controller.getSearchText());
-//    }
-//
-//    @Test
-//    void testSelectAllToggle(FxRobot robot) {
-//        // When
-//        robot.clickOn("#selectAllToggle");
-//
-//        // Then
-//        assertEquals(controller.getPackComboBox().getItems().size(), controller.getSelectedPacks().size());
-//    }
-//
-//    @Test
-//    void testPackComboBoxSelection(FxRobot robot) {
-//        // When
-//        robot.clickOn("#packCombo");
-//        robot.clickOn(".check-box");
-//        
-//        // Then
-//        assertTrue(controller.getSelectedPacks().isEmpty());
-//    }
+    @Test
+    void stateDrivesFiltering(FxRobot robot) throws Exception {
+        var flow = launch(robot);
+
+        robot.clickOn("#searchField").write("über");
+
+        assertTrue(
+          flow.probeState().displayedIcons().isEmpty()
+        );
+    }
+
+    @Test
+    void searchFieldRendersFromState(FxRobot robot) throws Exception {
+        var flow = launch(robot);
+
+        flow.accept(new Action.SearchChanged("λ"));
+
+        assertEquals(
+          "λ",
+          robot.lookup("#searchField")
+            .queryTextInputControl()
+            .getText()
+        );
+    }
+
+    private FlowProbe launch(FxRobot robot) throws Exception {
+        var flow = new FlowProbe();
+        robot.interact(() -> {
+            var loader = new FXMLLoader(
+              Ikonx.class.getResource("/fxml/icon-view.fxml")
+            );
+            loader.setControllerFactory(_ -> new IconView(flow));
+            Parent root;
+            try {
+                root = loader.load();
+            } catch (IOException error) {
+                throw new RuntimeException(error);
+            }
+            var stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.show();
+        });
+        return flow;
+    }
 }

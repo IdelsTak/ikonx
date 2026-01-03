@@ -23,30 +23,26 @@
  */
 package com.github.idelstak.ikonx.view;
 
-import com.dlsc.gemsfx.SearchTextField;
-import com.github.idelstak.ikonx.icons.Pack;
-import com.github.idelstak.ikonx.icons.PackIkon;
+import com.dlsc.gemsfx.*;
+import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.*;
-import com.github.idelstak.ikonx.mvu.action.Action;
-import com.github.idelstak.ikonx.mvu.state.ViewState;
-import io.reactivex.rxjava3.disposables.Disposable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ListChangeListener;
-import javafx.fxml.FXML;
+import com.github.idelstak.ikonx.mvu.action.*;
+import com.github.idelstak.ikonx.mvu.state.*;
+import io.reactivex.rxjava3.disposables.*;
+import java.util.*;
+import javafx.beans.property.*;
+import javafx.collections.*;
+import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
-import org.controlsfx.control.CheckComboBox;
-import org.controlsfx.control.StatusBar;
+import org.controlsfx.control.*;
+import org.pdfsam.rxjavafx.schedulers.*;
 
 public class IconView {
 
     private final Flow stateFlow;
     private Disposable subscription;
+    private ListChangeListener<Pack> checkedListener;
     @FXML
     private SearchTextField searchField;
     @FXML
@@ -65,40 +61,33 @@ public class IconView {
     }
 
     public void render(ViewState state) {
-        Platform.runLater(() -> {
-            if (!searchField.getText().equals(state.searchText())) {
-                searchField.setText(state.searchText());
-            }
+        if (!searchField.getText().equals(state.searchText())) {
+            searchField.setText(state.searchText());
+        }
 
-            for (var pack : packCombo.getItems()) {
-                var shouldBeChecked = state.selectedPacks().contains(pack);
-                var isChecked = packCombo.getCheckModel().isChecked(pack);
-                if (shouldBeChecked && !isChecked) {
-                    packCombo.getCheckModel().check(pack);
-                } else if (!shouldBeChecked && isChecked) {
-                    packCombo.getCheckModel().clearCheck(pack);
+        if (checkedListener != null) {
+            packCombo.getCheckModel().getCheckedItems().removeListener(checkedListener);
+            try {
+                for (var pack : packCombo.getItems()) {
+                    var shouldBeChecked = state.selectedPacks().contains(pack);
+                    var isChecked = packCombo.getCheckModel().isChecked(pack);
+                    if (shouldBeChecked && !isChecked) {
+                        packCombo.getCheckModel().check(pack);
+                    } else if (!shouldBeChecked && isChecked) {
+                        packCombo.getCheckModel().clearCheck(pack);
+                    }
                 }
+            } finally {
+                packCombo.getCheckModel().getCheckedItems().addListener(checkedListener);
             }
+        }
+        var allSelected = state.selectedPacks().size() == Pack.values().length;
+        selectAllToggle.setSelected(allSelected);
+        selectTip.setText(allSelected ? "Deselect all" : "Select all");
 
-            var allSelected = state.selectedPacks().size() == Pack.values().length;
-            selectAllToggle.setSelected(allSelected);
-            selectTip.setText(allSelected ? "Deselect all" : "Select all");
+        updateTableItemsPreserveSelection(partitionList(state.displayedIcons(), iconsTable.getColumns().size()));
 
-            var partitioned = partitionList(state.displayedIcons(), iconsTable.getColumns().size());
-            var sm = iconsTable.getSelectionModel();
-            var selectedPos = sm.getSelectedCells().isEmpty() ? null : sm.getSelectedCells().get(0);
-            iconsTable.getItems().setAll(partitioned);
-            if (selectedPos != null) {
-                int row = selectedPos.getRow();
-                int col = selectedPos.getColumn();
-                if (row < iconsTable.getItems().size() && col < iconsTable.getColumns().size()) {
-                    sm.clearSelection();
-                    sm.select(row, iconsTable.getColumns().get(col));
-                }
-            }
-
-            statusBar.setText(state.statusMessage());
-        });
+        statusBar.setText(state.statusMessage());
     }
 
     public void dispose() {
@@ -109,14 +98,41 @@ public class IconView {
 
     @FXML
     protected void initialize() {
-        subscription = stateFlow.observe().subscribe(this::render);
+        subscription = stateFlow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+
+        checkedListener = change -> {
+            while (change.next()) {
+                for (var removed : change.getRemoved()) {
+                    stateFlow.accept(new Action.PackToggled(removed, false));
+                }
+                for (var added : change.getAddedSubList()) {
+                    stateFlow.accept(new Action.PackToggled(added, true));
+                }
+            }
+        };
 
         iconsTable.getSelectionModel().setCellSelectionEnabled(true);
         iconsTable.setPlaceholder(new Text("No result found"));
-
         setupTableColumns();
+
         setupPackCombo();
         setupEventHandlers();
+    }
+
+    private void updateTableItemsPreserveSelection(List<List<PackIkon>> partitioned) {
+        var sm = iconsTable.getSelectionModel();
+        var selectedPos = sm.getSelectedCells().isEmpty() ? null : sm.getSelectedCells().get(0);
+
+        iconsTable.getItems().setAll(partitioned);
+
+        if (selectedPos != null) {
+            int row = selectedPos.getRow();
+            int col = selectedPos.getColumn();
+            if (row < iconsTable.getItems().size() && col < iconsTable.getColumns().size()) {
+                sm.clearSelection();
+                sm.select(row, iconsTable.getColumns().get(col));
+            }
+        }
     }
 
     private void setupEventHandlers() {
@@ -128,17 +144,7 @@ public class IconView {
           stateFlow.accept(new Action.SelectAllToggled(selectAllToggle.isSelected()))
         );
 
-        packCombo.getCheckModel().getCheckedItems().addListener((ListChangeListener<Pack>) change ->
-        {
-            while (change.next()) {
-                for (var removed : change.getRemoved()) {
-                    stateFlow.accept(new Action.PackToggled(removed, false));
-                }
-                for (var added : change.getAddedSubList()) {
-                    stateFlow.accept(new Action.PackToggled(added, true));
-                }
-            }
-        });
+        packCombo.getCheckModel().getCheckedItems().addListener(checkedListener);
     }
 
     private void setupPackCombo() {

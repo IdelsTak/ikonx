@@ -24,6 +24,7 @@
 package com.github.idelstak.ikonx.view;
 
 import com.github.idelstak.ikonx.*;
+import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import java.io.*;
 import javafx.fxml.*;
@@ -86,6 +87,42 @@ final class IconViewTest {
             .queryTextInputControl()
             .getText()
         );
+    }
+
+    @Test
+    void selectAllToggleShouldDispatchSelectAllAction(FxRobot robot) throws Exception {
+        // When
+        var flow = launch(robot);
+        var before = flow.probeActionCount();
+        robot.clickOn("#selectAllToggle");
+
+        // Then
+        var lastAction = flow.probeLastAfter(before);
+        assertInstanceOf(Action.SelectAllToggled.class, lastAction.orElseThrow());
+    }
+
+    @Test
+    void selectAllToggleShouldUpdateSelectedPacks(FxRobot robot) throws Exception {
+        // When
+        var flow = launch(robot);
+        robot.clickOn("#selectAllToggle");
+
+        // Then
+        var viewState = flow.probeState();
+        assertEquals(viewState.selectedPacks().size(), Pack.values().length);
+    }
+
+    @Test
+    void packComboCheckboxShouldDispatchPackToggledAction(FxRobot robot) throws Exception {
+        // When
+        var flow = launch(robot);
+        var before = flow.probeActionCount();
+        robot.clickOn("#packCombo");
+        robot.clickOn(".check-box");
+
+        // Then
+        var lastAction = flow.probeLastAfter(before);
+        assertInstanceOf(Action.PackToggled.class, lastAction.orElseThrow());
     }
 
     private FlowProbe launch(FxRobot robot) throws Exception {

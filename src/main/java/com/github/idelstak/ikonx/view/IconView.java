@@ -32,7 +32,6 @@ import io.reactivex.rxjava3.disposables.*;
 import java.util.*;
 import javafx.application.*;
 import javafx.beans.property.*;
-import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
@@ -40,11 +39,12 @@ import javafx.stage.*;
 import org.controlsfx.control.*;
 import org.pdfsam.rxjavafx.schedulers.*;
 
-public class IconView {
+public final class IconView {
 
-    private final Flow stateFlow;
-    private final ListChangeListener<Pack> checkedListener;
-    private Disposable actionsSubscription;
+    private final Flow flow;
+    private Disposable subscription;
+    private PackSelectionView packSelection;
+    private TableSelectionFix tableFix;
     @FXML
     private SearchTextField searchField;
     @FXML
@@ -58,143 +58,87 @@ public class IconView {
     @FXML
     private StatusBar statusBar;
 
-    public IconView(Flow stateFlow) {
-        this.stateFlow = stateFlow;
-
-        checkedListener = change -> {
-            while (change.next()) {
-                for (var removed : change.getRemoved()) {
-                    stateFlow.accept(new Action.PackToggled(removed, false));
-                }
-                for (var added : change.getAddedSubList()) {
-                    stateFlow.accept(new Action.PackToggled(added, true));
-                }
-            }
-        };
-    }
-
-    public void render(ViewState state) {
-        if (!searchField.getText().equals(state.searchText())) {
-            searchField.setText(state.searchText());
-        }
-
-        packCombo.getCheckModel().getCheckedItems().removeListener(checkedListener);
-        try {
-            for (var pack : packCombo.getItems()) {
-                var shouldBeChecked = state.selectedPacks().contains(pack);
-                var isChecked = packCombo.getCheckModel().isChecked(pack);
-                if (shouldBeChecked && !isChecked) {
-                    packCombo.getCheckModel().check(pack);
-                } else if (!shouldBeChecked && isChecked) {
-                    packCombo.getCheckModel().clearCheck(pack);
-                }
-            }
-        } finally {
-            packCombo.getCheckModel().getCheckedItems().addListener(checkedListener);
-        }
-
-        var allSelected = state.selectedPacks().size() == Pack.values().length;
-        selectAllToggle.setSelected(allSelected);
-        selectTip.setText(allSelected ? "Deselect all" : "Select all");
-
-        updateTableItemsPreserveSelection(partitionList(state.displayedIcons(), iconsTable.getColumns().size()));
-
-        statusBar.setText(state.statusMessage());
+    public IconView(Flow flow) {
+        this.flow = flow;
     }
 
     @FXML
     protected void initialize() {
+        setupStage();
+        setupTable();
+        setupPacks();
+        setupInputs();
+        subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+    }
+
+    private void setupStage() {
         Platform.runLater(() -> {
             var stage = (Stage) searchField.getScene().getWindow();
-            if (stage != null) {
-                stage.setOnCloseRequest(_ -> {
-                    dispose();
-                    Platform.exit();
-                    System.exit(0);
-                });
-            }
+            stage.setOnCloseRequest(_ -> {
+                dispose();
+                Platform.exit();
+                System.exit(0);
+            });
         });
-
-        iconsTable.getSelectionModel().setCellSelectionEnabled(true);
-        iconsTable.setPlaceholder(new Text("No result found"));
-        setupTableColumns();
-
-        setupPackCombo();
-        setupEventHandlers();
-
-        actionsSubscription = stateFlow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
     }
 
-    private void dispose() {
-        if (actionsSubscription != null && !actionsSubscription.isDisposed()) {
-            actionsSubscription.dispose();
-        }
-    }
-
-    private void updateTableItemsPreserveSelection(List<List<PackIkon>> partitioned) {
-        var sm = iconsTable.getSelectionModel();
-        var selectedPos = sm.getSelectedCells().isEmpty() ? null : sm.getSelectedCells().get(0);
-
-        iconsTable.getItems().setAll(partitioned);
-
-        if (selectedPos != null) {
-            int row = selectedPos.getRow();
-            int col = selectedPos.getColumn();
-            if (row < iconsTable.getItems().size() && col < iconsTable.getColumns().size()) {
-                sm.clearSelection();
-                sm.select(row, iconsTable.getColumns().get(col));
-            }
-        }
-    }
-
-    private void setupEventHandlers() {
-        searchField.textProperty().addListener((_, _, newVal) ->
-          stateFlow.accept(new Action.SearchChanged(newVal))
+    private void setupInputs() {
+        searchField.textProperty().addListener((_, _, text) ->
+          flow.accept(new Action.SearchChanged(text))
         );
-
-        selectAllToggle.setOnAction(event ->
-          stateFlow.accept(new Action.SelectAllToggled(selectAllToggle.isSelected()))
+        selectAllToggle.setOnAction(_ ->
+          flow.accept(new Action.SelectAllToggled(selectAllToggle.isSelected()))
         );
-
-        packCombo.getCheckModel().getCheckedItems().addListener(checkedListener);
     }
 
-    private void setupPackCombo() {
+    private void setupPacks() {
         packCombo.setTitle("Selected icon packs: ");
         packCombo.setShowCheckedCount(true);
-
         var packs = Arrays.stream(Pack.values()).sorted(Comparator.comparing(Pack::toString)).toList();
         packCombo.getItems().setAll(packs);
+        packSelection = new PackSelectionView(packCombo, flow::accept);
     }
 
-    private void setupTableColumns() {
+    private void setupTable() {
+        tableFix = new TableSelectionFix(iconsTable);
+        iconsTable.getSelectionModel().setCellSelectionEnabled(true);
+        iconsTable.setPlaceholder(new Text("No result found"));
         for (var i = 0; i < iconsTable.getColumns().size(); i++) {
             @SuppressWarnings("unchecked")
             var col = (TableColumn<List<PackIkon>, PackIkon>) iconsTable.getColumns().get(i);
-            var colIndex = i;
-
+            var index = i;
             col.setCellValueFactory(cb -> {
                 var row = cb.getValue();
-                var item = (row != null && row.size() > colIndex) ? row.get(colIndex) : null;
+                var item = row != null && row.size() > index ? row.get(index) : null;
                 return new SimpleObjectProperty<>(item);
             });
-            col.setCellFactory(_ -> new FontIconCell(stateFlow::accept));
+            col.setCellFactory(_ -> new FontIconCell(flow::accept));
             col.getStyleClass().add("align-center");
         }
     }
 
-    private <T> List<List<T>> partitionList(List<T> list, int size) {
-        var partitions = new ArrayList<List<T>>();
-        if (list.isEmpty()) {
-            return partitions;
-        }
+    public void render(ViewState state) {
+        searchField.setText(state.searchText());
+        packSelection.render(state.selectedPacks());
+        selectAllToggle.setSelected(state.selectedPacks().size() == Pack.values().length);
+        selectTip.setText(selectAllToggle.isSelected() ? "Deselect all" : "Select all");
+        tableFix.render(() -> {
+            iconsTable.getItems().setAll(partition(state.displayedIcons(), iconsTable.getColumns().size()));
+        });
+        statusBar.setText(state.statusMessage());
+    }
 
-        var numPartitions = (list.size() + size - 1) / size;
-        for (var i = 0; i < numPartitions; i++) {
-            var from = i * size;
-            var to = Math.min((i + 1) * size, list.size());
-            partitions.add(list.subList(from, to));
+    private <T> List<List<T>> partition(List<T> list, int size) {
+        var parts = new ArrayList<List<T>>();
+        for (var i = 0; i < list.size(); i += size) {
+            parts.add(list.subList(i, Math.min(i + size, list.size())));
         }
-        return partitions;
+        return parts;
+    }
+
+    private void dispose() {
+        if (subscription != null && !subscription.isDisposed()) {
+            subscription.dispose();
+        }
     }
 }

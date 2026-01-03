@@ -2,7 +2,7 @@
 
 ## Why IkonX Exists
 
-Finding the right icon for your JavaFX project can be a hassle. I know the struggle. See, there are more than 6000 icons spread across 55 different icon packs in [Ikonli](https://github.com/kordamp/ikonli). That's a lot of icon codes to comb through!
+Finding the right icon for your JavaFX project can be a hassle. I know the struggle. See, there are more than 45,000 icons spread across 55 different icon packs in [Ikonli](https://github.com/kordamp/ikonli). That's a lot of icon codes to comb through!
 
 I was inspired by the [AltantaFX sampler](https://downloads.hydraulic.dev/atlantafx/sampler/download.html), which made browsing Material icons a breeze. So, I decided to take it a step further. I created IkonX - the Icon Pack Browser. With this tool, you can easily search, preview, and copy icon codes from **all** available icon packs. No more digging through endless documents to find that perfect icon.
 
@@ -17,6 +17,40 @@ Here's what you can do with IkonX:
 - **Preview Icons:** See what each icon looks like before you choose.
 - **Copy and Paste:** Click an icon, and its code is automatically copied to your clipboard.
 - **User-Friendly:** It's simple and easy to use.
+
+## Architecture: Model-View-Update (MVU)
+
+IkonX follows a strict Model-View-Update (MVU) architecture, enforcing **unidirectional data flow** and a **single source of truth**.
+
+### Core Principles
+
+1. **Single Source of Truth**: The entire application state is stored in a single `ViewState` object. The UI is a pure function of this state.
+
+2. **Unidirectional Data Flow**: Data flows in one direction:
+
+   * **Action**: User interactions and other events are represented as immutable `Action` objects.
+   * **State**: The `Update` function takes the current `ViewState` and an `Action` and produces a new `ViewState`.
+   * **View**: The `IconView` observes the `ViewState` and updates the UI accordingly.
+
+3. **No Direct UI Mutation**: The UI is never mutated directly. All changes are the result of a new `ViewState` being emitted. The `render(ViewState)` method in `IconView` is the only place where the UI is updated.
+
+### The Flow
+
+```mermaid
+flowchart LR
+    UI[UI] -->|Dispatch Action| Action[Action]
+    Action -->|Processed by| Update[Update Function]
+    Update -->|Produces| ViewState[ViewState]
+    ViewState -->|Observed by| IconView[IconView]
+    IconView -->|Re-renders UI| UI
+```
+
+1. The UI dispatches an `Action`.
+2. The `Action` is sent to the `Update` function.
+3. The `Update` function produces a new `ViewState`.
+4. The `IconView` receives the new `ViewState` and re-renders itself.
+
+This strict adherence to MVU results in a predictable, testable, and maintainable codebase.
 
 ## Getting Started with IkonX
 

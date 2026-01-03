@@ -30,22 +30,20 @@ import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.stage.*;
 
-/**
- * @author Hiram K. <a href="https://github.com/IdelsTak">Link</a>
- * @Contributor Kapil Kumar <a href="https://github.com/kapilkumar9976">Link</a>
- */
-public final class Ikonx extends Application {
+public class Ikonx extends Application {
 
     private IconView controller;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
+        loader.setControllerFactory(param -> {
+            controller = new IconView(new StateFlow());
+            return controller;
+        });
         var root = loader.<Parent>load();
-        controller = loader.<IconView>getController();
-        controller.initFlow(new StateFlow());
         var scene = new Scene(root);
-        //Application.setUserAgentStylesheet(new PrimerLight().getUserAgentStylesheet()); // updated and upgraded by https://github.com/kapilkumar9976
 
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.UNIFIED);

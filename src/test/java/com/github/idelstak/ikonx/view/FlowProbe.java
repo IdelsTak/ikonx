@@ -21,30 +21,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu;
+package com.github.idelstak.ikonx.view;
 
+import com.github.idelstak.ikonx.mvu.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.subjects.*;
 import java.util.*;
 
-public final class StateFlow implements Flow {
+final class FlowProbe implements Flow {
 
     private final Subject<Action> actions;
     private final Deque<Action> actionHistory;
     private final Update update;
     private final Observable<ViewState> states;
+    private ViewState currentState;
 
-    public StateFlow() {
+    FlowProbe() {
         actions = PublishSubject.<Action>create().toSerialized();
         actionHistory = new ArrayDeque<>();
         update = new Update();
         states = actions
           .doOnNext(actionHistory::add)
           .scan(ViewState.initial(), update::apply)
-          .doOnNext(state -> {
-          })
+          .doOnNext(state -> currentState = state)
           .distinctUntilChanged()
           .replay(1)
           .autoConnect();
@@ -58,5 +59,20 @@ public final class StateFlow implements Flow {
     @Override
     public Observable<ViewState> observe() {
         return states;
+    }
+
+    Optional<Action> probeLastAfter(int count) {
+        if (actionHistory.size() <= count) {
+            return Optional.empty();
+        }
+        return Optional.of(actionHistory.getLast());
+    }
+
+    int probeActionCount() {
+        return actionHistory.size();
+    }
+
+    ViewState probeState() {
+        return currentState;
     }
 }

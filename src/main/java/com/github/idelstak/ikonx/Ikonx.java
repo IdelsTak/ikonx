@@ -34,7 +34,6 @@ public class Ikonx extends Application {
 
     private IconView controller;
 
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
@@ -45,15 +44,18 @@ public class Ikonx extends Application {
         var root = loader.<Parent>load();
         var scene = new Scene(root);
 
+        primaryStage.setOnCloseRequest(_ -> {
+            if (controller != null) {
+                controller.dispose();
+            }
+            Platform.exit();
+            System.exit(0); // ensures all threads die
+        });
+
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.UNIFIED);
         primaryStage.setTitle("IkonX - for ikonli v. 12.4.0");
         primaryStage.show();
-    }
-
-    @Override
-    public void stop() throws Exception {
-        controller.dispose();
     }
 
     public static void main(String[] args) {

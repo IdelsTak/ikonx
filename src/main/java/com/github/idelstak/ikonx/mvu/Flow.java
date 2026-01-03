@@ -24,12 +24,11 @@
 package com.github.idelstak.ikonx.mvu;
 
 import com.github.idelstak.ikonx.mvu.action.*;
-import com.github.idelstak.ikonx.mvu.state.*;
 import io.reactivex.rxjava3.core.*;
 
 public interface Flow {
 
     void accept(Action action);
 
-    Observable<ViewState> observe();
+    Observable<UpdateResult> observe();
 }

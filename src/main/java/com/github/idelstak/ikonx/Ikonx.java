@@ -32,19 +32,15 @@ import javafx.stage.*;
 
 public class Ikonx extends Application {
 
-    private IconView controller;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
-        loader.setControllerFactory(param -> {
-            controller = new IconView(new StateFlow());
-            return controller;
-        });
+        loader.setControllerFactory(_ -> new IconView(new StateFlow()));
         var root = loader.<Parent>load();
         var scene = new Scene(root);
 
         primaryStage.setOnCloseRequest(_ -> {
+            var controller = loader.<IconView>getController();
             if (controller != null) {
                 controller.dispose();
             }

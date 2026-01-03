@@ -41,8 +41,10 @@ import org.pdfsam.rxjavafx.schedulers.*;
 public class IconView {
 
     private final Flow stateFlow;
-    private Disposable subscription;
-    private ListChangeListener<Pack> checkedListener;
+    private final LocalClipboard iconClipboard;
+    private final ListChangeListener<Pack> checkedListener;
+    private Disposable actionsSubscription;
+    private Disposable clipboardSubscription;
     @FXML
     private SearchTextField searchField;
     @FXML
@@ -57,48 +59,12 @@ public class IconView {
     private StatusBar statusBar;
 
     public IconView(Flow stateFlow) {
+        this(stateFlow, new IconClipboard());
+    }
+
+    public IconView(Flow stateFlow, LocalClipboard iconClipboard) {
         this.stateFlow = stateFlow;
-    }
-
-    public void render(ViewState state) {
-        if (!searchField.getText().equals(state.searchText())) {
-            searchField.setText(state.searchText());
-        }
-
-        if (checkedListener != null) {
-            packCombo.getCheckModel().getCheckedItems().removeListener(checkedListener);
-            try {
-                for (var pack : packCombo.getItems()) {
-                    var shouldBeChecked = state.selectedPacks().contains(pack);
-                    var isChecked = packCombo.getCheckModel().isChecked(pack);
-                    if (shouldBeChecked && !isChecked) {
-                        packCombo.getCheckModel().check(pack);
-                    } else if (!shouldBeChecked && isChecked) {
-                        packCombo.getCheckModel().clearCheck(pack);
-                    }
-                }
-            } finally {
-                packCombo.getCheckModel().getCheckedItems().addListener(checkedListener);
-            }
-        }
-        var allSelected = state.selectedPacks().size() == Pack.values().length;
-        selectAllToggle.setSelected(allSelected);
-        selectTip.setText(allSelected ? "Deselect all" : "Select all");
-
-        updateTableItemsPreserveSelection(partitionList(state.displayedIcons(), iconsTable.getColumns().size()));
-
-        statusBar.setText(state.statusMessage());
-    }
-
-    public void dispose() {
-        if (subscription != null && !subscription.isDisposed()) {
-            subscription.dispose();
-        }
-    }
-
-    @FXML
-    protected void initialize() {
-        subscription = stateFlow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+        this.iconClipboard = iconClipboard;
 
         checkedListener = change -> {
             while (change.next()) {
@@ -110,13 +76,67 @@ public class IconView {
                 }
             }
         };
+    }
 
+    public void render(ViewState state) {
+        if (!searchField.getText().equals(state.searchText())) {
+            searchField.setText(state.searchText());
+        }
+
+        packCombo.getCheckModel().getCheckedItems().removeListener(checkedListener);
+        try {
+            for (var pack : packCombo.getItems()) {
+                var shouldBeChecked = state.selectedPacks().contains(pack);
+                var isChecked = packCombo.getCheckModel().isChecked(pack);
+                if (shouldBeChecked && !isChecked) {
+                    packCombo.getCheckModel().check(pack);
+                } else if (!shouldBeChecked && isChecked) {
+                    packCombo.getCheckModel().clearCheck(pack);
+                }
+            }
+        } finally {
+            packCombo.getCheckModel().getCheckedItems().addListener(checkedListener);
+        }
+
+        var allSelected = state.selectedPacks().size() == Pack.values().length;
+        selectAllToggle.setSelected(allSelected);
+        selectTip.setText(allSelected ? "Deselect all" : "Select all");
+
+        updateTableItemsPreserveSelection(partitionList(state.displayedIcons(), iconsTable.getColumns().size()));
+
+        statusBar.setText(state.statusMessage());
+    }
+
+    public void dispose() {
+        if (actionsSubscription != null && !actionsSubscription.isDisposed()) {
+            actionsSubscription.dispose();
+        }
+        if (clipboardSubscription != null && !clipboardSubscription.isDisposed()) {
+            clipboardSubscription.dispose();
+        }
+    }
+
+    @FXML
+    protected void initialize() {
         iconsTable.getSelectionModel().setCellSelectionEnabled(true);
         iconsTable.setPlaceholder(new Text("No result found"));
         setupTableColumns();
 
         setupPackCombo();
         setupEventHandlers();
+
+        actionsSubscription = stateFlow.observe()
+          .observeOn(JavaFxScheduler.platform())
+          .map(UpdateResult::state)
+          .subscribe(this::render);
+        clipboardSubscription = stateFlow.observe()
+          .map(UpdateResult::effect)
+          .filter(Optional::isPresent)
+          .map(Optional::get)
+          .ofType(Effect.CopyToClipboard.class)
+          .observeOn(JavaFxScheduler.platform())
+          .map(Effect.CopyToClipboard::text)
+          .subscribe(iconClipboard::copy);
     }
 
     private void updateTableItemsPreserveSelection(List<List<PackIkon>> partitioned) {

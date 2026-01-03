@@ -27,13 +27,20 @@ import com.github.idelstak.ikonx.*;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import java.io.*;
+import java.util.function.*;
+import javafx.application.*;
+import javafx.beans.property.*;
 import javafx.fxml.*;
 import javafx.scene.*;
+import javafx.scene.control.*;
 import javafx.stage.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.*;
+import org.kordamp.ikonli.javafx.*;
 import org.testfx.api.*;
 import org.testfx.framework.junit5.*;
+import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(ApplicationExtension.class)
@@ -41,7 +48,8 @@ final class IconViewTest {
 
     @Test
     void typingEmitsSearchChanged(FxRobot robot) throws Exception {
-        var flow = launch(robot);
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
         var before = flow.probeActionCount();
 
         robot.clickOn("#searchField").write("jalapeño");
@@ -54,32 +62,35 @@ final class IconViewTest {
 
     @Test
     void typingUpdatesSearchTextInState(FxRobot robot) throws Exception {
-        var flow = launch(robot);
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
 
         robot.clickOn("#searchField").write("Café");
 
         assertEquals(
           "Café",
-          flow.probeState().searchText()
+          flow.probeResult().state().searchText()
         );
     }
 
     @Test
     void stateDrivesFiltering(FxRobot robot) throws Exception {
-        var flow = launch(robot);
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
 
         robot.clickOn("#searchField").write("über");
 
         assertTrue(
-          flow.probeState().displayedIcons().isEmpty()
+          flow.probeResult().state().displayedIcons().isEmpty()
         );
     }
 
     @Test
     void searchFieldRendersFromState(FxRobot robot) throws Exception {
-        var flow = launch(robot);
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
 
-        flow.accept(new Action.SearchChanged("λ"));
+        robot.interact(() -> flow.accept(new Action.SearchChanged("λ")));
 
         assertEquals(
           "λ",
@@ -91,47 +102,140 @@ final class IconViewTest {
 
     @Test
     void selectAllToggleShouldDispatchSelectAllAction(FxRobot robot) throws Exception {
-        // When
-        var flow = launch(robot);
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
         var before = flow.probeActionCount();
         robot.clickOn("#selectAllToggle");
 
-        // Then
         var lastAction = flow.probeLastAfter(before);
         assertInstanceOf(Action.SelectAllToggled.class, lastAction.orElseThrow());
     }
 
     @Test
     void selectAllToggleShouldUpdateSelectedPacks(FxRobot robot) throws Exception {
-        // When
-        var flow = launch(robot);
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
         robot.clickOn("#selectAllToggle");
 
-        // Then
-        var viewState = flow.probeState();
-        assertEquals(viewState.selectedPacks().size(), Pack.values().length);
+        var result = flow.probeResult();
+        assertEquals(result.state().selectedPacks().size(), Pack.values().length);
     }
 
     @Test
     void packComboCheckboxShouldDispatchPackToggledAction(FxRobot robot) throws Exception {
-        // When
-        var flow = launch(robot);
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
         var before = flow.probeActionCount();
         robot.clickOn("#packCombo");
         robot.clickOn(".check-box");
 
-        // Then
         var lastAction = flow.probeLastAfter(before);
         assertInstanceOf(Action.PackToggled.class, lastAction.orElseThrow());
     }
 
-    private FlowProbe launch(FxRobot robot) throws Exception {
+    @Test
+    void dispatchedActionHasCorrectIconCode(FxRobot robot) throws Exception {
+        var fakeClipboard = new SimpleStringProperty();
+        var flow = launch(robot, fakeClipboard::set);
+
+        robot.clickOn("#packCombo");
+        robot.clickOn(Pack.ANT_DESIGN_ICONS.toString());
+        robot.clickOn(Pack.BOOTSTRAP.toString());
+        robot.clickOn("#packCombo");
+
+        var before = flow.probeActionCount();
+        robot.clickOn("bi-alarm");
+
+        var lastAction = flow.probeLastAfter(before);
+        Action.IconCopied action = (Action.IconCopied) lastAction.orElseThrow();
+
+        assertThat(action.iconCode(), is("bi-alarm"));
+    }
+
+    @Test
+    void rendersText(FxRobot robot) throws Exception {
+        var fakeClipboard = new SimpleStringProperty();
+        launch(robot, fakeClipboard::set);
+
+        robot.clickOn("#packCombo");
+        robot.clickOn(Pack.ANT_DESIGN_ICONS.toString());
+        robot.clickOn(Pack.BOOTSTRAP.toString());
+        robot.clickOn("#packCombo");
+
+        var table = robot.lookup(".icon-browser").queryAs(TableView.class);
+
+        robot.interact(() -> table.scrollTo(table.getItems().size() - 1));
+
+        var label = robot.lookup(".icon-label").queryAllAs(Labeled.class)
+          .stream()
+          .map(Labeled::getText)
+          .sorted()
+          .toList()
+          .getLast();
+        var expected = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1].getDescription();
+
+        assertThat(label, is(expected));
+    }
+
+    @Test
+    void rendersIcon(FxRobot robot) throws Exception {
+        var fakeClipboard = new SimpleStringProperty();
+        launch(robot, fakeClipboard::set);
+
+        robot.clickOn("#packCombo");
+        robot.clickOn(Pack.ANT_DESIGN_ICONS.toString());
+        robot.clickOn(Pack.BOOTSTRAP.toString());
+        robot.clickOn("#packCombo");
+
+        var table = robot.lookup(".icon-browser").queryAs(TableView.class);
+        var last = table.getItems().size() - 1;
+        robot.interact(() -> table.scrollTo(last));
+
+        var row = robot.lookup(".table-row-cell")
+          .queryAllAs(TableRow.class)
+          .stream()
+          .filter(r -> r.getIndex() == last)
+          .findFirst()
+          .orElseThrow();
+        
+        var rendered = row.lookupAll(".ikonli-font-icon")
+          .stream()
+          .map(FontIcon.class::cast)
+          .toList()
+          .getLast()
+          .getIconCode();
+        
+        var expected = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1];
+        assertThat(rendered, is(expected));
+    }
+
+    @Test
+    void copiesIconCodeToClipboard(FxRobot robot) throws Exception {
+        var fakeClipboard = new SimpleStringProperty();
+        launch(robot, fakeClipboard::set);
+
+        robot.clickOn("#packCombo");
+        robot.clickOn(Pack.ANT_DESIGN_ICONS.toString());
+        robot.clickOn(Pack.BOOTSTRAP.toString());
+        robot.clickOn("#packCombo");
+
+        var table = robot.lookup(".icon-browser").queryAs(TableView.class);
+        robot.interact(() -> table.scrollTo(table.getItems().size() - 1));
+
+        var expected = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1].getDescription();
+        robot.clickOn(expected);
+
+        assertThat(fakeClipboard.get(), is(expected));
+    }
+
+    private FlowProbe launch(FxRobot robot, Consumer<String> copyCallback) throws Exception {
         var flow = new FlowProbe();
+        LocalClipboard testClipboard = copyCallback::accept;
         robot.interact(() -> {
             var loader = new FXMLLoader(
               Ikonx.class.getResource("/fxml/icon-view.fxml")
             );
-            loader.setControllerFactory(_ -> new IconView(flow));
+            loader.setControllerFactory(_ -> new IconView(flow, testClipboard));
             Parent root;
             try {
                 root = loader.load();
@@ -139,6 +243,14 @@ final class IconViewTest {
                 throw new RuntimeException(error);
             }
             var stage = new Stage();
+            stage.setOnCloseRequest(_ -> {
+                var controller = loader.<IconView>getController();
+                if (controller != null) {
+                    controller.dispose();
+                }
+                Platform.exit();
+                System.exit(0); // ensures all threads die
+            });
             stage.setScene(new Scene(root));
             stage.show();
         });

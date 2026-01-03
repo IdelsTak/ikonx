@@ -21,20 +21,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.icons;
+package com.github.idelstak.ikonx.view;
 
-import org.kordamp.ikonli.*;
+import javafx.scene.input.*;
 
-public record PackIkon(Pack pack, Ikon ikon) {
+public final class IconClipboard implements LocalClipboard {
 
     @Override
-    public String toString() {
-        var sb = new StringBuilder();
-        sb.append('{');
-        sb.append(pack);
-        sb.append(", ").append(ikon.getDescription());
-        sb.append('}');
-        return sb.toString();
+    public void copy(String text) {
+        var content = new ClipboardContent();
+        content.putString(text);
+        System.out.println("content = " + content);
+        Clipboard.getSystemClipboard().setContent(content);
     }
-    
 }

@@ -49,18 +49,20 @@ public final class Update {
           .toList();
     }
 
-    public UpdateResult apply(ViewState state, Action action) {
+    public ViewState apply(ViewState state, Action action) {
         return switch (action) {
             case Action.SearchChanged a ->
-                new UpdateResult(search(state, a), Optional.empty());
+                search(state, a);
             case Action.PackToggled a ->
-                new UpdateResult(toggle(state, a), Optional.empty());
+                toggle(state, a);
             case Action.SelectAllToggled a ->
-                new UpdateResult(toggleAll(state, a), Optional.empty());
-//            case Action.IconCopied a ->
-//                new UpdateResult(copy(state, a), Optional.empty());
-            case Action.IconCopied a ->
-                new UpdateResult(copy(state, a), Optional.of(new Effect.CopyToClipboard(a.iconCode())));
+                toggleAll(state, a);
+            case Action.CopyIconRequested a ->
+                copyRequested(state, a);
+            case Action.CopyIconSucceeded a ->
+                copySucceeded(state, a);
+            case Action.CopyIconFailed a ->
+                copyFailed(state, a);
         };
     }
 
@@ -107,10 +109,22 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState copy(ViewState state, Action.IconCopied action) {
+    private ViewState copyRequested(ViewState state, Action.CopyIconRequested action) {
+        return state
+          .signal(new ActivityState.Idle())
+          .message("Copying '" + action.iconCode() + "' to clipboard");
+    }
+
+    private ViewState copySucceeded(ViewState state, Action.CopyIconSucceeded action) {
         return state
           .signal(new ActivityState.Success())
           .message("Copied '" + action.iconCode() + "' to clipboard");
+    }
+
+    private ViewState copyFailed(ViewState state, Action.CopyIconFailed action) {
+        return state
+          .signal(new ActivityState.Error())
+          .message("Failed to copy '" + action.iconCode() + "' to clipboard: " + action.error().getMessage());
     }
 
     private List<PackIkon> filterIcons(Set<Pack> selectedPacks, String searchText) {

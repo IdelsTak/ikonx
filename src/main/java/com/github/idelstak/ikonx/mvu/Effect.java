@@ -23,7 +23,7 @@
  */
 package com.github.idelstak.ikonx.mvu;
 
-public sealed interface Effect permits Effect.CopyToClipboard {
+public sealed interface Effect {
 
     record CopyToClipboard(String text) implements Effect {
 

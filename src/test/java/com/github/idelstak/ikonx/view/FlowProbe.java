@@ -25,7 +25,9 @@ package com.github.idelstak.ikonx.view;
 
 import com.github.idelstak.ikonx.mvu.*;
 import com.github.idelstak.ikonx.mvu.action.*;
+import com.github.idelstak.ikonx.mvu.state.*;
 import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.*;
 import io.reactivex.rxjava3.subjects.*;
 import java.util.*;
 
@@ -34,17 +36,33 @@ final class FlowProbe implements Flow {
     private final Subject<Action> actions;
     private final Deque<Action> actionHistory;
     private final Update update;
-    private final Observable<UpdateResult> states;
-    private UpdateResult currentResult;
+    private final Observable<ViewState> states;
+    private ViewState currentState;
 
-    FlowProbe() {
+    FlowProbe(LocalClipboard clipboard) {
         actions = PublishSubject.<Action>create().toSerialized();
         actionHistory = new ArrayDeque<>();
         update = new Update();
-        states = actions
+        // Side effect stream for clipboard
+        Observable<Action> sideEffects = actions
+          .filter(a -> a instanceof Action.CopyIconRequested)
+          .flatMap(a -> {
+              var request = (Action.CopyIconRequested) a;
+              return Observable.fromCallable(() -> {
+                  clipboard.copy(request.iconCode());
+                  return (Action) new Action.CopyIconSucceeded(request.iconCode());
+              })
+                .subscribeOn(Schedulers.single())
+                .onErrorReturn(e -> new Action.CopyIconFailed(request.iconCode(), e));
+          });
+
+        // Merge original actions with side effect results
+        Observable<Action> mergedActions = Observable.merge(actions, sideEffects);
+
+        states = mergedActions
           .doOnNext(actionHistory::add)
-          .scan(UpdateResult.initial(), (result, action) -> update.apply(result.state(), action))
-          .doOnNext(result -> currentResult = result)
+          .scan(ViewState.initial(), update::apply)
+          .doOnNext(state -> currentState = state)
           .distinctUntilChanged()
           .replay(1)
           .autoConnect();
@@ -56,7 +74,7 @@ final class FlowProbe implements Flow {
     }
 
     @Override
-    public Observable<UpdateResult> observe() {
+    public Observable<ViewState> observe() {
         return states;
     }
 
@@ -71,7 +89,7 @@ final class FlowProbe implements Flow {
         return actionHistory.size();
     }
 
-    UpdateResult probeResult() {
-        return currentResult;
+    ViewState probeState() {
+        return currentState;
     }
 }

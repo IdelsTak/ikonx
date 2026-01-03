@@ -69,7 +69,7 @@ final class IconViewTest {
 
         assertEquals(
           "Café",
-          flow.probeResult().state().searchText()
+          flow.probeState().searchText()
         );
     }
 
@@ -81,7 +81,7 @@ final class IconViewTest {
         robot.clickOn("#searchField").write("über");
 
         assertTrue(
-          flow.probeResult().state().displayedIcons().isEmpty()
+          flow.probeState().displayedIcons().isEmpty()
         );
     }
 
@@ -117,8 +117,8 @@ final class IconViewTest {
         var flow = launch(robot, fakeClipboard::set);
         robot.clickOn("#selectAllToggle");
 
-        var result = flow.probeResult();
-        assertEquals(result.state().selectedPacks().size(), Pack.values().length);
+        var result = flow.probeState();
+        assertEquals(result.selectedPacks().size(), Pack.values().length);
     }
 
     @Test
@@ -147,7 +147,7 @@ final class IconViewTest {
         robot.clickOn("bi-alarm");
 
         var lastAction = flow.probeLastAfter(before);
-        Action.IconCopied action = (Action.IconCopied) lastAction.orElseThrow();
+        Action.CopyIconSucceeded action = (Action.CopyIconSucceeded) lastAction.orElseThrow();
 
         assertThat(action.iconCode(), is("bi-alarm"));
     }
@@ -224,18 +224,18 @@ final class IconViewTest {
 
         var expected = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1].getDescription();
         robot.clickOn(expected);
-
+        
         assertThat(fakeClipboard.get(), is(expected));
     }
 
     private FlowProbe launch(FxRobot robot, Consumer<String> copyCallback) throws Exception {
-        var flow = new FlowProbe();
         LocalClipboard testClipboard = copyCallback::accept;
+        var flow = new FlowProbe(testClipboard);
         robot.interact(() -> {
             var loader = new FXMLLoader(
               Ikonx.class.getResource("/fxml/icon-view.fxml")
             );
-            loader.setControllerFactory(_ -> new IconView(flow, testClipboard));
+            loader.setControllerFactory(_ -> new IconView(flow));
             Parent root;
             try {
                 root = loader.load();

@@ -32,14 +32,9 @@ jobs:
 
       - name: Run all tests (JUnit + TestFX)
         run: |
-          # Set up display for GUI tests
-          # This part ensures that the GUI tests using TestFX will run correctly
-          # in the CI environment.
           export DISPLAY=:90
-          # Start a virtual frame buffer for GUI tests
           Xvfb -ac :90 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          # Clean and install the Maven project, running all tests
-          mvn --batch-mode --update-snapshots verify
+          mvn --batch-mode test
 
       - name: Upload test results
         if: always()

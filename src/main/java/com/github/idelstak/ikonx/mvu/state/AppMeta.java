@@ -21,10 +21,45 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu.state.version;
+package com.github.idelstak.ikonx.mvu.state;
 
 import java.util.*;
+import javafx.scene.image.*;
 
-public record AppMeta(Optional<String> appVersion, Optional<String> ikonliVersion) {
+public record AppMeta(
+  Optional<String> appVersion,
+  Optional<String> ikonliVersion,
+  List<Image> icons) {
 
+    public AppMeta {
+        icons = List.copyOf(icons);
+    }
+
+    public AppMeta appVersion(String appVersion) {
+        return new AppMeta(Optional.of(appVersion), ikonliVersion, icons);
+    }
+
+    public AppMeta withoutAppVersion() {
+        return new AppMeta(Optional.empty(), ikonliVersion, icons);
+    }
+
+    public AppMeta ikonliVersion(String ikonliVersion) {
+        return new AppMeta(appVersion, Optional.of(ikonliVersion), icons);
+    }
+
+    public AppMeta withoutIkonliVersion() {
+        return new AppMeta(appVersion, Optional.empty(), icons);
+    }
+
+    public AppMeta icons(List<Image> icons) {
+        return new AppMeta(appVersion, ikonliVersion, icons);
+    }
+
+    public static AppMeta empty() {
+        return new AppMeta(
+          Optional.empty(),
+          Optional.empty(),
+          List.of()
+        );
+    }
 }

@@ -26,6 +26,7 @@ package com.github.idelstak.ikonx.mvu;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import java.util.*;
 
@@ -70,6 +71,12 @@ public final class Update {
                 versionResolved(state, a);
             case Action.AppVersionFailed a ->
                 versionFailed(state, a);
+            case Action.StageIconsRequested _ ->
+                stageIconsRequested(state);
+            case Action.StageIconsResolved a ->
+                stageIconsResolved(state, a);
+            case Action.StageIconsFailed a ->
+                stageIconsFailed(state, a);
         };
     }
 
@@ -168,6 +175,24 @@ public final class Update {
         return state
           .signal(new ActivityState.Error())
           .version(new AppVersion.Failed(message))
+          .message(message);
+    }
+
+    private ViewState stageIconsRequested(ViewState state) {
+        return state.signal(new ActivityState.Idle());
+    }
+
+    private ViewState stageIconsResolved(ViewState state, Action.StageIconsResolved action) {
+        return state
+          .signal(new ActivityState.Success())
+          .stageIcons(new StageIcons.Ready(action.icons()));
+    }
+
+    private ViewState stageIconsFailed(ViewState state, Action.StageIconsFailed action) {
+        var message = action.error().getMessage();
+        return state
+          .signal(new ActivityState.Error())
+          .stageIcons(new StageIcons.Failed(message))
           .message(message);
     }
 }

@@ -25,11 +25,13 @@ package com.github.idelstak.ikonx.mvu.state;
 
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.state.ActivityState.Idle;
+import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import java.util.*;
 
 public record ViewState(
   AppVersion version,
+  StageIcons stageIcons,
   String searchText,
   Set<Pack> selectedPacks,
   List<PackIkon> displayedIcons,
@@ -42,27 +44,31 @@ public record ViewState(
     }
 
     public ViewState search(String text) {
-        return new ViewState(version, text, selectedPacks, displayedIcons, status, statusMessage);
+        return new ViewState(version, stageIcons, text, selectedPacks, displayedIcons, status, statusMessage);
     }
 
     public ViewState select(Set<Pack> packs) {
-        return new ViewState(version, searchText, packs, displayedIcons, status, statusMessage);
+        return new ViewState(version, stageIcons, searchText, packs, displayedIcons, status, statusMessage);
     }
 
     public ViewState display(List<PackIkon> icons) {
-        return new ViewState(version, searchText, selectedPacks, icons, status, statusMessage);
+        return new ViewState(version, stageIcons, searchText, selectedPacks, icons, status, statusMessage);
     }
 
     public ViewState signal(ActivityState state) {
-        return new ViewState(version, searchText, selectedPacks, displayedIcons, state, statusMessage);
+        return new ViewState(version, stageIcons, searchText, selectedPacks, displayedIcons, state, statusMessage);
     }
 
     public ViewState message(String text) {
-        return new ViewState(version, searchText, selectedPacks, displayedIcons, status, text);
+        return new ViewState(version, stageIcons, searchText, selectedPacks, displayedIcons, status, text);
     }
 
     public ViewState version(AppVersion version) {
-        return new ViewState(version, searchText, selectedPacks, displayedIcons, status, statusMessage);
+        return new ViewState(version, stageIcons, searchText, selectedPacks, displayedIcons, status, statusMessage);
+    }
+    
+    public ViewState stageIcons(StageIcons icons) {
+        return new ViewState(version, icons, searchText, selectedPacks, displayedIcons, status, statusMessage);
     }
 
     public static ViewState initial() {
@@ -77,6 +83,7 @@ public record ViewState(
 
         return new ViewState(
           new AppVersion.Unknown(),
+          new StageIcons.Unknown(),
           "",
           Set.of(first),
           icons,

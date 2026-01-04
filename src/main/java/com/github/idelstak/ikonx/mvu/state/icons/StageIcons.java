@@ -21,57 +21,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu.action;
+package com.github.idelstak.ikonx.mvu.state.icons;
 
-import com.github.idelstak.ikonx.icons.*;
 import java.util.*;
 import javafx.scene.image.*;
 
-public sealed interface Action {
+public sealed interface StageIcons {
 
-    record SearchChanged(String query) implements Action {
-
+    record Unknown() implements StageIcons {
     }
 
-    record PackToggled(Pack pack, boolean isSelected) implements Action {
+    record Ready(List<Image> images) implements StageIcons {
 
+        public Ready {
+            images = List.copyOf(images);
+        }
     }
 
-    record SelectAllToggled(boolean isSelected) implements Action {
-
-    }
-
-    record CopyIconRequested(String iconCode) implements Action {
-
-    }
-
-    record CopyIconSucceeded(String iconCode) implements Action {
-
-    }
-
-    record CopyIconFailed(String iconCode, Throwable error) implements Action {
-
-    }
-
-    record AppVersionRequested() implements Action {
-    }
-
-    record AppVersionResolved(String appVersion, String ikonliVersion) implements Action {
-
-    }
-
-    record AppVersionFailed(Throwable error) implements Action {
-
-    }
-
-    record StageIconsRequested() implements Action {
-    }
-
-    record StageIconsResolved(List<Image> icons) implements Action {
-
-    }
-
-    record StageIconsFailed(Throwable error) implements Action {
+    record Failed(String reason) implements StageIcons {
 
     }
 }

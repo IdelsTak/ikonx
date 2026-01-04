@@ -26,6 +26,7 @@ package com.github.idelstak.ikonx.mvu;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
@@ -220,5 +221,87 @@ final class UpdateTest {
         assertThat(next.version(), instanceOf(AppVersion.Failed.class));
         var v = (AppVersion.Failed) next.version();
         assertThat(v.reason(), containsString("cliché cannot read version"));
+    }
+
+    @Test
+    void stageIconsRequestSignalsIdle() {
+        var update = new Update();
+        var state = ViewState.initial()
+          .signal(new ActivityState.Success());
+
+        var next = update.apply(state, new Action.StageIconsRequested());
+
+        assertThat(next.status(), instanceOf(ActivityState.Idle.class));
+    }
+
+    @Test
+    void stageIconsResolvedSignalsSuccess() {
+        var update = new Update();
+        var state = ViewState.initial();
+
+        var next = update.apply(
+          state,
+          new Action.StageIconsResolved(List.of())
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Success.class));
+    }
+
+    @Test
+    void stageIconsResolvedSetsReadyStageIcons() {
+        var update = new Update();
+        var state = ViewState.initial();
+
+        var next = update.apply(
+          state,
+          new Action.StageIconsResolved(List.of())
+        );
+
+        assertThat(next.stageIcons(), instanceOf(StageIcons.Ready.class));
+    }
+
+    @Test
+    void stageIconsFailedSignalsError() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ex = new RuntimeException("über stage icon failure");
+
+        var next = update.apply(
+          state,
+          new Action.StageIconsFailed(ex)
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Error.class));
+    }
+
+    @Test
+    void stageIconsFailedSetsFailedStageIcons() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ex = new RuntimeException("façade icon load error");
+
+        var next = update.apply(
+          state,
+          new Action.StageIconsFailed(ex)
+        );
+
+        assertThat(next.stageIcons(), instanceOf(StageIcons.Failed.class));
+    }
+
+    @Test
+    void stageIconsFailedShowsErrorMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ex = new RuntimeException("crème brûlée icons broken");
+
+        var next = update.apply(
+          state,
+          new Action.StageIconsFailed(ex)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          containsString("crème brûlée icons broken")
+        );
     }
 }

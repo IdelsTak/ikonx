@@ -24,18 +24,22 @@
 package com.github.idelstak.ikonx;
 
 import com.github.idelstak.ikonx.mvu.*;
-import com.github.idelstak.ikonx.mvu.state.version.*;
+import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.view.*;
 import java.io.*;
 import java.util.*;
 import javafx.application.*;
 import javafx.fxml.*;
 import javafx.scene.*;
+import javafx.scene.image.*;
 import javafx.stage.*;
 
 public class Ikonx extends Application {
 
     private AppMeta meta;
+
+    public Ikonx() {
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -55,18 +59,58 @@ public class Ikonx extends Application {
     }
 
     private AppMeta meta() {
-        try (var is = getClass().getResourceAsStream("/version.properties")) {
-            if (is == null) {
-                return null;
+        var initialMeta = AppMeta.empty();
+        var props = properties();
+        initialMeta = version(initialMeta, props, "version");
+        initialMeta = ikonli(initialMeta, props, "ikonli.version");
+        return initialMeta.icons(icons());
+    }
+
+    private AppMeta version(AppMeta meta, Properties props, String key) {
+        var value = props.getProperty(key);
+        return value == null
+                 ? meta.withoutAppVersion()
+                 : meta.appVersion(value);
+    }
+
+    private AppMeta ikonli(AppMeta meta, Properties props, String key) {
+        var value = props.getProperty(key);
+        return value == null
+                 ? meta.withoutIkonliVersion()
+                 : meta.ikonliVersion(value);
+    }
+
+    private Properties properties() {
+        var props = new Properties();
+        try (var stream = getClass().getResourceAsStream("/version.properties")) {
+            if (stream != null) {
+                props.load(stream);
             }
-            var p = new Properties();
-            p.load(is);
-            var app = p.getProperty("version", null);
-            var ikonli = p.getProperty("ikonli.version", null);
-            return new AppMeta(Optional.ofNullable(app), Optional.ofNullable(ikonli));
-        } catch (IOException e) {
-            return null;
+        } catch (IOException ignored) {
         }
+        return props;
+    }
+
+    private List<Image> icons() {
+        return List.of(
+          icon("/logos/logo16.png"),
+          icon("/logos/logo32.png"),
+          icon("/logos/logo48.png"),
+          icon("/logos/logo64.png"),
+          icon("/logos/logo128.png")
+        ).stream().flatMap(Optional::stream).toList();
+    }
+
+    private Optional<Image> icon(String path) {
+        try (var stream = getClass().getResourceAsStream(path)) {
+            if (stream != null) {
+                return Optional.of(new Image(stream));
+            }
+        } catch (IOException ignored) {
+            return Optional.empty();
+        }
+
+        return Optional.empty();
     }
 
     public static void main(String[] args) {

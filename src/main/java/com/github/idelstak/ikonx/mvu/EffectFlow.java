@@ -24,26 +24,44 @@
 package com.github.idelstak.ikonx.mvu;
 
 import com.github.idelstak.ikonx.mvu.action.*;
-import com.github.idelstak.ikonx.mvu.state.version.*;
+import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.view.*;
 import io.reactivex.rxjava3.core.*;
 import org.pdfsam.rxjavafx.schedulers.*;
 
- final class EffectFlow {
+final class EffectFlow {
 
     private final AppMeta appMeta;
     private final LocalClipboard clipboard;
 
-     EffectFlow(LocalClipboard clipboard, AppMeta appMeta) {
+    EffectFlow(LocalClipboard clipboard, AppMeta appMeta) {
         this.clipboard = clipboard;
         this.appMeta = appMeta;
     }
 
-     Observable<Action> apply(Observable<Action> actions) {
+    Observable<Action> apply(Observable<Action> actions) {
         return Observable.merge(
+          stageIconsEffects(actions),
           clipboardEffects(actions),
           versionEffects(actions)
         );
+    }
+
+    private Observable<Action> stageIconsEffects(Observable<Action> actions) {
+        return actions
+          .filter(a -> a instanceof Action.StageIconsRequested)
+          .flatMap(a ->
+            Observable
+              .fromCallable(() -> {
+                  var icons = appMeta.icons();
+                  if (icons.isEmpty()) {
+                      throw new IllegalStateException("Application stage icons are missing from AppMeta");
+                  }
+                  return (Action) new Action.StageIconsResolved(icons);
+              })
+              .subscribeOn(JavaFxScheduler.platform())
+              .onErrorReturn(Action.StageIconsFailed::new)
+          );
     }
 
     private Observable<Action> versionEffects(Observable<Action> actions) {

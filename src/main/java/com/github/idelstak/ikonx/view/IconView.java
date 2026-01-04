@@ -28,6 +28,7 @@ import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import io.reactivex.rxjava3.disposables.*;
 import java.util.*;
@@ -35,6 +36,7 @@ import javafx.application.*;
 import javafx.beans.property.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
+import javafx.scene.image.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
 import org.controlsfx.control.*;
@@ -76,6 +78,17 @@ public class IconView {
             };
 
             stage.setTitle(title);
+
+            List<Image> images = switch (state.stageIcons()) {
+                case StageIcons.Ready(List<Image> readyImages) ->
+                    List.copyOf(readyImages);
+                case StageIcons.Failed _ ->
+                    List.of();
+                case StageIcons.Unknown _ ->
+                    List.of();
+            };
+
+            stage.getIcons().setAll(images);
         }
         searchField.setText(state.searchText());
         packSelection.render(state.selectedPacks());

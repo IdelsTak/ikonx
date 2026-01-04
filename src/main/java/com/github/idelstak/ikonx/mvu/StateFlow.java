@@ -25,7 +25,6 @@ package com.github.idelstak.ikonx.mvu;
 
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
-import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.*;
 import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.subjects.*;
@@ -41,7 +40,10 @@ public final class StateFlow implements Flow {
         var update = new Update();
         var effects = new EffectFlow(clipboard, appMeta);
 
-        var seededActions = actions.startWithItem(new Action.AppVersionRequested());
+        var seededActions = actions.startWithArray(
+          new Action.AppVersionRequested(),
+          new Action.StageIconsRequested()
+        );
 
         var sideEffects = effects.apply(seededActions);
         var merged = Observable.merge(seededActions, sideEffects);

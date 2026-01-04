@@ -28,6 +28,7 @@ import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.version.*;
 import io.reactivex.rxjava3.disposables.*;
 import java.util.*;
 import javafx.application.*;
@@ -39,12 +40,13 @@ import javafx.stage.*;
 import org.controlsfx.control.*;
 import org.pdfsam.rxjavafx.schedulers.*;
 
-public final class IconView {
+public class IconView {
 
     private final Flow flow;
     private Disposable subscription;
     private PackSelectionView packSelection;
     private TableSelectionFix tableFix;
+    private Stage stage;
     @FXML
     private SearchTextField searchField;
     @FXML
@@ -62,18 +64,41 @@ public final class IconView {
         this.flow = flow;
     }
 
+    public void render(ViewState state) {
+        if (stage != null) {
+            var title = switch (state.version()) {
+                case AppVersion.Ready(String appValue, String ikonliValue) ->
+                    "IkonX v%s - for ikonli v%s".formatted(appValue, ikonliValue);
+                case AppVersion.Failed _ ->
+                    "IkonX (version unavailable)";
+                case AppVersion.Unknown _ ->
+                    "IkonX";
+            };
+
+            stage.setTitle(title);
+        }
+        searchField.setText(state.searchText());
+        packSelection.render(state.selectedPacks());
+        selectAllToggle.setSelected(state.selectedPacks().size() == Pack.values().length);
+        selectTip.setText(selectAllToggle.isSelected() ? "Deselect all" : "Select all");
+        tableFix.render(() -> {
+            iconsTable.getItems().setAll(partition(state.displayedIcons(), iconsTable.getColumns().size()));
+        });
+        statusBar.setText(state.statusMessage());
+    }
+
     @FXML
     protected void initialize() {
         setupStage();
         setupTable();
         setupPacks();
         setupInputs();
-        subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+        setupActionsSubscription();
     }
 
     private void setupStage() {
         Platform.runLater(() -> {
-            var stage = (Stage) searchField.getScene().getWindow();
+            stage = (Stage) searchField.getScene().getWindow();
             stage.setOnCloseRequest(_ -> {
                 dispose();
                 Platform.exit();
@@ -89,6 +114,12 @@ public final class IconView {
         selectAllToggle.setOnAction(_ ->
           flow.accept(new Action.SelectAllToggled(selectAllToggle.isSelected()))
         );
+    }
+
+    private void setupActionsSubscription() {
+        Platform.runLater(() -> {
+            subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+        });
     }
 
     private void setupPacks() {
@@ -115,17 +146,6 @@ public final class IconView {
             col.setCellFactory(_ -> new FontIconCell(flow::accept));
             col.getStyleClass().add("align-center");
         }
-    }
-
-    public void render(ViewState state) {
-        searchField.setText(state.searchText());
-        packSelection.render(state.selectedPacks());
-        selectAllToggle.setSelected(state.selectedPacks().size() == Pack.values().length);
-        selectTip.setText(selectAllToggle.isSelected() ? "Deselect all" : "Select all");
-        tableFix.render(() -> {
-            iconsTable.getItems().setAll(partition(state.displayedIcons(), iconsTable.getColumns().size()));
-        });
-        statusBar.setText(state.statusMessage());
     }
 
     private <T> List<List<T>> partition(List<T> list, int size) {

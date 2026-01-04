@@ -21,44 +21,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu.action;
+package com.github.idelstak.ikonx.mvu.state.version;
 
-import com.github.idelstak.ikonx.icons.*;
+public sealed interface AppVersion {
 
-public sealed interface Action {
+    record Unknown() implements AppVersion {
+    }
 
-    record SearchChanged(String query) implements Action {
+    record Ready(String appValue, String ikonliValue) implements AppVersion {
 
     }
 
-    record PackToggled(Pack pack, boolean isSelected) implements Action {
-
-    }
-
-    record SelectAllToggled(boolean isSelected) implements Action {
-
-    }
-
-    record CopyIconRequested(String iconCode) implements Action {
-
-    }
-
-    record CopyIconSucceeded(String iconCode) implements Action {
-
-    }
-
-    record CopyIconFailed(String iconCode, Throwable error) implements Action {
-
-    }
-
-    record AppVersionRequested() implements Action {
-    }
-
-    record AppVersionResolved(String appVersion, String ikonliVersion) implements Action {
-
-    }
-
-    record AppVersionFailed(Throwable error) implements Action {
+    record Failed(String reason) implements AppVersion {
 
     }
 }

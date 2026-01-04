@@ -25,38 +25,28 @@ package com.github.idelstak.ikonx.mvu;
 
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.*;
 import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.subjects.*;
-import org.pdfsam.rxjavafx.schedulers.*;
 
 public final class StateFlow implements Flow {
 
     private final Subject<Action> actions;
-    private final Update update;
     private final Observable<ViewState> states;
 
-    public StateFlow(LocalClipboard clipboard) {
+    public StateFlow(LocalClipboard clipboard, AppMeta appMeta) {
         actions = PublishSubject.<Action>create().toSerialized();
-        update = new Update();
 
-        // Side effect stream for clipboard
-        Observable<Action> sideEffects = actions
-          .filter(a -> a instanceof Action.CopyIconRequested)
-          .flatMap(a -> {
-              var request = (Action.CopyIconRequested) a;
-              return Observable.fromCallable(() -> {
-                  clipboard.copy(request.iconCode());
-                  return (Action) new Action.CopyIconSucceeded(request.iconCode());
-              })
-                .subscribeOn(JavaFxScheduler.platform())
-                .onErrorReturn(e -> new Action.CopyIconFailed(request.iconCode(), e));
-          });
+        var update = new Update();
+        var effects = new EffectFlow(clipboard, appMeta);
 
-        // Merge original actions with side effect results
-        Observable<Action> mergedActions = Observable.merge(actions, sideEffects);
-        
-        states = mergedActions
+        var seededActions = actions.startWithItem(new Action.AppVersionRequested());
+
+        var sideEffects = effects.apply(seededActions);
+        var merged = Observable.merge(seededActions, sideEffects);
+
+        states = merged
           .scan(ViewState.initial(), update::apply)
           .distinctUntilChanged()
           .replay(1)

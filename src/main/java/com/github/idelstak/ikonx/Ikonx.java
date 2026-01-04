@@ -24,7 +24,10 @@
 package com.github.idelstak.ikonx;
 
 import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.*;
+import java.io.*;
+import java.util.*;
 import javafx.application.*;
 import javafx.fxml.*;
 import javafx.scene.*;
@@ -32,17 +35,38 @@ import javafx.stage.*;
 
 public class Ikonx extends Application {
 
+    private AppMeta meta;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
-        loader.setControllerFactory(_ -> new IconView(new StateFlow(new IconClipboard())));
+        loader.setControllerFactory(_ -> new IconView(new StateFlow(new IconClipboard(), meta)));
         var root = loader.<Parent>load();
         var scene = new Scene(root);
 
         primaryStage.setScene(scene);
         primaryStage.initStyle(StageStyle.UNIFIED);
-        primaryStage.setTitle("IkonX - for ikonli v. 12.4.0");
         primaryStage.show();
+    }
+
+    @Override
+    public void init() throws Exception {
+        meta = meta();
+    }
+
+    private AppMeta meta() {
+        try (var is = getClass().getResourceAsStream("/version.properties")) {
+            if (is == null) {
+                return null;
+            }
+            var p = new Properties();
+            p.load(is);
+            var app = p.getProperty("version", null);
+            var ikonli = p.getProperty("ikonli.version", null);
+            return new AppMeta(Optional.ofNullable(app), Optional.ofNullable(ikonli));
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public static void main(String[] args) {

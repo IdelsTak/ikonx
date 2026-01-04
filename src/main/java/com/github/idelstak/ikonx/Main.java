@@ -24,6 +24,7 @@
 package com.github.idelstak.ikonx;
 
 public final class Main {
+
     public static void main(String[] args) {
         Ikonx.main(args);
     }

@@ -26,6 +26,7 @@ package com.github.idelstak.ikonx.mvu;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.version.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -151,5 +152,73 @@ final class UpdateTest {
         );
 
         assertThat(next.displayedIcons(), is(empty()));
+    }
+
+    @Test
+    void copyFailureSignalsError() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ex = new RuntimeException("naïve boom");
+
+        var next = update.apply(
+          state,
+          new Action.CopyIconFailed("Ω", ex)
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Error.class));
+    }
+
+    @Test
+    void copyFailureShowsErrorMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ex = new RuntimeException("résumé clipboard failed");
+
+        var next = update.apply(
+          state,
+          new Action.CopyIconFailed("Ω", ex)
+        );
+
+        assertThat(next.statusMessage(), containsString("résumé clipboard failed"));
+    }
+
+    @Test
+    void appVersionRequestSignalsIdle() {
+        var update = new Update();
+        var state = ViewState.initial();
+
+        var next = update.apply(state, new Action.AppVersionRequested());
+
+        assertThat(next.status(), instanceOf(ActivityState.Idle.class));
+    }
+
+    @Test
+    void appVersionResolvedSignalsSuccessAndSetsVersion() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var next = update.apply(
+          state,
+          new Action.AppVersionResolved("1.2.3", "12.4.0")
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Success.class));
+        assertThat(next.version(), instanceOf(AppVersion.Ready.class));
+        var v = (AppVersion.Ready) next.version();
+        assertThat(v.appValue(), is("1.2.3"));
+        assertThat(v.ikonliValue(), is("12.4.0"));
+    }
+
+    @Test
+    void appVersionFailedSignalsErrorAndSetsFailedVersion() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ex = new IllegalStateException("cliché cannot read version");
+
+        var next = update.apply(state, new Action.AppVersionFailed(ex));
+
+        assertThat(next.status(), instanceOf(ActivityState.Error.class));
+        assertThat(next.version(), instanceOf(AppVersion.Failed.class));
+        var v = (AppVersion.Failed) next.version();
+        assertThat(v.reason(), containsString("cliché cannot read version"));
     }
 }

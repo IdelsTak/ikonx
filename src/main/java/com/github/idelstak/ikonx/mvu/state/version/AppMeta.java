@@ -21,14 +21,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu;
+package com.github.idelstak.ikonx.mvu.state.version;
 
-import com.github.idelstak.ikonx.mvu.state.*;
 import java.util.*;
 
-public record UpdateResult(ViewState state, Optional<Effect> effect) {
+public record AppMeta(Optional<String> appVersion, Optional<String> ikonliVersion) {
 
-    public static UpdateResult initial() {
-        return new UpdateResult(ViewState.initial(), Optional.empty());
-    }
 }

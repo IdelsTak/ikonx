@@ -26,6 +26,7 @@ package com.github.idelstak.ikonx.mvu;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.version.*;
 import java.util.*;
 
 public final class Update {
@@ -63,6 +64,12 @@ public final class Update {
                 copySucceeded(state, a);
             case Action.CopyIconFailed a ->
                 copyFailed(state, a);
+            case Action.AppVersionRequested _ ->
+                versionRequested(state);
+            case Action.AppVersionResolved a ->
+                versionResolved(state, a);
+            case Action.AppVersionFailed a ->
+                versionFailed(state, a);
         };
     }
 
@@ -109,6 +116,25 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
+    private List<PackIkon> filterIcons(Set<Pack> selectedPacks, String searchText) {
+        if (selectedPacks.isEmpty()) {
+            return List.of();
+        }
+
+        var icons = selectedPacks.stream()
+          .flatMap(pack -> iconCache.get(pack).stream())
+          .toList();
+
+        if (searchText == null || searchText.isBlank() || searchText.length() < 2) {
+            return icons;
+        }
+
+        var lower = searchText.toLowerCase(Locale.ROOT);
+        return icons.stream()
+          .filter(ikon -> ikon.ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
+          .toList();
+    }
+
     private ViewState copyRequested(ViewState state, Action.CopyIconRequested action) {
         return state
           .signal(new ActivityState.Idle())
@@ -127,22 +153,21 @@ public final class Update {
           .message("Failed to copy '" + action.iconCode() + "' to clipboard: " + action.error().getMessage());
     }
 
-    private List<PackIkon> filterIcons(Set<Pack> selectedPacks, String searchText) {
-        if (selectedPacks.isEmpty()) {
-            return List.of();
-        }
+    private ViewState versionRequested(ViewState state) {
+        return state.signal(new ActivityState.Idle());
+    }
 
-        var icons = selectedPacks.stream()
-          .flatMap(pack -> iconCache.get(pack).stream())
-          .toList();
+    private ViewState versionResolved(ViewState state, Action.AppVersionResolved action) {
+        return state
+          .signal(new ActivityState.Success())
+          .version(new AppVersion.Ready(action.appVersion(), action.ikonliVersion()));
+    }
 
-        if (searchText == null || searchText.isBlank() || searchText.length() < 2) {
-            return icons;
-        }
-
-        var lower = searchText.toLowerCase(Locale.ROOT);
-        return icons.stream()
-          .filter(ikon -> ikon.ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
-          .toList();
+    private ViewState versionFailed(ViewState state, Action.AppVersionFailed action) {
+        var message = action.error().getMessage();
+        return state
+          .signal(new ActivityState.Error())
+          .version(new AppVersion.Failed(message))
+          .message(message);
     }
 }

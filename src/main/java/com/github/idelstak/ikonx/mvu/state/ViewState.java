@@ -25,9 +25,11 @@ package com.github.idelstak.ikonx.mvu.state;
 
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.state.ActivityState.Idle;
+import com.github.idelstak.ikonx.mvu.state.version.*;
 import java.util.*;
 
 public record ViewState(
+  AppVersion version,
   String searchText,
   Set<Pack> selectedPacks,
   List<PackIkon> displayedIcons,
@@ -40,23 +42,27 @@ public record ViewState(
     }
 
     public ViewState search(String text) {
-        return new ViewState(text, selectedPacks, displayedIcons, status, statusMessage);
+        return new ViewState(version, text, selectedPacks, displayedIcons, status, statusMessage);
     }
 
     public ViewState select(Set<Pack> packs) {
-        return new ViewState(searchText, packs, displayedIcons, status, statusMessage);
+        return new ViewState(version, searchText, packs, displayedIcons, status, statusMessage);
     }
 
     public ViewState display(List<PackIkon> icons) {
-        return new ViewState(searchText, selectedPacks, icons, status, statusMessage);
+        return new ViewState(version, searchText, selectedPacks, icons, status, statusMessage);
     }
 
     public ViewState signal(ActivityState state) {
-        return new ViewState(searchText, selectedPacks, displayedIcons, state, statusMessage);
+        return new ViewState(version, searchText, selectedPacks, displayedIcons, state, statusMessage);
     }
 
     public ViewState message(String text) {
-        return new ViewState(searchText, selectedPacks, displayedIcons, status, text);
+        return new ViewState(version, searchText, selectedPacks, displayedIcons, status, text);
+    }
+
+    public ViewState version(AppVersion version) {
+        return new ViewState(version, searchText, selectedPacks, displayedIcons, status, statusMessage);
     }
 
     public static ViewState initial() {
@@ -70,6 +76,7 @@ public record ViewState(
           .toList();
 
         return new ViewState(
+          new AppVersion.Unknown(),
           "",
           Set.of(first),
           icons,

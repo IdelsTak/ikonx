@@ -78,3 +78,17 @@ jobs:
           git add pom.xml
           git commit -m "ci: bump version to $NEXT"
           git push
+      
+      - name: Create and push git tag
+        id: update-tag
+        run: |
+          NEXT=${{ steps.version.outputs.next }}
+          TAG="v$NEXT"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists"
+            exit 1
+          fi
+
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"

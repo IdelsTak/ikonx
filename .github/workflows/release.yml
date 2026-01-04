@@ -1,0 +1,108 @@
+name: Release UI
+
+on:
+  workflow_run:
+    workflows: ["Calculate Version"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    name: Extract Project Info
+    runs-on: ubuntu-latest
+    outputs:
+      java_version: ${{ steps.extract.outputs.java_version }}
+      project_name: ${{ steps.extract.outputs.project_name }}
+      version: ${{ steps.read_version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install xmlstarlet
+        run: sudo apt-get install -y xmlstarlet
+
+      - name: Extract Java Version and Project Name
+        id: extract
+        run: |
+          JAVA_VERSION=$(xmlstarlet sel -t -v "/*[local-name()='project']/*[local-name()='properties']/*[local-name()='maven.compiler.release']" pom.xml)
+          PROJECT_NAME=$(xmlstarlet sel -t -v "/*[local-name()='project']/*[local-name()='artifactId']" pom.xml)
+          echo "java_version=$JAVA_VERSION" >> $GITHUB_OUTPUT
+          echo "project_name=$PROJECT_NAME" >> $GITHUB_OUTPUT
+
+      - name: Read Current Version
+        id: read_version
+        run: |
+          VERSION=$(xmlstarlet sel -t -v "/*[local-name()='project']/*[local-name()='version']" pom.xml)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Detected version: $VERSION"
+
+  build:
+    name: Build Runtime Images
+    needs: [extract]
+    strategy:
+      matrix:
+        os: [ubuntu, macos, windows]
+    runs-on: ${{ matrix.os }}-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: ${{ needs.extract.outputs.java_version }}
+
+      - name: Determine platform name
+        id: platform
+        shell: bash
+        run: |
+          case "${{ matrix.os }}" in
+            ubuntu)  echo "name=linux" >> $GITHUB_OUTPUT ;;
+            macos)   echo "name=macos" >> $GITHUB_OUTPUT ;;
+            windows) echo "name=windows" >> $GITHUB_OUTPUT ;;
+          esac
+
+      - name: Build runtime image
+        shell: bash
+        run: mvn clean verify -Dmaven.test.skip=true
+
+      - name: Rename runtime image zip
+        shell: bash
+        run: |
+          VERSION=${{ needs.extract.outputs.version }}
+          cd target
+          mv ${{ needs.extract.outputs.project_name }}-$VERSION.zip ${{ needs.extract.outputs.project_name }}-${{ steps.platform.outputs.name }}-$VERSION.zip
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.extract.outputs.project_name }}-${{ steps.platform.outputs.name }}-${{ needs.extract.outputs.version }}
+          path: target/${{ needs.extract.outputs.project_name }}-${{ steps.platform.outputs.name }}-${{ needs.extract.outputs.version }}.zip
+          compression-level: 0
+          if-no-files-found: error
+          retention-days: 1
+
+  attach:
+    name: Attach to Release
+    needs: [extract, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download built images
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Attach runtime images
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ needs.extract.outputs.version }}
+          files: artifacts/**/*.zip

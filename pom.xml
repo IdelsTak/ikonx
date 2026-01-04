@@ -8,12 +8,12 @@
   <name>IkonX</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <artifact.name>ikonx</artifact.name>
     <exec.mainClass>com.github.idelstak.ikonx.Main</exec.mainClass>
     <packageClassName>com.github.idelstak.ikonx.Main</packageClassName>
     <maven.compiler.release>25</maven.compiler.release>
     <javafx.version>25</javafx.version>
     <ikonli.version>12.4.0</ikonli.version>
-    <!--<jdk.package.path>C:\Program Files\Java\zulu25.28.85-ca-jdk25.0.0-win_x64</jdk.package.path>         change this to your JDK path for building the installer or executable-->
   </properties>
   <dependencies>
     <!--JavaFX-->
@@ -357,7 +357,7 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>4.2</version>
+        <version>5.0.0</version>
         <configuration>
           <header>${basedir}/LICENSE</header>
           <includes>
@@ -379,10 +379,11 @@
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.4.2</version>
         <configuration>
+          <outputDirectory>${project.build.directory}/libs</outputDirectory>
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <classpathPrefix>libs/</classpathPrefix>
+              <classpathPrefix>../libs/</classpathPrefix>
               <mainClass>${exec.mainClass}</mainClass>
             </manifest>
           </archive>
@@ -406,76 +407,117 @@
           </execution>
         </executions>
       </plugin>
-      <!--            Added javapackager so it's easy to open or use when building your own product in javafx-->
-      <!--            <plugin>
-                        <groupId>io.github.fvarrui</groupId>
-                        <artifactId>javapackager</artifactId>
-                        <version>1.7.6</version>
-                        latest as of now 
-                        <executions>
-                        <execution>
-                        <phase>package</phase>
-                        <goals>
-                        <goal>package</goal>
-                        </goals>
-                        <configuration>
-                        Your JavaFX main class 
-                        <mainClass>${exec.mainClass}</mainClass>
-                        
-                        Bundle JRE so users don't need Java installed 
-                        <bundleJre>true</bundleJre>
-                        <customizedJre>true</customizedJre>
-                        <jdkPath>${jdk.package.path}</jdkPath>
-                        
-                        <licenseFile>LICENSE</licenseFile>
-                        
-                        
-                        Generate Windows installer (exe + optional MSI) 
-                        <generateInstaller>true</generateInstaller>
-                        <createZipball>false</createZipball>
-                        
-                        Target platform 
-                        <platform>windows</platform>
-                        
-                        App metadata 
-                        <name>IkonX</name>
-                        <displayName>IkonX Desktop</displayName>
-                        
-                        <version>1.0.0</version>
-                        <description>IkonX</description>
-                        <administratorRequired>false</administratorRequired>
-                        
-                        Windows-specific settings 
-                        <winConfig>
-                        <exeCreationTool>winrun4j</exeCreationTool>
-                        
-                        <headerType>gui</headerType>
-                        <wrapJar>true</wrapJar>
-                        <disableDirPage>false</disableDirPage>
-                        <productName>IconX</productName>
-                        <productVersion>1.0.0</productVersion>
-                        
-                        <internalName>IconX</internalName>
-                        <shortcutName>IconX</shortcutName>
-                        <originalFilename>autobot.exe</originalFilename>
-                        <internalName>IconX</internalName>
-                        
-                        <setupMode>askTheUser</setupMode>
-                        
-                        <disableProgramGroupPage>false</disableProgramGroupPage>
-                        <disableFinishedPage>false</disableFinishedPage>
-                        <disableRunAfterInstall>false</disableRunAfterInstall>
-                        <disableWelcomePage>false</disableWelcomePage>
-                        
-                        
-                        </winConfig>
-                        
-                        You can add similar configurations for macOS and Linux if needed
-                        
-                        </configuration>
-                        </execution>
-                        </executions>
-                        </plugin>-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.7.1</version>
+        <executions>
+          <execution>
+            <id>zip-dist</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <finalName>${artifact.name}-${project.version}</finalName>
+              <appendAssemblyId>false</appendAssemblyId>
+              <descriptors>
+                <descriptor>src/assembly/dist.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.panteleyev</groupId>
+        <artifactId>jpackage-maven-plugin</artifactId>
+        <version>1.7.1</version>
+        <executions>
+          <execution>
+            <id>package-app</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jpackage</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <name>${artifact.name}-${project.version}</name>
+          <appVersion>${project.version}</appVersion>
+          <vendor>Idelstak</vendor>
+          <input>${project.build.directory}/libs</input>
+          <destination>${project.build.directory}/dist</destination>
+          <mainJar>${project.build.directory}/libs/${project.build.finalName}.jar</mainJar>
+          <mainClass>${exec.mainClass}</mainClass>
+          <removeDestination>false</removeDestination>
+          <javaOptions>
+            <option>--enable-preview</option>
+            <option>--enable-native-access=ALL-UNNAMED</option>
+            <option>-Dfile.encoding=UTF-8</option>
+          </javaOptions>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>win</id>
+      <activation>
+        <os>
+          <family>windows</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.panteleyev</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <configuration>
+              <icon>${project.basedir}/icons/logo.ico</icon>
+              <winMenu>true</winMenu>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>mac</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.panteleyev</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <configuration>
+              <icon>${project.basedir}/icons/logo.icns</icon>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>linux</id>
+      <activation>
+        <os>
+          <family>linux</family>
+        </os>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.panteleyev</groupId>
+            <artifactId>jpackage-maven-plugin</artifactId>
+            <configuration>
+              <type>APP_IMAGE</type>
+              <icon>${project.basedir}/icons/logo128.png</icon>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

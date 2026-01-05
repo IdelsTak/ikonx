@@ -47,7 +47,7 @@ public class Ikonx extends Application {
         loader.setControllerFactory(_ -> new IconView(new StateFlow(new IconClipboard(), meta)));
         // var loader = new FXMLLoader(getClass().getResource("/fxml/ikonx-view.fxml"));
         // loader.setControllerFactory(_ -> new IkonxView());
-        
+
         var root = loader.<Parent>load();
         var scene = new Scene(root);
 

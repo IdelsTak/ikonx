@@ -23,9 +23,10 @@
  */
 package com.github.idelstak.ikonx.icons;
 
+import java.util.*;
 import org.kordamp.ikonli.*;
 
-public record PackIkon(Pack pack, Ikon ikon) {
+public record PackIkon(Pack pack, Ikon ikon) implements Comparable<PackIkon> {
 
     @Override
     public String toString() {
@@ -36,5 +37,11 @@ public record PackIkon(Pack pack, Ikon ikon) {
         sb.append('}');
         return sb.toString();
     }
-    
+
+    @Override
+    public int compareTo(PackIkon o) {
+        return Comparator.comparing((PackIkon pi) -> pi.pack().name())
+          .thenComparing(pi -> pi.ikon().getDescription())
+          .compare(this, o);
+    }
 }

@@ -23,9 +23,12 @@
  */
 package com.github.idelstak.ikonx.view;
 
+import java.io.*;
 import java.net.*;
 import java.util.*;
+import javafx.application.*;
 import javafx.fxml.*;
+import javafx.scene.*;
 import javafx.scene.layout.*;
 
 public class IkonxView implements Initializable {
@@ -37,7 +40,19 @@ public class IkonxView implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // TODO
-    }
+        System.out.println("[IKONX VIEW] init...");
 
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/inner-main.fxml"));
+                loader.setController(new InnerMainView());
+                Node inner = loader.load();
+                if (mainLayout != null) {
+                    mainLayout.setCenter(inner);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
 }

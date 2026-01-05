@@ -23,8 +23,12 @@
  */
 package com.github.idelstak.ikonx.view;
 
+import com.github.idelstak.ikonx.icons.*;
+import com.github.idelstak.ikonx.view.grid.*;
 import java.net.*;
 import java.util.*;
+import javafx.application.*;
+import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.layout.*;
 
@@ -32,10 +36,30 @@ public class InnerMainView implements Initializable {
 
     @FXML
     private BorderPane innerMainLayout;
+    private IconGrid iconGrid;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+        System.out.println("[INNER MAIN VIEW] init...");
+
+        setupIconGrid();
+
+        Platform.runLater(() -> {
+            var allIkons = Arrays.stream(Pack.values())
+              .flatMap(p -> Arrays.stream(p.getIkons()).map(i -> new PackIkon(p, i)))
+              .toList();
+            var icons = FXCollections.observableArrayList(allIkons);
+            System.out.println("[INNER MAIN VIEW] icons count = " + icons.size());
+            iconGrid.setItems(icons.sorted());
+            innerMainLayout.setCenter(iconGrid);
+        });
+    }
+
+    private void setupIconGrid() {
+        iconGrid = new IconGrid();
+        iconGrid.setCellFactory(IconGridCell::new);
+        iconGrid.setCellWidth(220);
+        iconGrid.setCellHeight(120);
+        iconGrid.setListRowHeight(52);
+    }
 }

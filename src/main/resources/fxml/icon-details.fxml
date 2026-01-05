@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
-<VBox styleClass="details-panel" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.IconDetailsView">
+<VBox styleClass="details-panel" visible="false" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.IconDetailsView">
    <stylesheets>
       <URL value="@../styles/fonts.css" />
       <URL value="@../styles/ikonx-root.css" />

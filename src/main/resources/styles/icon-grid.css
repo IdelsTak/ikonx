@@ -1,0 +1,53 @@
+.icon-grid {
+    -fx-padding: 12px;
+    -fx-background-color: #f5f5f5
+}
+.icon-grid-row {
+    -fx-alignment: center-left
+}
+.icon-grid-cell {
+    -fx-background-color: white;
+    -fx-border-color: #e5e5e5;
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-background-radius: 12px;
+    -fx-padding: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 4, 0, 0, 2)
+}
+.icon-grid-cell:hover {
+    -fx-border-color: #a5b4fc;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
+    -fx-translate-y: -2px
+}
+.grid-root {
+    -fx-spacing: 12px
+}
+.list-root {
+    -fx-spacing: 16px
+}
+.grid-root .icon-font {
+    -fx-icon-size: 36px
+}
+.list-root .icon-font {
+    -fx-icon-size: 24px
+}
+.text-container {
+    -fx-alignment: CENTER;
+    -fx-spacing: 4px
+}
+.grid-mode .text-container, .grid-mode .grid-root {
+    -fx-alignment: CENTER
+}
+.list-mode .text-container, .list-mode .list-root {
+    -fx-alignment: CENTER_LEFT
+}
+.name-label {
+    -fx-font-family: 'Inter SemiBold';
+    -fx-font-size: 0.95em;
+    -fx-text-fill: #404040
+}
+.pack-label {
+    -fx-font-family: 'Inter Medium';
+    -fx-font-size: 0.8em;
+    -fx-text-fill: #a3a3a3
+}

@@ -3,4 +3,4 @@
 <?import javafx.scene.layout.*?>
 
 
-<Pane fx:id="overlayPane" styleClass="overlay" stylesheets="@../styles/overlay.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" />
+<Pane fx:id="overlayPane" styleClass="overlay" stylesheets="@../styles/overlay.css" visible="false" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" />

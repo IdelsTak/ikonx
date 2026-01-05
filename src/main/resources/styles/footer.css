@@ -1,0 +1,29 @@
+.footer {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e5e5 transparent transparent transparent;
+    -fx-border-width: 1px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12px;
+    -fx-padding: 6px
+}
+.footer .label {
+    -fx-font-family: 'Inter Medium';
+    -fx-font-size: 11px;
+    -fx-text-fill: #737373
+}
+.status-indicator {
+    -fx-fill: #10b981
+}
+.separator {
+    -fx-orientation: vertical;
+    -fx-max-height: 12px
+}
+.version-label {
+    -fx-cursor: hand
+}
+.version-label:hover {
+    -fx-text-fill: #4f46e5
+}
+.footer .label {
+    -fx-text-fill: #737373
+}

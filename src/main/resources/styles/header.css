@@ -1,0 +1,122 @@
+.header-container {
+    -fx-background-color: white;
+    -fx-padding: 16px;
+    -fx-spacing: 16px;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #e5e7eb;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.04), 8, 0, 0, 2);
+}
+.header-row {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12px
+}
+.logo-area {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 12px
+}
+.logo-icon-wrapper {
+    -fx-background-color: #4f46e5;
+    -fx-padding: 8px;
+    -fx-background-radius: 8px
+}
+.logo-icon {
+    -fx-icon-color: white;
+    -fx-icon-size: 20px
+}
+.title-text-main {
+    -fx-font-size: 18px;
+    -fx-font-family: 'Inter Bold';
+    -fx-fill: #1f2937
+}
+.title-text-version {
+    -fx-font-size: 14px;
+    -fx-fill: #9ca3af
+}
+.app-subtitle {
+    -fx-font-size: 10px;
+    -fx-text-fill: #9ca3af;
+    -fx-font-family: 'Inter Semibold'
+}
+.controls-area {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 3px
+}
+.icon-button {
+    -fx-background-color: transparent;
+    -fx-padding: 8px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand
+}
+.icon-button .ikonli-font-icon {
+    -fx-icon-color: #6b7280;
+    -fx-icon-size: 16px
+}
+.icon-button:hover {
+    -fx-background-color: #f3f4f6
+}
+.control-icon {
+    -fx-icon-size: 20px;
+    -fx-icon-color: #6b7280
+}
+.control-separator {
+    -fx-orientation: vertical;
+    -fx-max-height: 24px
+}
+.copy-format-combo {
+    -fx-font-size: 12px;
+    -fx-font-family: 'Inter Medium';
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 6px;
+    -fx-border-width: 0;
+    -fx-padding: 2px 6px 2px 6px
+}
+.copy-format-combo:focused .arrow-button {
+    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.5), 10, 0, 0, 0)
+}
+.search-bar {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-width: 2px;
+    -fx-border-color: transparent;
+    -fx-alignment: CENTER_LEFT
+}
+.search-bar:focused-within {
+    -fx-background-color: white;
+    -fx-border-color: #4f46e5
+}
+.search-bar-icon {
+    -fx-icon-size: 16px;
+    -fx-icon-color: #9ca3af;
+    -fx-padding: 0 0 0 12px
+}
+.search-input {
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 16px 8px 40px
+}
+.filter-button {
+    -fx-background-color: #f3f4f6;
+    -fx-background-radius: 8px;
+    -fx-font-size: 14px;
+    -fx-font-family: 'Inter Medium';
+    -fx-text-fill: #374151;
+    -fx-padding: 8px 12px 8px 8px;
+    -fx-cursor: hand
+}
+.filter-button:hover {
+    -fx-background-color: #e5e7eb
+}
+.filter-button-graphic {
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 8px
+}
+.filter-button-graphic .ikonli-font-icon {
+    -fx-icon-size: 16px
+}
+.filter-button-graphic .label {
+    -fx-padding: 0
+}
+.dropdown-arrow {
+    -fx-fill: -fx-mark-color
+}

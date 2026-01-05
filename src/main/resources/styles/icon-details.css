@@ -1,0 +1,98 @@
+.details-panel {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent transparent transparent #e5e5e5;
+    -fx-border-width: 1px;
+    -fx-pref-width: 320px;
+    -fx-max-width: 320px
+}
+.panel-header {
+    -fx-padding: 16px;
+    -fx-border-color: transparent transparent #e5e5e5 transparent;
+    -fx-border-width: 1px
+}
+.header-title {
+    -fx-font-family: 'Inter Bold';
+    -fx-font-size: 1.3em
+}
+.close-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 999px;
+    -fx-padding: 4px;
+    -fx-cursor: hand
+}
+.close-button:hover {
+    -fx-background-color: #f5f5f5
+}
+.close-icon {
+    -fx-stroke: #a3a3a3;
+    -fx-stroke-width: 2.5
+}
+.content-box {
+    -fx-padding: 24px;
+    -fx-spacing: 32px
+}
+.icon-display-box {
+    -fx-padding: 32px;
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 16px;
+    -fx-border-color: #d4d4d4;
+    -fx-border-radius: 16px;
+    -fx-border-style: dashed;
+    -fx-border-width: 1px;
+    -fx-alignment: center;
+    -fx-spacing: 4px
+}
+.icon-preview {
+    -fx-min-width: 80px;
+    -fx-min-height: 80px;
+    -fx-max-width: 80px;
+    -fx-max-height: 80px;
+    -fx-border-color: #4f46e5;
+    -fx-border-width: 4px;
+    -fx-border-radius: 12px;
+    -fx-margin: 0 0 16px 0
+}
+.icon-title {
+    -fx-font-family: 'Inter bold';
+    -fx-font-size: 18px
+}
+.icon-subtitle, .info-label {
+    -fx-text-fill: #737373
+}
+.info-row {
+    -fx-alignment: center-left
+}
+.info-value {
+    -fx-font-family: 'Inter Medium'
+}
+.tag-neutral {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 4px;
+    -fx-padding: 2px 8px 2px 8px;
+    -fx-font-family: 'Inter Semibold'
+}
+.tag-emerald {
+    -fx-background-color: #ecfdf5;
+    -fx-background-radius: 4px;
+    -fx-padding: 2px 8px 2px 8px;
+    -fx-text-fill: #059669;
+    -fx-font-family: 'Inter Medium'
+}
+.button-section {
+    -fx-padding: 16px 0 0 0;
+    -fx-border-color: #e5e5e5 transparent transparent transparent;
+    -fx-border-width: 1px;
+    -fx-spacing: 12px
+}
+.copy-button {
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: white;
+    -fx-background-radius: 12px;
+    -fx-font-family: 'Inter bold';
+    -fx-padding: 12px;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.2), 10, 0, 0, 4)
+}
+.copy-button:hover {
+    -fx-background-color: #4338ca
+}

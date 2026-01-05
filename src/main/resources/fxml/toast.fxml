@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox styleClass="toast-container" mouseTransparent="true" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.ToastView">
+   <stylesheets>
+      <URL value="@../styles/fonts.css" />
+      <URL value="@../styles/ikonx-root.css" />
+      <URL value="@../styles/toast.css" />
+   </stylesheets>
+   <children>
+      <Region styleClass="vertical-spacer" VBox.vgrow="ALWAYS" />
+      <HBox VBox.vgrow="NEVER">
+         <children>
+            <Region styleClass="horizontal-spacer" HBox.hgrow="ALWAYS" />
+            <HBox fx:id="toast" alignment="CENTER" fillHeight="false" styleClass="toast">
+                <children>
+                    <SVGPath content="M20,6 L9,17 L4,12" styleClass="toast-icon" />
+                    <Label fx:id="toastMsg" styleClass="toast-label" text="Copied!" />
+                </children>
+            </HBox>
+            <Region styleClass="horizontal-spacer" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+   </children>
+   <StackPane.margin>
+            <!-- Corresponds to bottom-12 -->
+            <Insets bottom="32.0" />
+         </StackPane.margin>
+
+</VBox>

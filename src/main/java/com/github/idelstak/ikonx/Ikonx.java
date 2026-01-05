@@ -45,6 +45,9 @@ public class Ikonx extends Application {
     public void start(Stage primaryStage) throws Exception {
         var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
         loader.setControllerFactory(_ -> new IconView(new StateFlow(new IconClipboard(), meta)));
+        // var loader = new FXMLLoader(getClass().getResource("/fxml/ikonx-view.fxml"));
+        // loader.setControllerFactory(_ -> new IkonxView());
+        
         var root = loader.<Parent>load();
         var scene = new Scene(root);
 

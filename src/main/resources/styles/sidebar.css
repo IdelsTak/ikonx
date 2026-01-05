@@ -1,0 +1,26 @@
+.sidebar {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent #e5e5e5 transparent transparent;
+    -fx-border-width: 1px;
+    -fx-max-width: 256px
+}
+.sidebar-content {
+    -fx-padding: 16px
+}
+.section-header .label {
+    -fx-font-family: 'Inter Bold';
+    -fx-text-fill: #a3a3a3
+}
+.svg-icon {
+    -fx-stroke: #a3a3a3;
+    -fx-stroke-width: 2;
+    -fx-fill: none;
+    -fx-scale-x: 0.58;
+    -fx-scale-y: 0.58
+}
+.placeholder-text {
+    -fx-font-size: 0.9em;
+    -fx-text-fill: #a3a3a3;
+    -fx-font-family: "Inter Light";
+    -fx-pref-width: 224px
+}

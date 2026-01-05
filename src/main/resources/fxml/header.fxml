@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+
+<VBox styleClass="header-container" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.HeaderView">
+    <stylesheets>
+        <URL value="@../styles/fonts.css" />
+        <URL value="@../styles/ikonx-root.css" />
+        <URL value="@../styles/header.css" />
+    </stylesheets>
+
+    <!-- Top Row: Logo and Main Controls -->
+    <HBox styleClass="header-row">
+        <!-- Logo and Title Area -->
+        <HBox styleClass="logo-area">
+            <StackPane styleClass="logo-icon-wrapper">
+                <FontIcon iconLiteral="bi-lightning-charge-fill" styleClass="logo-icon" />
+            </StackPane>
+            <VBox>
+                <TextFlow fx:id="titleTextFlow">
+                    <children>
+                        <Text styleClass="title-text-main" text="IkonX " />
+                        <Text fx:id="titleVersion" layoutX="10.0" layoutY="10.0" styleClass="title-text-version" text="v1.2" />
+                    </children>
+                </TextFlow>
+                <Label styleClass="app-subtitle" text="ICON BROWSER &amp; MANAGER" />
+            </VBox>
+        </HBox>
+
+        <!-- Spacer to push controls to the right -->
+        <Pane HBox.hgrow="ALWAYS" />
+
+        <!-- Right-side Controls -->
+        <HBox styleClass="controls-area">
+            <Button fx:id="toggleViewButton" styleClass="icon-button">
+                <graphic>
+                    <FontIcon iconLiteral="ti-view-grid" styleClass="control-icon" />
+                </graphic>
+            </Button>
+            <Separator styleClass="control-separator" />
+            <ComboBox fx:id="copyFormatComboBox" styleClass="copy-format-combo" />
+        </HBox>
+    </HBox>
+
+    <!-- Bottom Row: Search and Filter -->
+    <HBox styleClass="header-row">
+        <!-- Search Bar -->
+        <StackPane styleClass="search-bar" HBox.hgrow="ALWAYS">
+            <FontIcon iconLiteral="bi-search" styleClass="search-bar-icon">
+                <StackPane.margin>
+                    <Insets left="6.0" />
+                </StackPane.margin>
+            </FontIcon>
+            <TextField fx:id="searchInput" promptText="Search 2,000+ icons..." styleClass="search-input" />
+        </StackPane>
+
+        <!-- Filter Button -->
+        <Button fx:id="filterButton" styleClass="filter-button">
+            <graphic>
+                <HBox styleClass="filter-button-graphic">
+                    <FontIcon iconLiteral="bx-filter-alt" />
+                    <Label fx:id="packCountLabel" text="Packs (6)" />
+                    <SVGPath content="M 0 0 h 7 l -3.5 4 z" styleClass="dropdown-arrow" />
+                </HBox>
+            </graphic>
+        </Button>
+    </HBox>
+</VBox>

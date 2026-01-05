@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox styleClass="sidebar" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.SidebarView">
+    <stylesheets>
+        <URL value="@../styles/fonts.css" />
+        <URL value="@../styles/ikonx-root.css" />
+        <URL value="@../styles/sidebar.css" />
+    </stylesheets>
+
+    <children>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="scroll-pane" VBox.vgrow="ALWAYS">
+            <content>
+                <VBox spacing="24.0" styleClass="sidebar-content">
+                    <!-- Favorites Section -->
+                    <VBox spacing="12.0">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
+                                <children>
+                                    <StackPane prefHeight="14.0" prefWidth="14.0">
+                                        <SVGPath content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z" styleClass="svg-icon" />
+                                    </StackPane>
+                                    <Label text="FAVORITES" />
+                                </children>
+                            </HBox>
+                            <TilePane fx:id="favoritesGrid" hgap="8.0" prefColumns="4" vgap="8.0">
+                                <children>
+                                    <Label styleClass="placeholder-text" text="No favorites yet" TilePane.alignment="TOP_LEFT" />
+                                </children>
+                            </TilePane>
+                        </children>
+                    </VBox>
+                    <!-- Recent Section -->
+                    <VBox spacing="12.0">
+                        <children>
+                            <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
+                                <children>
+                                    <StackPane prefHeight="14.0" prefWidth="14.0">
+                                        <SVGPath content="M22,12A10,10 0 1 1 2,12A10,10 0 0 1 22,12ZM12,6L12,12L16,14" styleClass="svg-icon" />
+                                    </StackPane>
+                                    <Label text="RECENT" />
+                                </children>
+                            </HBox>
+                            <VBox fx:id="historyList" spacing="8.0" />
+                        </children>
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+
+</VBox>

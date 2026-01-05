@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.layout.*?>
+
+
+<StackPane fx:id="innerMainStack" styleClass="inner-main-stack" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.InnerMainView">
+   <children>
+      <BorderPane fx:id="innerMainLayout">
+          <left>
+              <fx:include source="sidebar.fxml" />
+          </left>
+      </BorderPane>
+      <fx:include source="overlay.fxml" />
+      <fx:include source="icon-details.fxml" StackPane.alignment="CENTER_RIGHT" />
+   </children>
+   <stylesheets>
+      <URL value="@../styles/fonts.css" />
+      <URL value="@../styles/ikonx-root.css" />
+      <URL value="@../styles/inner-main.css" />
+   </stylesheets>
+</StackPane>

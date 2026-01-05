@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane
+    fx:id="rootStack"
+    styleClass="root-stack"
+    xmlns="http://javafx.com/javafx/25"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.github.idelstak.ikonx.view.IkonxView">
+    <stylesheets>
+        <URL
+            value="@../styles/fonts.css" />
+        <URL
+            value="@../styles/ikonx-root.css" />
+    </stylesheets>
+    <children>
+        <BorderPane
+            fx:id="mainLayout">
+            <top>
+                <fx:include
+                    source="header.fxml" />
+            </top>
+            <bottom>
+                <fx:include
+                    source="footer.fxml" />
+            </bottom>
+            <center>
+                <fx:include
+                    source="inner-main.fxml" />
+            </center>
+        </BorderPane>
+        <fx:include
+            source="toast.fxml" />
+    </children>
+</StackPane>

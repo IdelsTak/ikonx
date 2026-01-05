@@ -1,0 +1,28 @@
+.toast-container {
+    -fx-padding: 2px
+}
+.toast {
+    -fx-background-color: #171717;
+    -fx-padding: 6px 16px 6px 16px;
+    -fx-background-radius: 999px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 24, 0, 0, 8);
+    -fx-spacing: 3px
+}
+.toast-label {
+    -fx-text-fill: white;
+    -fx-font-size: 0.9em;
+    -fx-font-family: 'Inter bold'
+}
+.toast-icon {
+    -fx-stroke: #34d399;
+    -fx-stroke-width: 2.5;
+    -fx-fill: none;
+    -fx-scale-x: 0.58;
+    -fx-scale-y: 0.58
+}
+.horizontal-spacer {
+    -fx-max-width: 'Infinity'
+}
+.vertical-spacer {
+    -fx-max-height: 'Infinity'
+}

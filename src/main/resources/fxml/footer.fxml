@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+
+<HBox styleClass="footer" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.FooterView">
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="4.0">
+         <children>
+            <Circle fill="#10b981" radius="4.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" styleClass="status-indicator" />
+            <Label text="System Ready" />
+         </children>
+      </HBox>
+      <Separator orientation="VERTICAL" />
+      <Label fx:id="statusCountLabel" maxWidth="1.7976931348623157E308" text="0 Icons available" HBox.hgrow="ALWAYS" />
+      <Label styleClass="version-label" text="v1.2 Stable" />
+   </children>
+   <stylesheets>
+      <URL value="@../styles/fonts.css" />
+      <URL value="@../styles/ikonx-root.css" />
+      <URL value="@../styles/footer.css" />
+   </stylesheets>
+</HBox>

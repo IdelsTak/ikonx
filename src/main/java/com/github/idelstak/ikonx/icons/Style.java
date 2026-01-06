@@ -23,25 +23,50 @@
  */
 package com.github.idelstak.ikonx.icons;
 
-import java.util.*;
+public sealed interface Style {
 
-public record PackIkon(Pack pack, StyledIkon styledIkon) implements Comparable<PackIkon> {
-
-    @Override
-    public int compareTo(PackIkon o) {
-        return Comparator
-          .comparing((PackIkon p) -> p.pack().name())
-          .thenComparing(PackIkon::styledIkon)
-          .compare(this, o);
+    record Filled() implements Style {
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append('{');
-        sb.append(pack);
-        sb.append(", ").append(styledIkon);
-        sb.append('}');
-        return sb.toString();
+    record Regular() implements Style {
+    }
+
+    record Solid() implements Style {
+    }
+
+    record Bold() implements Style {
+    }
+
+    record ExtraBold() implements Style {
+    }
+
+    record Outlined() implements Style {
+    }
+
+    record Round() implements Style {
+    }
+
+    record Sharp() implements Style {
+    }
+
+    record Stroke() implements Style {
+    }
+
+    record Square() implements Style {
+    }
+
+    record Logo() implements Style {
+    }
+
+    record Brand() implements Style {
+    }
+
+    record Monochrome() implements Style {
+    }
+
+    record Line() implements Style {
+    }
+
+    record Alternate() implements Style {
     }
 }

@@ -2,7 +2,7 @@
 
 ## Why IkonX Exists
 
-Finding the right icon for your JavaFX project can be a hassle. I know the struggle. See, there are more than 45,000 icons spread across 55 different icon packs in [Ikonli](https://github.com/kordamp/ikonli). That's a lot of icon codes to comb through!
+Finding the right icon for your JavaFX project can be a hassle. I know the struggle. See, there are more than 62,000 icons spread across 58 different icon packs in [Ikonli](https://github.com/kordamp/ikonli). That's a lot of icon codes to comb through!
 
 I was inspired by the [AltantaFX sampler](https://downloads.hydraulic.dev/atlantafx/sampler/download.html), which made browsing Material icons a breeze. So, I decided to take it a step further. I created IkonX - the Icon Pack Browser. With this tool, you can easily search, preview, and copy icon codes from **all** available icon packs. No more digging through endless documents to find that perfect icon.
 
@@ -12,7 +12,7 @@ I was inspired by the [AltantaFX sampler](https://downloads.hydraulic.dev/atlant
 
 Here's what you can do with IkonX:
 
-- **One-Stop Shop:** Access icons from all 55 supported icon packs in one place.
+- **One-Stop Shop:** Access icons from all 58 supported icon packs in one place.
 - **Quick Search:** Find icons by searching for their icon codes.
 - **Preview Icons:** See what each icon looks like before you choose.
 - **Copy and Paste:** Click an icon, and its code is automatically copied to your clipboard.
@@ -54,10 +54,15 @@ This strict adherence to MVU results in a predictable, testable, and maintainabl
 
 ## Getting Started with IkonX
 
-1. Clone or download this repository to your computer.
-2. Open it in your favorite Java development environment.
-3. Build and run the IkonX app.
-4. Start finding and using icons from all the packs.
+You’ve got two ways to dive in:
+
+**1. Grab an executable**
+
+Quickest way. Pick your OS (Linux, Windows, or Mac) and grab the release that fits your system from [the releases page](https://github.com/IdelsTak/ikonx/releases). It comes with Java bundled, so no extra installs. Perfect if you just want to jump in and start browsing icons.
+
+**2. Build from source**
+
+Clone or download this repo, open it in your Java IDE, build, and run. Ideal if you like tinkering, contributing, or want the latest tweaks straight from the code.
 
 ## How to Use IkonX
 

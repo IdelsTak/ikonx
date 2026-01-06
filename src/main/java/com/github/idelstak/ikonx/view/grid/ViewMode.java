@@ -21,27 +21,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package com.github.idelstak.ikonx.icons;
+package com.github.idelstak.ikonx.view.grid;
 
-import java.util.*;
+public sealed interface ViewMode {
 
-public record PackIkon(Pack pack, StyledIkon styledIkon) implements Comparable<PackIkon> {
-
-    @Override
-    public int compareTo(PackIkon o) {
-        return Comparator
-          .comparing((PackIkon p) -> p.pack().name())
-          .thenComparing(PackIkon::styledIkon)
-          .compare(this, o);
+    record Grid() implements ViewMode {
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append('{');
-        sb.append(pack);
-        sb.append(", ").append(styledIkon);
-        sb.append('}');
-        return sb.toString();
+    record List() implements ViewMode {
     }
 }

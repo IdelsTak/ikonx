@@ -94,14 +94,17 @@ public class IconGridRow extends IndexedCell<Integer> {
                 cell.updateItem(ikon, false);
                 cell.setVisible(true);
 
-                if (iconGrid.getViewMode() == IconGrid.ViewMode.GRID) {
-                    cell.setMinSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
-                    cell.setPrefSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
-                    cell.setMaxSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
-                } else {
-                    cell.setMinSize(iconGrid.getCellWidth(), iconGrid.getListRowHeight());
-                    cell.setPrefSize(iconGrid.getWidth() * 0.92, iconGrid.getListRowHeight());
-                    cell.setMaxSize(iconGrid.getWidth() * 0.92, iconGrid.getListRowHeight());
+                switch (iconGrid.getViewMode()) {
+                    case ViewMode.Grid _ -> {
+                        cell.setMinSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
+                        cell.setPrefSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
+                        cell.setMaxSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
+                    }
+                    case ViewMode.List _ -> {
+                        cell.setMinSize(iconGrid.getCellWidth(), iconGrid.getListRowHeight());
+                        cell.setPrefSize(iconGrid.getWidth() * 0.92, iconGrid.getListRowHeight());
+                        cell.setMaxSize(iconGrid.getWidth() * 0.92, iconGrid.getListRowHeight());
+                    }
                 }
 
                 root.getChildren().add(cell);

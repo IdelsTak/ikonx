@@ -167,7 +167,7 @@ final class IconViewTest {
             flow.accept(new Action.PackToggled(Pack.BOOTSTRAP, true));
         });
 
-        var iconDescription = Pack.BOOTSTRAP.getIkons()[0].getDescription();
+        var iconDescription = Pack.BOOTSTRAP.getIkons()[0].ikon().getDescription();
         robot.clickOn(iconDescription);
 
         var finalState = flow.probeState();
@@ -184,7 +184,7 @@ final class IconViewTest {
         });
 
         var before = flow.probeActionCount();
-        var ikon = Pack.BOOTSTRAP.getIkons()[0];
+        var ikon = Pack.BOOTSTRAP.getIkons()[0].ikon();
 
         robot.clickOn(ikon.getDescription());
 
@@ -210,7 +210,7 @@ final class IconViewTest {
           .filter(r -> r.getIndex() == last).findFirst().orElseThrow();
         var rendered = row.lookupAll(".ikonli-font-icon").stream()
           .map(FontIcon.class::cast).toList().getLast().getIconCode();
-        var ikon = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1];
+        var ikon = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1].ikon();
 
         assertEquals(ikon, rendered);
     }
@@ -229,7 +229,7 @@ final class IconViewTest {
 
         var label = robot.lookup(".icon-label").queryAllAs(Labeled.class).stream()
           .map(Labeled::getText).sorted().toList().getLast();
-        var ikon = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1];
+        var ikon = Pack.BOOTSTRAP.getIkons()[Pack.BOOTSTRAP.getIkons().length - 1].ikon();
 
         assertEquals(ikon.getDescription(), label);
     }

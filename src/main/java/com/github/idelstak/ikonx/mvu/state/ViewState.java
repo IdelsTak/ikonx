@@ -1,32 +1,10 @@
-/*
- * MIT License
- *
- * Copyright (c) 2026 Hiram K
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
 package com.github.idelstak.ikonx.mvu.state;
 
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.state.ActivityState.Idle;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
+import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
 
 public record ViewState(
@@ -34,59 +12,98 @@ public record ViewState(
   StageIcons stageIcons,
   String searchText,
   Set<Pack> selectedPacks,
+  Set<Style> selectedStyles,
   List<PackIkon> displayedIcons,
+  List<PackIkon> favoriteIcons,
+  List<PackIkon> recentIcons,
+  ViewMode viewMode,
   ActivityState status,
-  String statusMessage) {
+  String statusMessage
+  ) {
 
     public ViewState {
         selectedPacks = Set.copyOf(selectedPacks);
+        selectedStyles = Set.copyOf(selectedStyles);
         displayedIcons = List.copyOf(displayedIcons);
-    }
-
-    public ViewState search(String text) {
-        return new ViewState(version, stageIcons, text, selectedPacks, displayedIcons, status, statusMessage);
-    }
-
-    public ViewState select(Set<Pack> packs) {
-        return new ViewState(version, stageIcons, searchText, packs, displayedIcons, status, statusMessage);
-    }
-
-    public ViewState display(List<PackIkon> icons) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, icons, status, statusMessage);
-    }
-
-    public ViewState signal(ActivityState state) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, displayedIcons, state, statusMessage);
-    }
-
-    public ViewState message(String text) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, displayedIcons, status, text);
+        favoriteIcons = List.copyOf(favoriteIcons);
+        recentIcons = List.copyOf(recentIcons);
     }
 
     public ViewState version(AppVersion version) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, displayedIcons, status, statusMessage);
+        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
     }
-    
+
     public ViewState stageIcons(StageIcons icons) {
-        return new ViewState(version, icons, searchText, selectedPacks, displayedIcons, status, statusMessage);
+        return new ViewState(version, icons, searchText, selectedPacks, selectedStyles,
+          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+    }
+
+    public ViewState search(String text) {
+        return new ViewState(version, stageIcons, text, selectedPacks, selectedStyles,
+          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+    }
+
+    public ViewState select(Set<Pack> packs) {
+        return new ViewState(version, stageIcons, searchText, packs, selectedStyles,
+          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+    }
+
+    public ViewState styles(Set<Style> styles) {
+        return new ViewState(version, stageIcons, searchText, selectedPacks, styles,
+          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+    }
+
+    public ViewState display(List<PackIkon> icons) {
+        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+          icons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+    }
+
+    public ViewState favorites(List<PackIkon> icons) {
+        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+          displayedIcons, icons, recentIcons, viewMode, status, statusMessage);
+    }
+
+    public ViewState recent(List<PackIkon> icons) {
+        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+          displayedIcons, favoriteIcons, icons, viewMode, status, statusMessage);
+    }
+
+    public ViewState mode(ViewMode mode) {
+        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+          displayedIcons, favoriteIcons, recentIcons, mode, status, statusMessage);
+    }
+
+    public ViewState signal(ActivityState state) {
+        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+          displayedIcons, favoriteIcons, recentIcons, viewMode, state, statusMessage);
+    }
+
+    public ViewState message(String text) {
+        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+          displayedIcons, favoriteIcons, recentIcons, viewMode, status, text);
     }
 
     public static ViewState initial() {
-        var first = Arrays.stream(Pack.values())
+        var firstPack = Arrays.stream(Pack.values())
           .sorted(Comparator.comparing(Enum::name))
           .findFirst()
-          .orElseThrow();
+          .orElseThrow(() -> new IllegalStateException("No icon packs found"));
 
-        var icons = Arrays.stream(first.getIkons())
-          .map(ikon -> new PackIkon(first, ikon))
+        var icons = Arrays.stream(firstPack.getIkons())
+          .map(ikon -> new PackIkon(firstPack, ikon))
           .toList();
 
         return new ViewState(
           new AppVersion.Unknown(),
           new StageIcons.Unknown(),
           "",
-          Set.of(first),
+          Set.of(firstPack),
+          Set.of(), // selectedStyles empty initially
           icons,
+          List.of(), // favoriteIcons empty
+          List.of(), // recentIcons empty
+          new ViewMode.Grid(),
           new Idle(),
           String.format("%d icons found", icons.size())
         );

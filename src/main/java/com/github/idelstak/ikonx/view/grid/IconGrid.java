@@ -29,10 +29,6 @@ import javafx.collections.*;
 import javafx.scene.control.*;
 import javafx.util.*;
 
-/**
- * A virtualized grid control for displaying PackIkon instances.
- * Horizontal and vertical gaps are now configurable properties.
- */
 public final class IconGrid extends Control {
 
     private final ObjectProperty<ObservableList<PackIkon>> items = new SimpleObjectProperty<>(this, "items", FXCollections.observableArrayList());
@@ -40,9 +36,10 @@ public final class IconGrid extends Control {
     private final DoubleProperty cellWidth = new SimpleDoubleProperty(this, "cellWidth", 120);
     private final DoubleProperty cellHeight = new SimpleDoubleProperty(this, "cellHeight", 110);
     private final DoubleProperty listRowHeight = new SimpleDoubleProperty(this, "listRowHeight", 52);
-    private final ObjectProperty<ViewMode> viewMode = new SimpleObjectProperty<>(this, "viewMode", ViewMode.GRID);
+    private final ObjectProperty<ViewMode> viewMode = new SimpleObjectProperty<>(this, "viewMode", new ViewMode.Grid());
     private final DoubleProperty horizontalGap = new SimpleDoubleProperty(this, "horizontalGap", 12);
     private final DoubleProperty verticalGap = new SimpleDoubleProperty(this, "verticalGap", 12);
+    private String stylesheet;
 
     public IconGrid() {
         getStyleClass().add("icon-grid");
@@ -148,7 +145,6 @@ public final class IconGrid extends Control {
     public void setVerticalGap(double gap) {
         verticalGap.set(gap);
     }
-    private String stylesheet;
 
     @Override
     public String getUserAgentStylesheet() {
@@ -162,10 +158,5 @@ public final class IconGrid extends Control {
     @Override
     protected Skin<?> createDefaultSkin() {
         return new IconGridSkin(this);
-    }
-
-    public enum ViewMode {
-        GRID,
-        LIST
     }
 }

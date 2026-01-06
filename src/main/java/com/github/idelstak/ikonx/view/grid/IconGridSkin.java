@@ -90,17 +90,26 @@ public final class IconGridSkin extends SkinBase<IconGrid> {
         }
 
         double availableWidth = grid.getWidth() - grid.getInsets().getLeft() - grid.getInsets().getRight();
-        columnCount = grid.getViewMode() == IconGrid.ViewMode.GRID
-                        ? Math.max(1, (int) Math.floor((availableWidth + grid.getHorizontalGap()) / (grid.getCellWidth() + grid.getHorizontalGap())))
-                      : 1;
+        columnCount = switch (grid.getViewMode()) {
+            case ViewMode.Grid _ ->
+                Math.max(
+                1,
+                (int) Math.floor((availableWidth + grid.getHorizontalGap()) / (grid.getCellWidth() + grid.getHorizontalGap()))
+                );
+            case ViewMode.List _ ->
+                1;
+        };
 
         int rowCount = (int) Math.ceil((double) grid.getItems().size() / columnCount);
 
         double offset = 4;
         double verticalGap = grid.getVerticalGap();
-        double rowHeight = (grid.getViewMode() == IconGrid.ViewMode.GRID)
-                             ? grid.getCellHeight() + verticalGap
-                             : grid.getListRowHeight() + verticalGap + offset;
+        double rowHeight = switch (grid.getViewMode()) {
+            case ViewMode.Grid _ ->
+                grid.getCellHeight() + verticalGap;
+            case ViewMode.List _ ->
+                grid.getListRowHeight() + verticalGap + offset;
+        };
 
         flow.setFixedCellSize(rowHeight);
         flow.setCellCount(rowCount);

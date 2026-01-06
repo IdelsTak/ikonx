@@ -84,14 +84,17 @@ public class IconGridCell extends IndexedCell<PackIkon> {
         listRoot.getChildren().clear();
         getStyleClass().removeAll("grid-mode", "list-mode");
 
-        if (iconGrid.getViewMode() == IconGrid.ViewMode.GRID) {
-            getStyleClass().add("grid-mode");
-            gridRoot.getChildren().addAll(fontIcon, textContainer);
-            setGraphic(gridRoot);
-        } else {
-            getStyleClass().add("list-mode");
-            listRoot.getChildren().addAll(fontIcon, textContainer);
-            setGraphic(listRoot);
+        switch (iconGrid.getViewMode()) {
+            case ViewMode.Grid _ -> {
+                getStyleClass().add("grid-mode");
+                gridRoot.getChildren().addAll(fontIcon, textContainer);
+                setGraphic(gridRoot);
+            }
+            case ViewMode.List _ -> {
+                getStyleClass().add("list-mode");
+                listRoot.getChildren().addAll(fontIcon, textContainer);
+                setGraphic(listRoot);
+            }
         }
     }
 }

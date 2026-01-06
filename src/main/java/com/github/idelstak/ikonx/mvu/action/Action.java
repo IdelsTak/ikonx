@@ -37,7 +37,11 @@ public sealed interface Action {
 
     }
 
-    record SelectAllToggled(boolean isSelected) implements Action {
+    record SelectPacksAllToggled(boolean isSelected) implements Action {
+
+    }
+
+    record StyleToggled(Style style, boolean isSelected) implements Action {
 
     }
 

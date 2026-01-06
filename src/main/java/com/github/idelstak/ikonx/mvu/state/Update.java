@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu;
+package com.github.idelstak.ikonx.mvu.state;
 
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
@@ -29,22 +29,33 @@ import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
+import java.util.stream.*;
 
 public final class Update {
 
-    private final Map<Pack, List<PackIkon>> iconCache;
+    private final Map<Pack, List<PackIkon>> iconPackCache;
+    private final Map<Style, List<PackIkon>> iconStyleCache;
     private final List<Pack> orderedPacks;
 
     public Update() {
-        iconCache = new EnumMap<>(Pack.class);
+        iconPackCache = new EnumMap<>(Pack.class);
         for (var pack : Pack.values()) {
-            iconCache.put(
+            iconPackCache.put(
               pack,
-              Arrays.stream(pack.getIkons())
+              Arrays.stream(pack.ikons())
                 .map(ikon -> new PackIkon(pack, ikon))
                 .toList()
             );
         }
+
+        iconStyleCache = Arrays.stream(Pack.values())
+          .flatMap(pack -> Arrays.stream(pack.ikons())
+            .map(styledIkon -> new PackIkon(pack, styledIkon))
+          )
+          .collect(Collectors.groupingBy(
+            pi -> pi.styledIkon().style(),
+            Collectors.toList()
+          ));
 
         orderedPacks = Arrays.stream(Pack.values())
           .sorted(Comparator.comparing(Enum::name))
@@ -57,8 +68,10 @@ public final class Update {
                 search(state, a);
             case Action.PackToggled a ->
                 togglePack(state, a);
-            case Action.SelectAllToggled a ->
+            case Action.SelectPacksAllToggled a ->
                 toggleAllPacks(state, a);
+            case Action.StyleToggled a ->
+                toggleStyle(state, a);
             case Action.CopyIconRequested a ->
                 copyRequested(state, a);
             case Action.CopyIconSucceeded a ->
@@ -83,7 +96,7 @@ public final class Update {
     }
 
     private ViewState search(ViewState state, Action.SearchChanged action) {
-        var icons = filterIcons(state.selectedPacks(), action.query());
+        var icons = filterIconsByPack(state.selectedPacks(), action.query());
         return state
           .search(action.query())
           .display(icons)
@@ -100,7 +113,7 @@ public final class Update {
             packs.remove(pack);
         }
 
-        var icons = filterIcons(packs, state.searchText());
+        var icons = filterIconsByPack(packs, state.searchText());
         return state
           .select(packs)
           .display(icons)
@@ -108,7 +121,30 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState toggleAllPacks(ViewState state, Action.SelectAllToggled action) {
+    private ViewState toggleStyle(ViewState state, Action.StyleToggled action) {
+        var styles = new HashSet<>(state.selectedStyles());
+        var style = action.style();
+        boolean changed;
+
+        if (action.isSelected()) {
+            changed = styles.add(style);
+        } else {
+            changed = styles.remove(style);
+        }
+
+        if (!changed) {
+            return state;
+        }
+
+        var icons = filterIconsByStyle(styles, state.searchText());
+        return state
+          .styles(styles)
+          .display(icons)
+          .signal(new ActivityState.Idle())
+          .message(String.format("%d icons found", icons.size()));
+    }
+
+    private ViewState toggleAllPacks(ViewState state, Action.SelectPacksAllToggled action) {
         Set<Pack> packs;
 
         if (action.isSelected()) {
@@ -117,7 +153,7 @@ public final class Update {
             packs = Set.of(orderedPacks.getFirst());
         }
 
-        var icons = filterIcons(packs, state.searchText());
+        var icons = filterIconsByPack(packs, state.searchText());
         return state
           .select(packs)
           .display(icons)
@@ -125,13 +161,31 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private List<PackIkon> filterIcons(Set<Pack> selectedPacks, String searchText) {
+    private List<PackIkon> filterIconsByStyle(Set<Style> selectedStyles, String searchText) {
+        var icons = selectedStyles.isEmpty()
+                  ? iconStyleCache.values().stream().flatMap(List::stream).toList()
+                  : selectedStyles.stream()
+            .flatMap(style -> iconStyleCache.getOrDefault(style, List.of()).stream())
+            .toList();
+
+        if (searchText == null || searchText.isBlank() || searchText.length() < 2) {
+            return icons;
+        }
+
+        var lower = searchText.toLowerCase(Locale.ROOT);
+        return icons.stream()
+          .filter(pi ->
+            pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
+          .toList();
+    }
+
+    private List<PackIkon> filterIconsByPack(Set<Pack> selectedPacks, String searchText) {
         if (selectedPacks.isEmpty()) {
             return List.of();
         }
 
         var icons = selectedPacks.stream()
-          .flatMap(pack -> iconCache.get(pack).stream())
+          .flatMap(pack -> iconPackCache.get(pack).stream())
           .toList();
 
         if (searchText == null || searchText.isBlank() || searchText.length() < 2) {

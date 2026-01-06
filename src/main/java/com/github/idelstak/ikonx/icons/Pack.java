@@ -589,7 +589,7 @@ public enum Pack {
         this.ikons = copy(ikons);
     }
 
-    public StyledIkon[] getIkons() {
+    public StyledIkon[] ikons() {
         return copy(ikons);
     }
 

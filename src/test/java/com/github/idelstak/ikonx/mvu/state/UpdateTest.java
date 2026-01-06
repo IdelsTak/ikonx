@@ -20,16 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu;
+package com.github.idelstak.ikonx.mvu.state;
 
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
-import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
+import java.util.stream.*;
 import org.junit.jupiter.api.*;
+import org.kordamp.ikonli.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
 
@@ -91,7 +92,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.SelectAllToggled(true)
+          new Action.SelectPacksAllToggled(true)
         );
 
         assertThat(next.selectedPacks(), hasSize(Pack.values().length));
@@ -104,7 +105,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.SelectAllToggled(false)
+          new Action.SelectPacksAllToggled(false)
         );
 
         var ordered = Arrays.stream(Pack.values())
@@ -337,5 +338,96 @@ final class UpdateTest {
         var next = update.apply(state, new Action.ViewModeToggled(oldMode, false));
 
         assertThat(next.viewMode(), equalTo(new ViewMode.Grid()));
+    }
+
+    @Test
+    void singleStyleToggleSelectsOnlyThatStyle() {
+        var update = new Update();
+        var style = new Style.Square();
+        var state = ViewState.initial();
+
+        var next = update.apply(state, new Action.StyleToggled(style, true));
+
+        var displayedStyles = next.displayedIcons().stream()
+          .map(PackIkon::styledIkon)
+          .map(StyledIkon::style)
+          .collect(Collectors.toSet());
+
+        assertThat(displayedStyles, everyItem(isA(Style.Square.class)));
+    }
+
+    @Test
+    void multipleStylesToggleSelectsAllMatchingIcons() {
+        var update = new Update();
+        var style1 = new Style.Square();
+        var style2 = new Style.Filled();
+        var state = ViewState.initial();
+
+        var next = update.apply(state, new Action.SelectPacksAllToggled(true));
+        next = update.apply(next, new Action.StyleToggled(style1, true));
+        next = update.apply(next, new Action.StyleToggled(style2, true));
+
+        var displayedStyles = next.displayedIcons().stream()
+          .map(PackIkon::styledIkon)
+          .map(StyledIkon::style)
+          .map(Style::getClass)
+          .collect(Collectors.toSet());
+
+        assertThat(displayedStyles, containsInAnyOrder(style1.getClass(), style2.getClass()));
+    }
+
+    @Test
+    void togglingOffStyleRemovesItsIcons() {
+        var update = new Update();
+        var square = new Style.Square();
+        var bold = new Style.Bold();
+        var state = ViewState.initial();
+
+        var next = update.apply(state, new Action.SelectPacksAllToggled(true));
+        next = update.apply(next, new Action.StyleToggled(square, true));
+        next = update.apply(next, new Action.StyleToggled(bold, true));
+        next = update.apply(next, new Action.StyleToggled(square, false));
+
+        var displayedIcons = next.displayedIcons()
+          .stream()
+          .map(PackIkon::styledIkon)
+          .map(StyledIkon::style)
+          .collect(Collectors.toSet());
+        
+        assertThat(displayedIcons, everyItem(not(isA(Style.Square.class)))); // no icons of that style remain
+    }
+
+    @Test
+    void noSelectedStylesReturnsPreviouslyDisplayedIcons() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var displayedIcons = state.displayedIcons();
+
+        var next = update.apply(state, new Action.StyleToggled(new Style.Logo(), false));
+        var newDisplayedIconsCount = next.displayedIcons().size();
+
+        assertThat(displayedIcons.size(), is(newDisplayedIconsCount));
+    }
+
+    @Test
+    void styleToggleRespectsSearchText() {
+        var update = new Update();
+        var outlined = new Style.Outlined();
+        var regular = new Style.Regular();
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.PackToggled(Pack.values()[Pack.values().length - 6], true));
+        state = update.apply(state, new Action.StyleToggled(outlined, true));
+
+        var searchText = "arrow"; // some description fragment that exists in the icons
+        state = update.apply(state, new Action.StyleToggled(regular, true));
+        state = update.apply(state, new Action.SearchChanged(searchText));
+        var filteredIconNames = state.displayedIcons()
+          .stream()
+          .map(PackIkon::styledIkon)
+          .map(StyledIkon::ikon)
+          .map(Ikon::getDescription)
+          .toList();
+
+        assertThat(filteredIconNames, everyItem(containsStringIgnoringCase(searchText)));
     }
 }

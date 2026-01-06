@@ -45,7 +45,7 @@ public class InnerMainView implements Initializable {
 
         Platform.runLater(() -> {
             var allIkons = Arrays.stream(Pack.values())
-              .flatMap(p -> Arrays.stream(p.getIkons()).map(i -> new PackIkon(p, i)))
+              .flatMap(p -> Arrays.stream(p.ikons()).map(i -> new PackIkon(p, i)))
               .toList();
             var icons = FXCollections.observableArrayList(allIkons);
             System.out.println("[INNER MAIN VIEW] icons count = " + icons.size());

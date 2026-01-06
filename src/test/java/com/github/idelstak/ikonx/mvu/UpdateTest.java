@@ -27,6 +27,7 @@ import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
+import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
 import org.junit.jupiter.api.*;
 import static org.hamcrest.MatcherAssert.*;
@@ -302,5 +303,39 @@ final class UpdateTest {
           next.statusMessage(),
           containsString("crème brûlée icons broken")
         );
+    }
+
+    @Test
+    void setsNewModeWhenToggleSelected() {
+        var update = new Update();
+        var state = ViewState.initial().mode(new ViewMode.List());
+        var newMode = new ViewMode.Grid();
+
+        var next = update.apply(state, new Action.ViewModeToggled(newMode, true));
+
+        assertThat(next.viewMode(), equalTo(newMode));
+    }
+
+    @Test
+    void keepsOldModeWhenToggleDeselectedAndOtherMode() {
+        var update = new Update();
+        var oldMode = new ViewMode.List();
+        var state = ViewState.initial().mode(oldMode);
+        var newMode = new ViewMode.Grid();
+
+        var next = update.apply(state, new Action.ViewModeToggled(newMode, false));
+
+        assertThat(next.viewMode(), equalTo(oldMode));
+    }
+
+    @Test
+    void togglesModeWhenToggleDeselectedAndSameMode() {
+        var update = new Update();
+        var oldMode = new ViewMode.List();
+        var state = ViewState.initial().mode(oldMode);
+
+        var next = update.apply(state, new Action.ViewModeToggled(oldMode, false));
+
+        assertThat(next.viewMode(), equalTo(new ViewMode.Grid()));
     }
 }

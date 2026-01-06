@@ -27,6 +27,7 @@ import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
+import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
 
 public final class Update {
@@ -55,9 +56,9 @@ public final class Update {
             case Action.SearchChanged a ->
                 search(state, a);
             case Action.PackToggled a ->
-                toggle(state, a);
+                togglePack(state, a);
             case Action.SelectAllToggled a ->
-                toggleAll(state, a);
+                toggleAllPacks(state, a);
             case Action.CopyIconRequested a ->
                 copyRequested(state, a);
             case Action.CopyIconSucceeded a ->
@@ -76,6 +77,8 @@ public final class Update {
                 stageIconsResolved(state, a);
             case Action.StageIconsFailed a ->
                 stageIconsFailed(state, a);
+            case Action.ViewModeToggled a ->
+                toggleViewMode(state, a);
         };
     }
 
@@ -88,7 +91,7 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState toggle(ViewState state, Action.PackToggled action) {
+    private ViewState togglePack(ViewState state, Action.PackToggled action) {
         var packs = new HashSet<>(state.selectedPacks());
         var pack = action.pack();
         if (action.isSelected()) {
@@ -105,7 +108,7 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState toggleAll(ViewState state, Action.SelectAllToggled action) {
+    private ViewState toggleAllPacks(ViewState state, Action.SelectAllToggled action) {
         Set<Pack> packs;
 
         if (action.isSelected()) {
@@ -137,7 +140,8 @@ public final class Update {
 
         var lower = searchText.toLowerCase(Locale.ROOT);
         return icons.stream()
-          .filter(pi -> pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
+          .filter(pi ->
+            pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
           .toList();
     }
 
@@ -193,5 +197,24 @@ public final class Update {
           .signal(new ActivityState.Error())
           .stageIcons(new StageIcons.Failed(message))
           .message(message);
+    }
+
+    private ViewState toggleViewMode(ViewState state, Action.ViewModeToggled action) {
+        var oldMode = state.viewMode();
+        var newMode = computeNewMode(oldMode, action);
+        return state
+          .signal(new ActivityState.Idle())
+          .mode(newMode)
+          .message("Switched icon browser view to " + newMode.displayName().toLowerCase(Locale.ROOT));
+    }
+
+    private ViewMode computeNewMode(ViewMode oldMode, Action.ViewModeToggled action) {
+        if (action.isSelected()) {
+            return action.mode();
+        }
+        if (oldMode.equals(action.mode())) {
+            return oldMode instanceof ViewMode.Grid ? new ViewMode.List() : new ViewMode.Grid();
+        }
+        return oldMode;
     }
 }

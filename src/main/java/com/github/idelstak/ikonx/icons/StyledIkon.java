@@ -24,24 +24,24 @@
 package com.github.idelstak.ikonx.icons;
 
 import java.util.*;
+import org.kordamp.ikonli.*;
 
-public record PackIkon(Pack pack, StyledIkon styledIkon) implements Comparable<PackIkon> {
+public record StyledIkon(Ikon ikon, Style style) implements Comparable<StyledIkon> {
 
     @Override
-    public int compareTo(PackIkon o) {
-        return Comparator
-          .comparing((PackIkon p) -> p.pack().name())
-          .thenComparing(PackIkon::styledIkon)
-          .compare(this, o);
+    public int compareTo(StyledIkon o) {
+        return Comparator.comparing((StyledIkon si) -> si.ikon().getDescription()).compare(this, o);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append('{');
-        sb.append(pack);
-        sb.append(", ").append(styledIkon);
+        sb.append(style.getClass().getSimpleName());
+        sb.append(", ").append(ikon.getDescription());
         sb.append('}');
         return sb.toString();
     }
+    
+    
 }

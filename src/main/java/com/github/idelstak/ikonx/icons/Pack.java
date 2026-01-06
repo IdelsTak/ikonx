@@ -95,8 +95,8 @@ public enum Pack {
         Arrays.stream(BytedanceIconsExtraBoldMZ.values())
       )
         .flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)),
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)),
     FONT_AWESOME_6(
       "Font Awesome 6",
       Stream.of(
@@ -105,8 +105,8 @@ public enum Pack {
         Arrays.stream(org.kordamp.ikonli.fontawesome6.FontAwesomeSolid.values())
       )
         .flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)),
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)),
     MATERIAL_DESIGN_2(
       "Material Design 2",
       Stream.of(
@@ -138,12 +138,43 @@ public enum Pack {
         Arrays.stream(MaterialDesignZ.values())
       )
         .flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)),
-    BOOTSTRAP("Bootstrap", BootstrapIcons.values()),
-    MATERIAL("Material", Material.values()),
-    MATERIAL_DESIGN("Material Design", MaterialDesign.values()),
-    FONT_AWESOME("Font Awesome", FontAwesome.values()),
+        .map(ikon -> ikon.name().toLowerCase().endsWith("_outline")
+                         ? new StyledIkon(ikon, new Style.Outlined())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    BOOTSTRAP(
+      "Bootstrap",
+      Arrays.stream(BootstrapIcons.values())
+        .map(ikon -> ikon.name().toLowerCase().endsWith("_fill")
+                         ? new StyledIkon(ikon, new Style.Filled())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    MATERIAL(
+      "Material",
+      Arrays.stream(Material.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_fill")
+                         ? new StyledIkon(ikon, new Style.Filled())
+                         : ikon.name().toLowerCase().endsWith("_outline")
+                             ? new StyledIkon(ikon, new Style.Outlined()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    MATERIAL_DESIGN(
+      "Material Design",
+      Arrays.stream(MaterialDesign.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_fill")
+                         ? new StyledIkon(ikon, new Style.Filled())
+                         : ikon.name().toLowerCase().endsWith("_outline")
+                             ? new StyledIkon(ikon, new Style.Outlined()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    FONT_AWESOME(
+      "Font Awesome",
+      Arrays.stream(FontAwesome.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
     FONT_AWESOME_5(
       "Font Awesome 5",
       Stream.of(
@@ -151,10 +182,17 @@ public enum Pack {
         Arrays.stream(org.kordamp.ikonli.fontawesome5.FontAwesomeRegular.values()),
         Arrays.stream(org.kordamp.ikonli.fontawesome5.FontAwesomeSolid.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    EVA_ICONS("Eva Icons", Evaicons.values()),
+    EVA_ICONS(
+      "Eva Icons",
+      Arrays.stream(Evaicons.values())
+        .map(ikon -> ikon.name().toLowerCase().endsWith("_outline")
+                         ? new StyledIkon(ikon, new Style.Outlined())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
     ION_ICONS_4(
       "Ion Icons 4",
       Stream.of(
@@ -162,8 +200,8 @@ public enum Pack {
         Arrays.stream(Ionicons4Logo.values()),
         Arrays.stream(Ionicons4Material.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
     LINE_AWESOME(
       "Line Awesome",
@@ -172,11 +210,25 @@ public enum Pack {
         Arrays.stream(LineAwesomeRegular.values()),
         Arrays.stream(LineAwesomeSolid.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    WEATHER_ICONS("Weather Icons", WeatherIcons.values()),
-    DEVI_ICONS("Devi Icons", Devicons.values()),
+    WEATHER_ICONS(
+      "Weather Icons",
+      Arrays.stream(WeatherIcons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    DEVI_ICONS(
+      "Devi Icons",
+      Arrays.stream(Devicons.values())
+        .map(ikon -> ikon.name().toLowerCase().endsWith("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
     MATERIAL_2(
       "Material 2",
       Stream.of(
@@ -189,16 +241,68 @@ public enum Pack {
         Arrays.stream(Material2SharpAL.values()),
         Arrays.stream(Material2SharpMZ.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    DASH_ICONS("Dash Icons", Dashicons.values()),
-    ELUSIVE("Elusive", Elusive.values()),
-    THEMIFY("Themify", Themify.values()),
-    OCTICONS("Octicons", Octicons.values()),
-    WEB_SYMBOLS("Web Symbols", Websymbols.values()),
-    CARBON_ICONS("Carbon Icons", CarbonIcons.values()),
-    PRESTA_SHOP_ICONS("Presta Shop Icons", PrestaShopIcons.values()),
+    DASH_ICONS(
+      "Dash Icons",
+      Arrays.stream(Dashicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    ELUSIVE(
+      "Elusive",
+      Arrays.stream(Elusive.values())
+        .map(ikon -> ikon.name().toLowerCase().endsWith("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    THEMIFY(
+      "Themify",
+      Arrays.stream(Themify.values())
+        .map(ikon -> ikon.name().toLowerCase().endsWith("_full")
+                         ? new StyledIkon(ikon, new Style.Filled())
+                         : ikon.name().toLowerCase().endsWith("_alt")
+                             ? new StyledIkon(ikon, new Style.Alternate()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    OCTICONS(
+      "Octicons",
+      Arrays.stream(Octicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_fill")
+                         ? new StyledIkon(ikon, new Style.Filled())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    WEB_SYMBOLS(
+      "Web Symbols",
+      Arrays.stream(Websymbols.values())
+        .map(ikon -> ikon.name().toLowerCase().endsWith("fill")
+                         ? new StyledIkon(ikon, new Style.Filled())
+                         : ikon.name().toLowerCase().endsWith("outline")
+                             ? new StyledIkon(ikon, new Style.Outlined()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    CARBON_ICONS(
+      "Carbon Icons",
+      Arrays.stream(CarbonIcons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : ikon.name().toLowerCase().contains("_filled")
+                             ? new StyledIkon(ikon, new Style.Filled()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    PRESTA_SHOP_ICONS(
+      "Presta Shop Icons",
+      Arrays.stream(PrestaShopIcons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
     UNICONS(
       "Unicons",
       Stream.of(
@@ -206,78 +310,225 @@ public enum Pack {
         Arrays.stream(UniconsMonochrome.values()),
         Arrays.stream(UniconsSolid.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    LINECONS("Linecons", Linecons.values()),
-    CAPTAIN_ICON("Captain Icon", Captainicon.values()),
-    JAM("Jam", Jam.values()),
-    ZOND_ICONS("Zond Icons", Zondicons.values()),
-    FEATHER("Feather", Feather.values()),
-    OPENICONIC("Openiconic", Openiconic.values()),
-    CODICONS("Codicons", Codicons.values()),
-    OCI_ICONS("Oci Icons", Ociicons.values()),
+    LINECONS(
+      "Linecons",
+      Arrays.stream(Linecons.values())
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
+    ),
+    CAPTAIN_ICON(
+      "Captain Icon",
+      Arrays.stream(Captainicon.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    JAM(
+      "Jam",
+      Arrays.stream(Jam.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_f")
+                         ? new StyledIkon(ikon, new Style.Filled())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    ZOND_ICONS(
+      "Zond Icons",
+      Arrays.stream(Zondicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_outline")
+                         ? new StyledIkon(ikon, new Style.Outlined())
+                         : ikon.name().toLowerCase().contains("_solid")
+                             ? new StyledIkon(ikon, new Style.Solid()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    FEATHER(
+      "Feather",
+      Arrays.stream(Feather.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    OPENICONIC(
+      "Openiconic",
+      Arrays.stream(Openiconic.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    CODICONS(
+      "Codicons",
+      Arrays.stream(Codicons.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    OCI_ICONS(
+      "Oci Icons",
+      Arrays.stream(Ociicons.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
     REMIX_ICON(
       "Remix Icon",
       Stream.of(
         Arrays.stream(RemixiconAL.values()),
         Arrays.stream(RemixiconMZ.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> ikon.name().toLowerCase().contains("_line")
+                         ? new StyledIkon(ikon, new Style.Line())
+                         : ikon.name().toLowerCase().contains("_fill")
+                             ? new StyledIkon(ikon, new Style.Filled()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
     ),
-    ION_ICONS("Ion Icons", Ionicons.values()),
+    ION_ICONS(
+      "Ion Icons",
+      Arrays.stream(Ionicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : ikon.name().toLowerCase().contains("_outline")
+                             ? new StyledIkon(ikon, new Style.Outlined()) : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
     ANT_DESIGN_ICONS(
       "Ant Design Icons",
       Stream.of(
         Arrays.stream(AntDesignIconsFilled.values()),
         Arrays.stream(AntDesignIconsOutlined.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    SUBWAY("Subway", Subway.values()),
-    SIMPLE_LINE_ICONS("Simple Line Icons", SimpleLineIcons.values()),
-    FILE_ICONS("File Icons", FileIcons.values()),
-    MAKI("Maki", Maki.values()),
-    MAKI_2("Maki 2", Maki2.values()),
+    SUBWAY(
+      "Subway",
+      Arrays.stream(Subway.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    SIMPLE_LINE_ICONS(
+      "Simple Line Icons",
+      Arrays.stream(SimpleLineIcons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    FILE_ICONS(
+      "File Icons",
+      Arrays.stream(FileIcons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    MAKI(
+      "Maki",
+      Arrays.stream(Maki.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    MAKI_2(
+      "Maki 2",
+      Arrays.stream(Maki2.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
     WHHG(
       "Whhg",
       Stream.of(
         Arrays.stream(WhhgAL.values()),
         Arrays.stream(WhhgMZ.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> ikon.name().toLowerCase().contains("alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
     ),
-    SIMPLE_ICONS("Simple Icons", SimpleIcons.values()),
-    FOUNDATION("Foundation", Foundation.values()),
-    MICRONS("Microns", Microns.values()),
-    LIGATURE_SYMBOLS("Ligature Symbols", LigatureSymbols.values()),
-    BPMN("Bpmn", Bpmn.values()),
-    TYPICONS("Typicons", Typicons.values()),
+    SIMPLE_ICONS(
+      "Simple Icons",
+      Arrays.stream(SimpleIcons.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    FOUNDATION(
+      "Foundation",
+      Arrays.stream(Foundation.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    MICRONS(
+      "Microns",
+      Arrays.stream(Microns.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    LIGATURE_SYMBOLS(
+      "Ligature Symbols",
+      Arrays.stream(LigatureSymbols.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    BPMN(
+      "Bpmn",
+      Arrays.stream(Bpmn.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    TYPICONS(
+      "Typicons",
+      Arrays.stream(Typicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("outline")
+                         ? new StyledIkon(ikon, new Style.Outlined())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
     HAWCONS(
       "Hawcons",
       Stream.of(
         Arrays.stream(HawconsFilled.values()),
         Arrays.stream(HawconsStroke.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    MAP_ICONS("Map Icons", Mapicons.values()),
-    METRIZE_ICONS("Metrize Icons", MetrizeIcons.values()),
+    MAP_ICONS(
+      "Map Icons",
+      Arrays.stream(Mapicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("_alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    METRIZE_ICONS(
+      "Metrize Icons",
+      Arrays.stream(MetrizeIcons.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
     CORE_UI(
       "Core UI",
       Stream.of(
         Arrays.stream(CoreUiBrands.values()),
         Arrays.stream(CoreUiFree.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    RUNESTRO_ICONS("Runestro Icons", Runestroicons.values()),
-    PAYMENT_FONT("Payment Font", PaymentFont.values()),
+    RUNESTRO_ICONS(
+      "Runestro Icons",
+      Arrays.stream(Runestroicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
+    PAYMENT_FONT(
+      "Payment Font",
+      Arrays.stream(PaymentFont.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("alt")
+                         ? new StyledIkon(ikon, new Style.Alternate())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    ),
     FLUENT_UI(
       "Fluent UI",
       Stream.of(
@@ -286,11 +537,21 @@ public enum Pack {
         Arrays.stream(FluentUiRegularAL.values()),
         Arrays.stream(FluentUiRegularMZ.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    WIN_10("Win 10", Win10.values()),
-    FONTELICO("Fontelico", Fontelico.values()),
+    WIN_10(
+      "Win 10",
+      Arrays.stream(Win10.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    FONTELICO(
+      "Fontelico",
+      Arrays.stream(Fontelico.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
     BOX_ICONS(
       "Box Icons",
       Stream.of(
@@ -298,21 +559,38 @@ public enum Pack {
         Arrays.stream(BoxiconsRegular.values()),
         Arrays.stream(BoxiconsSolid.values())
       ).flatMap(stream -> stream)
-        .map(icon -> (Ikon) icon)
-        .toArray(Ikon[]::new)
+        .map(ikon -> new StyledIkon(ikon, styleFromName(ikon.getClass().getSimpleName())))
+        .toArray(StyledIkon[]::new)
     ),
-    ENTYPO("Entypo", Entypo.values()),
-    ICOMOON("Icomoon", Icomoon.values()),
-    MED_ICONS("Med Icons", Medicons.values());
+    ENTYPO(
+      "Entypo",
+      Arrays.stream(Entypo.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    ICOMOON(
+      "Icomoon",
+      Arrays.stream(Icomoon.values())
+        .map(Pack::regular)
+        .toArray(StyledIkon[]::new)
+    ),
+    MED_ICONS(
+      "Med Icons",
+      Arrays.stream(Medicons.values())
+        .map(ikon -> ikon.name().toLowerCase().contains("square")
+                         ? new StyledIkon(ikon, new Style.Square())
+                         : regular(ikon))
+        .toArray(StyledIkon[]::new)
+    );
     private final String description;
-    private final Ikon[] ikons;
+    private final StyledIkon[] ikons;
 
-    Pack(String description, Ikon[] ikons) {
+    Pack(String description, StyledIkon[] ikons) {
         this.description = description;
         this.ikons = copy(ikons);
     }
 
-    public Ikon[] getIkons() {
+    public StyledIkon[] getIkons() {
         return copy(ikons);
     }
 
@@ -321,7 +599,51 @@ public enum Pack {
         return description;
     }
 
-    private static Ikon[] copy(Ikon[] ikons) {
+    private StyledIkon[] copy(StyledIkon[] ikons) {
         return Arrays.copyOf(ikons, ikons.length);
+    }
+
+    private static StyledIkon regular(Ikon ikon) {
+        return new StyledIkon(ikon, new Style.Regular());
+    }
+
+    private static Style styleFromName(String name) {
+        if (name.toLowerCase().contains("bold") && !name.toLowerCase().contains("extrabold")) {
+            return new Style.Bold();
+        }
+        if (name.toLowerCase().contains("extrabold")) {
+            return new Style.ExtraBold();
+        }
+        if (name.toLowerCase().contains("solid")) {
+            return new Style.Solid();
+        }
+        if (name.toLowerCase().contains("logo")) {
+            return new Style.Logo();
+        }
+        if (name.toLowerCase().contains("brand")) {
+            return new Style.Brand();
+        }
+        if (name.toLowerCase().contains("filled")) {
+            return new Style.Filled();
+        }
+        if (name.toLowerCase().contains("stroke")) {
+            return new Style.Stroke();
+        }
+        if (name.toLowerCase().contains("line") && !name.toLowerCase().contains("outline")) {
+            return new Style.Line();
+        }
+        if (name.toLowerCase().contains("outline")) {
+            return new Style.Outlined();
+        }
+        if (name.toLowerCase().contains("monochrome")) {
+            return new Style.Monochrome();
+        }
+        if (name.toLowerCase().contains("round")) {
+            return new Style.Round();
+        }
+        if (name.toLowerCase().contains("sharp")) {
+            return new Style.Sharp();
+        }
+        return new Style.Regular();
     }
 }

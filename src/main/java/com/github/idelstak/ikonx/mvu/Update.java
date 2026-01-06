@@ -138,7 +138,7 @@ public final class Update {
 
         var lower = searchText.toLowerCase(Locale.ROOT);
         return icons.stream()
-          .filter(ikon -> ikon.ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
+          .filter(pi -> pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
           .toList();
     }
 

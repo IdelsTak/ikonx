@@ -76,8 +76,8 @@ public class IconGridCell extends IndexedCell<PackIkon> {
             return;
         }
 
-        fontIcon.setIconCode(item.ikon());
-        nameLabel.setText(item.ikon().getDescription());
+        fontIcon.setIconCode(item.styledIkon().ikon());
+        nameLabel.setText(item.styledIkon().ikon().getDescription());
         packLabel.setText(item.pack().toString().toUpperCase(Locale.ROOT));
 
         gridRoot.getChildren().clear();

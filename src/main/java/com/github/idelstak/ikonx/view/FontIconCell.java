@@ -55,33 +55,6 @@ final class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
     }
 
     @Override
-    protected void updateItem(PackIkon packIkon, boolean empty) {
-        super.updateItem(packIkon, empty);
-
-        if (packIkon == null || empty) {
-            setGraphic(null);
-        } else {
-            root.setText(packIkon.ikon().getDescription());
-            fontIcon.setIconCode(packIkon.ikon());
-
-            root.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 1) {
-                    dispatch.accept(new Action.CopyIconRequested(packIkon.ikon().getDescription()));
-                }
-            });
-
-            var contextMenu = new ContextMenu();
-            var copyItem = new MenuItem("Copy icon code");
-            copyItem.setOnAction(_ ->
-              dispatch.accept(new Action.CopyIconRequested(packIkon.ikon().getDescription())));
-            contextMenu.getItems().add(copyItem);
-            root.setContextMenu(contextMenu);
-
-            setGraphic(root);
-        }
-    }
-
-    @Override
     public String toString() {
         var sb = new StringBuilder();
         sb.append('{');
@@ -89,5 +62,32 @@ final class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
         sb.append(", fontIcon=").append(fontIcon.getIconLiteral());
         sb.append('}');
         return fontIcon.getIconLiteral();
+    }
+
+    @Override
+    protected void updateItem(PackIkon packIkon, boolean empty) {
+        super.updateItem(packIkon, empty);
+
+        if (packIkon == null || empty) {
+            setGraphic(null);
+        } else {
+            root.setText(packIkon.styledIkon().ikon().getDescription());
+            fontIcon.setIconCode(packIkon.styledIkon().ikon());
+
+            root.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 1) {
+                    dispatch.accept(new Action.CopyIconRequested(packIkon.styledIkon().ikon().getDescription()));
+                }
+            });
+
+            var contextMenu = new ContextMenu();
+            var copyItem = new MenuItem("Copy icon code");
+            copyItem.setOnAction(_ ->
+              dispatch.accept(new Action.CopyIconRequested(packIkon.styledIkon().ikon().getDescription())));
+            contextMenu.getItems().add(copyItem);
+            root.setContextMenu(contextMenu);
+
+            setGraphic(root);
+        }
     }
 }

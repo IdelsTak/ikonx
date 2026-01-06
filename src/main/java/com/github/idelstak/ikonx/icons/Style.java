@@ -37,6 +37,9 @@ public sealed interface Style {
     record Bold() implements Style {
     }
 
+    record ExtraBold() implements Style {
+    }
+
     record Outlined() implements Style {
     }
 
@@ -49,12 +52,21 @@ public sealed interface Style {
     record Stroke() implements Style {
     }
 
+    record Square() implements Style {
+    }
+
     record Logo() implements Style {
+    }
+
+    record Brand() implements Style {
     }
 
     record Monochrome() implements Style {
     }
 
     record Line() implements Style {
+    }
+
+    record Alternate() implements Style {
     }
 }

@@ -56,6 +56,14 @@ jobs:
           distribution: zulu
           java-version: ${{ needs.extract.outputs.java_version }}
 
+      - name: Cache Maven repository
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: maven-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            maven-${{ runner.os }}-
+
       - name: Determine platform name
         id: platform
         shell: bash

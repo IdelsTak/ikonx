@@ -30,6 +30,7 @@ import org.kordamp.ikonli.antdesignicons.*;
 import org.kordamp.ikonli.bootstrapicons.*;
 import org.kordamp.ikonli.boxicons.*;
 import org.kordamp.ikonli.bpmn.*;
+import org.kordamp.ikonli.bytedance.*;
 import org.kordamp.ikonli.captainicon.*;
 import org.kordamp.ikonli.carbonicons.*;
 import org.kordamp.ikonli.codicons.*;
@@ -43,7 +44,6 @@ import org.kordamp.ikonli.feather.*;
 import org.kordamp.ikonli.fileicons.*;
 import org.kordamp.ikonli.fluentui.*;
 import org.kordamp.ikonli.fontawesome.*;
-import org.kordamp.ikonli.fontawesome5.*;
 import org.kordamp.ikonli.fontelico.*;
 import org.kordamp.ikonli.foundation.*;
 import org.kordamp.ikonli.hawcons.*;
@@ -60,6 +60,7 @@ import org.kordamp.ikonli.mapicons.*;
 import org.kordamp.ikonli.material.*;
 import org.kordamp.ikonli.material2.*;
 import org.kordamp.ikonli.materialdesign.*;
+import org.kordamp.ikonli.materialdesign2.*;
 import org.kordamp.ikonli.medicons.*;
 import org.kordamp.ikonli.metrizeicons.*;
 import org.kordamp.ikonli.microns.*;
@@ -83,56 +84,114 @@ import org.kordamp.ikonli.win10.*;
 import org.kordamp.ikonli.zondicons.*;
 
 public enum Pack {
+    BYTE_DANCE(
+      "Byte Dance",
+      Stream.of(
+        Arrays.stream(BytedanceIconsRegularAL.values()),
+        Arrays.stream(BytedanceIconsRegularMZ.values()),
+        Arrays.stream(BytedanceIconsBoldAL.values()),
+        Arrays.stream(BytedanceIconsBoldMZ.values()),
+        Arrays.stream(BytedanceIconsExtraBoldAL.values()),
+        Arrays.stream(BytedanceIconsExtraBoldMZ.values())
+      )
+        .flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)),
+    FONT_AWESOME_6(
+      "Font Awesome 6",
+      Stream.of(
+        Arrays.stream(org.kordamp.ikonli.fontawesome6.FontAwesomeBrands.values()),
+        Arrays.stream(org.kordamp.ikonli.fontawesome6.FontAwesomeRegular.values()),
+        Arrays.stream(org.kordamp.ikonli.fontawesome6.FontAwesomeSolid.values())
+      )
+        .flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)),
+    MATERIAL_DESIGN_2(
+      "Material Design 2",
+      Stream.of(
+        Arrays.stream(MaterialDesignA.values()),
+        Arrays.stream(MaterialDesignB.values()),
+        Arrays.stream(MaterialDesignC.values()),
+        Arrays.stream(MaterialDesignD.values()),
+        Arrays.stream(MaterialDesignE.values()),
+        Arrays.stream(MaterialDesignF.values()),
+        Arrays.stream(MaterialDesignG.values()),
+        Arrays.stream(MaterialDesignH.values()),
+        Arrays.stream(MaterialDesignI.values()),
+        Arrays.stream(MaterialDesignJ.values()),
+        Arrays.stream(MaterialDesignK.values()),
+        Arrays.stream(MaterialDesignL.values()),
+        Arrays.stream(MaterialDesignM.values()),
+        Arrays.stream(MaterialDesignN.values()),
+        Arrays.stream(MaterialDesignO.values()),
+        Arrays.stream(MaterialDesignP.values()),
+        Arrays.stream(MaterialDesignQ.values()),
+        Arrays.stream(MaterialDesignR.values()),
+        Arrays.stream(MaterialDesignS.values()),
+        Arrays.stream(MaterialDesignT.values()),
+        Arrays.stream(MaterialDesignU.values()),
+        Arrays.stream(MaterialDesignV.values()),
+        Arrays.stream(MaterialDesignW.values()),
+        Arrays.stream(MaterialDesignX.values()),
+        Arrays.stream(MaterialDesignY.values()),
+        Arrays.stream(MaterialDesignZ.values())
+      )
+        .flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)),
     BOOTSTRAP("Bootstrap", BootstrapIcons.values()),
     MATERIAL("Material", Material.values()),
     MATERIAL_DESIGN("Material Design", MaterialDesign.values()),
     FONT_AWESOME("Font Awesome", FontAwesome.values()),
-    FONT_AWESOME_5("Font Awesome 5", Stream.concat(
-      Stream.concat(
-        Arrays.stream(FontAwesomeBrands.values()).map(brands -> (Ikon) brands),
-        Arrays.stream(FontAwesomeRegular.values()).map(regular -> (Ikon) regular)
-      ),
-      Arrays.stream(FontAwesomeSolid.values()).map(solid -> (Ikon) solid)
-    ).toArray(Ikon[]::new)),
+    FONT_AWESOME_5(
+      "Font Awesome 5",
+      Stream.of(
+        Arrays.stream(org.kordamp.ikonli.fontawesome5.FontAwesomeBrands.values()),
+        Arrays.stream(org.kordamp.ikonli.fontawesome5.FontAwesomeRegular.values()),
+        Arrays.stream(org.kordamp.ikonli.fontawesome5.FontAwesomeSolid.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     EVA_ICONS("Eva Icons", Evaicons.values()),
-    ION_ICONS_4("Ion Icons 4", Stream.concat(
-      Stream.concat(
-        Arrays.stream(Ionicons4IOS.values()).map(ios -> (Ikon) ios),
-        Arrays.stream(Ionicons4Logo.values()).map(logo -> (Ikon) logo)
-      ),
-      Arrays.stream(Ionicons4Material.values()).map(material -> (Ikon) material)
-    ).toArray(Ikon[]::new)),
-    LINE_AWESOME("Line Awesome", Stream.concat(
-      Stream.concat(
-        Arrays.stream(LineAwesomeBrands.values()).map(brands -> (Ikon) brands),
-        Arrays.stream(LineAwesomeRegular.values()).map(regular -> (Ikon) regular)
-      ),
-      Arrays.stream(LineAwesomeSolid.values()).map(solid -> (Ikon) solid)
-    ).toArray(Ikon[]::new)),
+    ION_ICONS_4(
+      "Ion Icons 4",
+      Stream.of(
+        Arrays.stream(Ionicons4IOS.values()),
+        Arrays.stream(Ionicons4Logo.values()),
+        Arrays.stream(Ionicons4Material.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
+    LINE_AWESOME(
+      "Line Awesome",
+      Stream.of(
+        Arrays.stream(LineAwesomeBrands.values()),
+        Arrays.stream(LineAwesomeRegular.values()),
+        Arrays.stream(LineAwesomeSolid.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     WEATHER_ICONS("Weather Icons", WeatherIcons.values()),
     DEVI_ICONS("Devi Icons", Devicons.values()),
-    MATERIAL_2("Material 2", Stream.concat(
-      Stream.concat(
-        Stream.concat(
-          Arrays.stream(Material2AL.values()).map(al -> (Ikon) al),
-          Arrays.stream(Material2MZ.values()).map(mz -> (Ikon) mz)
-        ),
-        Stream.concat(
-          Arrays.stream(Material2OutlinedAL.values()).map(outlinedAL -> (Ikon) outlinedAL),
-          Arrays.stream(Material2OutlinedMZ.values()).map(outlinedMZ -> (Ikon) outlinedMZ)
-        )
-      ),
-      Stream.concat(
-        Stream.concat(
-          Arrays.stream(Material2RoundAL.values()).map(roundAL -> (Ikon) roundAL),
-          Arrays.stream(Material2RoundMZ.values()).map(roundMZ -> (Ikon) roundMZ)
-        ),
-        Stream.concat(
-          Arrays.stream(Material2SharpAL.values()).map(sharpAL -> (Ikon) sharpAL),
-          Arrays.stream(Material2SharpMZ.values()).map(sharpMZ -> (Ikon) sharpMZ)
-        )
-      )
-    ).toArray(Ikon[]::new)),
+    MATERIAL_2(
+      "Material 2",
+      Stream.of(
+        Arrays.stream(Material2AL.values()),
+        Arrays.stream(Material2MZ.values()),
+        Arrays.stream(Material2OutlinedAL.values()),
+        Arrays.stream(Material2OutlinedMZ.values()),
+        Arrays.stream(Material2RoundAL.values()),
+        Arrays.stream(Material2RoundMZ.values()),
+        Arrays.stream(Material2SharpAL.values()),
+        Arrays.stream(Material2SharpMZ.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     DASH_ICONS("Dash Icons", Dashicons.values()),
     ELUSIVE("Elusive", Elusive.values()),
     THEMIFY("Themify", Themify.values()),
@@ -140,13 +199,16 @@ public enum Pack {
     WEB_SYMBOLS("Web Symbols", Websymbols.values()),
     CARBON_ICONS("Carbon Icons", CarbonIcons.values()),
     PRESTA_SHOP_ICONS("Presta Shop Icons", PrestaShopIcons.values()),
-    UNICONS("Unicons", Stream.concat(
-      Stream.concat(
-        Arrays.stream(UniconsLine.values()).map(line -> (Ikon) line),
-        Arrays.stream(UniconsMonochrome.values()).map(monochrome -> (Ikon) monochrome)
-      ),
-      Arrays.stream(UniconsSolid.values()).map(solid -> (Ikon) solid)
-    ).toArray(Ikon[]::new)),
+    UNICONS(
+      "Unicons",
+      Stream.of(
+        Arrays.stream(UniconsLine.values()),
+        Arrays.stream(UniconsMonochrome.values()),
+        Arrays.stream(UniconsSolid.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     LINECONS("Linecons", Linecons.values()),
     CAPTAIN_ICON("Captain Icon", Captainicon.values()),
     JAM("Jam", Jam.values()),
@@ -155,61 +217,90 @@ public enum Pack {
     OPENICONIC("Openiconic", Openiconic.values()),
     CODICONS("Codicons", Codicons.values()),
     OCI_ICONS("Oci Icons", Ociicons.values()),
-    REMIX_ICON("Remix Icon", Stream.concat(
-      Arrays.stream(RemixiconAL.values()).map(al -> (Ikon) al),
-      Arrays.stream(RemixiconMZ.values()).map(mz -> (Ikon) mz)
-    ).toArray(Ikon[]::new)),
+    REMIX_ICON(
+      "Remix Icon",
+      Stream.of(
+        Arrays.stream(RemixiconAL.values()),
+        Arrays.stream(RemixiconMZ.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     ION_ICONS("Ion Icons", Ionicons.values()),
-    ANT_DESIGN_ICONS("Ant Design Icons", Stream.concat(
-      Arrays.stream(AntDesignIconsFilled.values()).map(filled -> (Ikon) filled),
-      Arrays.stream(AntDesignIconsOutlined.values()).map(outlined -> (Ikon) outlined)
-    ).toArray(Ikon[]::new)),
+    ANT_DESIGN_ICONS(
+      "Ant Design Icons",
+      Stream.of(
+        Arrays.stream(AntDesignIconsFilled.values()),
+        Arrays.stream(AntDesignIconsOutlined.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     SUBWAY("Subway", Subway.values()),
     SIMPLE_LINE_ICONS("Simple Line Icons", SimpleLineIcons.values()),
     FILE_ICONS("File Icons", FileIcons.values()),
     MAKI("Maki", Maki.values()),
     MAKI_2("Maki 2", Maki2.values()),
-    WHHG("Whhg", Stream.concat(
-      Arrays.stream(WhhgAL.values()).map(al -> (Ikon) al),
-      Arrays.stream(WhhgMZ.values()).map(mz -> (Ikon) mz)
-    ).toArray(Ikon[]::new)),
+    WHHG(
+      "Whhg",
+      Stream.of(
+        Arrays.stream(WhhgAL.values()),
+        Arrays.stream(WhhgMZ.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     SIMPLE_ICONS("Simple Icons", SimpleIcons.values()),
     FOUNDATION("Foundation", Foundation.values()),
     MICRONS("Microns", Microns.values()),
     LIGATURE_SYMBOLS("Ligature Symbols", LigatureSymbols.values()),
     BPMN("Bpmn", Bpmn.values()),
     TYPICONS("Typicons", Typicons.values()),
-    HAWCONS("Hawcons", Stream.concat(
-      Arrays.stream(HawconsFilled.values()).map(filled -> (Ikon) filled),
-      Arrays.stream(HawconsStroke.values()).map(stroke -> (Ikon) stroke)
-    ).toArray(Ikon[]::new)),
+    HAWCONS(
+      "Hawcons",
+      Stream.of(
+        Arrays.stream(HawconsFilled.values()),
+        Arrays.stream(HawconsStroke.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     MAP_ICONS("Map Icons", Mapicons.values()),
     METRIZE_ICONS("Metrize Icons", MetrizeIcons.values()),
-    CORE_UI("Core UI", Stream.concat(
-      Arrays.stream(CoreUiBrands.values()).map(brands -> (Ikon) brands),
-      Arrays.stream(CoreUiFree.values()).map(free -> (Ikon) free)
-    ).toArray(Ikon[]::new)),
+    CORE_UI(
+      "Core UI",
+      Stream.of(
+        Arrays.stream(CoreUiBrands.values()),
+        Arrays.stream(CoreUiFree.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     RUNESTRO_ICONS("Runestro Icons", Runestroicons.values()),
     PAYMENT_FONT("Payment Font", PaymentFont.values()),
-    FLUENT_UI("Fluent UI", Stream.concat(
-      Stream.concat(
-        Arrays.stream(FluentUiFilledAL.values()).map(filledAL -> (Ikon) filledAL),
-        Arrays.stream(FluentUiFilledMZ.values()).map(filledMZ -> (Ikon) filledMZ)
-      ),
-      Stream.concat(
-        Arrays.stream(FluentUiRegularAL.values()).map(regularAL -> (Ikon) regularAL),
-        Arrays.stream(FluentUiRegularMZ.values()).map(regularMZ -> (Ikon) regularMZ)
-      )
-    ).toArray(Ikon[]::new)),
+    FLUENT_UI(
+      "Fluent UI",
+      Stream.of(
+        Arrays.stream(FluentUiFilledAL.values()),
+        Arrays.stream(FluentUiFilledMZ.values()),
+        Arrays.stream(FluentUiRegularAL.values()),
+        Arrays.stream(FluentUiRegularMZ.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     WIN_10("Win 10", Win10.values()),
     FONTELICO("Fontelico", Fontelico.values()),
-    BOX_ICONS("Box Icons", Stream.concat(
-      Stream.concat(
-        Arrays.stream(BoxiconsLogos.values()).map(logos -> (Ikon) logos),
-        Arrays.stream(BoxiconsRegular.values()).map(regular -> (Ikon) regular)
-      ),
-      Arrays.stream(BoxiconsSolid.values()).map(solid -> (Ikon) solid)
-    ).toArray(Ikon[]::new)),
+    BOX_ICONS(
+      "Box Icons",
+      Stream.of(
+        Arrays.stream(BoxiconsLogos.values()),
+        Arrays.stream(BoxiconsRegular.values()),
+        Arrays.stream(BoxiconsSolid.values())
+      ).flatMap(stream -> stream)
+        .map(icon -> (Ikon) icon)
+        .toArray(Ikon[]::new)
+    ),
     ENTYPO("Entypo", Entypo.values()),
     ICOMOON("Icomoon", Icomoon.values()),
     MED_ICONS("Med Icons", Medicons.values());

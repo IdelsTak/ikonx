@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.*?>
-<?import com.dlsc.gemsfx.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import org.controlsfx.control.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.IconView">
@@ -57,6 +55,7 @@
     </VBox>
    <StatusBar fx:id="statusBar" text="" />
    <stylesheets>
+      <URL value="@../styles/fonts.css" />
       <URL value="@../styles/theme.css" />
       <URL value="@../styles/icon-grid.css" />
    </stylesheets>

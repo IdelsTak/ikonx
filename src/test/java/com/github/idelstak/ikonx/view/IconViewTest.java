@@ -187,9 +187,9 @@ final class IconViewTest {
 
         robot.clickOn(ikon.getDescription());
 
-        var action = (Action.CopyIconSucceeded) flow.probeLastAfter(before).orElseThrow();
+        var action = (Action.CopyIkonSucceeded) flow.probeLastAfter(before).orElseThrow();
 
-        assertEquals(ikon.getDescription(), action.iconCode());
+        assertEquals(ikon.getDescription(), action.ikon().styledIkon().ikon().getDescription());
     }
 
     @Test

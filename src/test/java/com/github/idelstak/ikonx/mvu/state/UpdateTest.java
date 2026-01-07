@@ -115,35 +115,6 @@ final class UpdateTest {
     }
 
     @Test
-    void copySignalsSuccess() {
-        var update = new Update();
-        var state = ViewState.initial();
-
-        var next = update.apply(
-          state,
-          new Action.CopyIconSucceeded("λ")
-        );
-
-        assertThat(next.status(), instanceOf(ActivityState.Success.class));
-    }
-
-    @Test
-    void copyUpdatesMessage() {
-        var update = new Update();
-        var state = ViewState.initial();
-
-        var next = update.apply(
-          state,
-          new Action.CopyIconRequested("λ")
-        );
-
-        assertThat(
-          next.statusMessage(),
-          is("Copying 'λ' to clipboard")
-        );
-    }
-
-    @Test
     void emptySelectionDisplaysNoIcons() {
         var update = new Update();
         var state = ViewState.initial();
@@ -157,14 +128,92 @@ final class UpdateTest {
     }
 
     @Test
+    void copyUpdatesMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(state,
+          new Action.CopyIkonRequested(ikon)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          is("Copying '%s' to clipboard".formatted(ikon.styledIkon().ikon().getDescription()))
+        );
+    }
+
+    @Test
+    void copySucceededSignalsSuccess() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(
+          state,
+          new Action.CopyIkonSucceeded(ikon)
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Success.class));
+    }
+
+    @Test
+    void copySucceededAddsToRecentIcons() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(
+          state,
+          new Action.CopyIkonSucceeded(ikon)
+        );
+
+        assertThat(next.recentIkons(), hasItem(ikon));
+    }
+
+    @Test
+    void keepsRecentsWhenIconAlreadyPresent() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var action = new Action.CopyIkonSucceeded(ikon);
+        state = update.apply(state, action);
+        var next = update.apply(state, action);
+
+        assertThat(
+          state.recentIkons(),
+          equalTo(next.recentIkons())
+        );
+    }
+
+    @Test
+    void copySucceededShowsMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(
+          state,
+          new Action.CopyIkonSucceeded(ikon)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          is("Copied '" + ikon.styledIkon().ikon().getDescription() + "' to clipboard")
+        );
+    }
+
+    @Test
     void copyFailureSignalsError() {
         var update = new Update();
         var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
         var ex = new RuntimeException("naïve boom");
 
         var next = update.apply(
           state,
-          new Action.CopyIconFailed("Ω", ex)
+          new Action.CopyIkonFailed(ikon, ex)
         );
 
         assertThat(next.status(), instanceOf(ActivityState.Error.class));
@@ -174,11 +223,12 @@ final class UpdateTest {
     void copyFailureShowsErrorMessage() {
         var update = new Update();
         var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
         var ex = new RuntimeException("résumé clipboard failed");
 
         var next = update.apply(
           state,
-          new Action.CopyIconFailed("Ω", ex)
+          new Action.CopyIkonFailed(ikon, ex)
         );
 
         assertThat(next.statusMessage(), containsString("résumé clipboard failed"));
@@ -539,6 +589,103 @@ final class UpdateTest {
         assertThat(
           next.statusMessage(),
           is(desc + " removed from favorites")
+        );
+    }
+
+    @Test
+    void viewRequestedSignalsIdle() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(
+          state,
+          new Action.ViewIkonRequested(ikon)
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Idle.class));
+    }
+
+    @Test
+    void viewRequestedShowsMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        var desc = ikon.styledIkon().ikon().getDescription();
+
+        var next = update.apply(
+          state,
+          new Action.ViewIkonRequested(ikon)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          is("View '" + desc + "' details")
+        );
+    }
+
+    @Test
+    void viewSucceededSignalsSuccess() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(
+          state,
+          new Action.ViewIkonSucceeded(ikon)
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Success.class));
+    }
+
+    @Test
+    void viewSucceededShowsMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        var desc = ikon.styledIkon().ikon().getDescription();
+
+        var next = update.apply(
+          state,
+          new Action.ViewIkonSucceeded(ikon)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          is("Viewed '" + desc + "' details")
+        );
+    }
+
+    @Test
+    void viewFailedSignalsError() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        var ex = new RuntimeException("über view failure");
+
+        var next = update.apply(
+          state,
+          new Action.ViewIkonFailed(ikon, ex)
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Error.class));
+    }
+
+    @Test
+    void viewFailedShowsErrorMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        var ex = new RuntimeException("façade view exploded");
+
+        var next = update.apply(
+          state,
+          new Action.ViewIkonFailed(ikon, ex)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          containsString("façade view exploded")
         );
     }
 }

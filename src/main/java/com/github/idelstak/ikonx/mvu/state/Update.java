@@ -50,12 +50,18 @@ public final class Update {
             case Action.PackStyleToggled a ->
                 toggleStyle(state, a);
             case Action.FavoriteIkonToggled a ->
-                toggleFavoriteIkon(state, a);
-            case Action.CopyIconRequested a ->
+                toggleFavorite(state, a);
+            case Action.ViewIkonRequested a ->
+                viewRequested(state, a);
+            case Action.ViewIkonSucceeded a ->
+                viewSucceeded(state, a);
+            case Action.ViewIkonFailed a ->
+                viewFailed(state, a);
+            case Action.CopyIkonRequested a ->
                 copyRequested(state, a);
-            case Action.CopyIconSucceeded a ->
+            case Action.CopyIkonSucceeded a ->
                 copySucceeded(state, a);
-            case Action.CopyIconFailed a ->
+            case Action.CopyIkonFailed a ->
                 copyFailed(state, a);
             case Action.AppVersionRequested _ ->
                 versionRequested(state);
@@ -129,7 +135,7 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState toggleFavoriteIkon(ViewState state, Action.FavoriteIkonToggled action) {
+    private ViewState toggleFavorite(ViewState state, Action.FavoriteIkonToggled action) {
         var favorites = new HashSet<>(state.favoriteIkons());
         var ikon = action.ikon();
         boolean addToFavorites = action.isSelected();
@@ -211,22 +217,56 @@ public final class Update {
         return applySearchFilter(searchText, icons);
     }
 
-    private ViewState copyRequested(ViewState state, Action.CopyIconRequested action) {
+    private ViewState copyRequested(ViewState state, Action.CopyIkonRequested action) {
         return state
           .signal(new ActivityState.Idle())
-          .message("Copying '" + action.iconCode() + "' to clipboard");
+          .message("Copying '" + action.ikon().styledIkon().ikon().getDescription() + "' to clipboard");
     }
 
-    private ViewState copySucceeded(ViewState state, Action.CopyIconSucceeded action) {
+    private ViewState copySucceeded(ViewState state, Action.CopyIkonSucceeded action) {
+        var recents = new HashSet<>(state.recentIkons());
+        var ikon = action.ikon();
+        var changed = recents.add(ikon);
+
+        if (!changed) {
+            return state
+              .signal(new ActivityState.Success())
+              .message("Copied '" + action.ikon().styledIkon().ikon().getDescription() + "' to clipboard");
+        }
+
         return state
+          .recent(List.copyOf(recents))
           .signal(new ActivityState.Success())
-          .message("Copied '" + action.iconCode() + "' to clipboard");
+          .message("Copied '" + action.ikon().styledIkon().ikon().getDescription() + "' to clipboard");
     }
 
-    private ViewState copyFailed(ViewState state, Action.CopyIconFailed action) {
+    private ViewState copyFailed(ViewState state, Action.CopyIkonFailed action) {
         return state
           .signal(new ActivityState.Error())
-          .message("Failed to copy '" + action.iconCode() + "' to clipboard: " + action.error().getMessage());
+          .message("Failed to copy '"
+            + action.ikon().styledIkon().ikon().getDescription()
+            + "' to clipboard: "
+            + action.error().getMessage());
+    }
+
+    private ViewState viewRequested(ViewState state, Action.ViewIkonRequested action) {
+        return state
+          .signal(new ActivityState.Idle())
+          .message("View '" + action.ikon().styledIkon().ikon().getDescription() + "' details");
+    }
+
+    private ViewState viewSucceeded(ViewState state, Action.ViewIkonSucceeded action) {
+        return state
+          .signal(new ActivityState.Success())
+          .message("Viewed '" + action.ikon().styledIkon().ikon().getDescription() + "' details");
+    }
+
+    private ViewState viewFailed(ViewState state, Action.ViewIkonFailed action) {
+        return state
+          .signal(new ActivityState.Error())
+          .message("Failed to view '"
+            + action.ikon().styledIkon().ikon().getDescription()
+            + "' details: " + action.error().getMessage());
     }
 
     private ViewState versionRequested(ViewState state) {

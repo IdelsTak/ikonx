@@ -49,15 +49,27 @@ public sealed interface Action {
 
     }
 
-    record CopyIconRequested(String iconCode) implements Action {
+    record ViewIkonRequested(PackIkon ikon) implements Action {
 
     }
 
-    record CopyIconSucceeded(String iconCode) implements Action {
+    record ViewIkonSucceeded(PackIkon ikon) implements Action {
 
     }
 
-    record CopyIconFailed(String iconCode, Throwable error) implements Action {
+    record ViewIkonFailed(PackIkon ikon, Throwable error) implements Action {
+
+    }
+
+    record CopyIkonRequested(PackIkon ikon) implements Action {
+
+    }
+
+    record CopyIkonSucceeded(PackIkon ikon) implements Action {
+
+    }
+
+    record CopyIkonFailed(PackIkon ikon, Throwable error) implements Action {
 
     }
 

@@ -346,7 +346,7 @@ final class UpdateTest {
         var style = new Style.Square();
         var state = ViewState.initial();
 
-        var next = update.apply(state, new Action.StyleToggled(style, true));
+        var next = update.apply(state, new Action.PackStyleToggled(style, true));
 
         var displayedStyles = next.displayedIcons().stream()
           .map(PackIkon::styledIkon)
@@ -364,8 +364,8 @@ final class UpdateTest {
         var state = ViewState.initial();
 
         var next = update.apply(state, new Action.SelectPacksAllToggled(true));
-        next = update.apply(next, new Action.StyleToggled(style1, true));
-        next = update.apply(next, new Action.StyleToggled(style2, true));
+        next = update.apply(next, new Action.PackStyleToggled(style1, true));
+        next = update.apply(next, new Action.PackStyleToggled(style2, true));
 
         var displayedStyles = next.displayedIcons().stream()
           .map(PackIkon::styledIkon)
@@ -384,17 +384,17 @@ final class UpdateTest {
         var state = ViewState.initial();
 
         var next = update.apply(state, new Action.SelectPacksAllToggled(true));
-        next = update.apply(next, new Action.StyleToggled(square, true));
-        next = update.apply(next, new Action.StyleToggled(bold, true));
-        next = update.apply(next, new Action.StyleToggled(square, false));
+        next = update.apply(next, new Action.PackStyleToggled(square, true));
+        next = update.apply(next, new Action.PackStyleToggled(bold, true));
+        next = update.apply(next, new Action.PackStyleToggled(square, false));
 
         var displayedIcons = next.displayedIcons()
           .stream()
           .map(PackIkon::styledIkon)
           .map(StyledIkon::style)
           .collect(Collectors.toSet());
-        
-        assertThat(displayedIcons, everyItem(not(isA(Style.Square.class)))); // no icons of that style remain
+
+        assertThat(displayedIcons, everyItem(not(isA(Style.Square.class))));
     }
 
     @Test
@@ -403,7 +403,7 @@ final class UpdateTest {
         var state = ViewState.initial();
         var displayedIcons = state.displayedIcons();
 
-        var next = update.apply(state, new Action.StyleToggled(new Style.Logo(), false));
+        var next = update.apply(state, new Action.PackStyleToggled(new Style.Logo(), false));
         var newDisplayedIconsCount = next.displayedIcons().size();
 
         assertThat(displayedIcons.size(), is(newDisplayedIconsCount));
@@ -416,10 +416,10 @@ final class UpdateTest {
         var regular = new Style.Regular();
         var state = ViewState.initial();
         state = update.apply(state, new Action.PackToggled(Pack.values()[Pack.values().length - 6], true));
-        state = update.apply(state, new Action.StyleToggled(outlined, true));
+        state = update.apply(state, new Action.PackStyleToggled(outlined, true));
 
         var searchText = "arrow"; // some description fragment that exists in the icons
-        state = update.apply(state, new Action.StyleToggled(regular, true));
+        state = update.apply(state, new Action.PackStyleToggled(regular, true));
         state = update.apply(state, new Action.SearchChanged(searchText));
         var filteredIconNames = state.displayedIcons()
           .stream()

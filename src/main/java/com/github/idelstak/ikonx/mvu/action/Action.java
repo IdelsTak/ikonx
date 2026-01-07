@@ -41,7 +41,7 @@ public sealed interface Action {
 
     }
 
-    record StyleToggled(Style style, boolean isSelected) implements Action {
+    record PackStyleToggled(Style style, boolean isSelected) implements Action {
 
     }
 

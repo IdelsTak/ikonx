@@ -24,42 +24,19 @@ package com.github.idelstak.ikonx.mvu.state;
 
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
-import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
-import java.util.stream.*;
 
 public final class Update {
 
-    private final Map<Pack, List<PackIkon>> iconPackCache;
-    private final Map<Style, List<PackIkon>> iconStyleCache;
-    private final List<Pack> orderedPacks;
+    private final int minSearchLength;
+    private final Ikons ikons;
 
     public Update() {
-        iconPackCache = new EnumMap<>(Pack.class);
-        for (var pack : Pack.values()) {
-            iconPackCache.put(
-              pack,
-              Arrays.stream(pack.ikons())
-                .map(ikon -> new PackIkon(pack, ikon))
-                .toList()
-            );
-        }
-
-        iconStyleCache = Arrays.stream(Pack.values())
-          .flatMap(pack -> Arrays.stream(pack.ikons())
-            .map(styledIkon -> new PackIkon(pack, styledIkon))
-          )
-          .collect(Collectors.groupingBy(
-            pi -> pi.styledIkon().style(),
-            Collectors.toList()
-          ));
-
-        orderedPacks = Arrays.stream(Pack.values())
-          .sorted(Comparator.comparing(Enum::name))
-          .toList();
+        ikons = new Ikons(Pack.values());
+        minSearchLength = 2;
     }
 
     public ViewState apply(ViewState state, Action action) {
@@ -70,7 +47,7 @@ public final class Update {
                 togglePack(state, a);
             case Action.SelectPacksAllToggled a ->
                 toggleAllPacks(state, a);
-            case Action.StyleToggled a ->
+            case Action.PackStyleToggled a ->
                 toggleStyle(state, a);
             case Action.CopyIconRequested a ->
                 copyRequested(state, a);
@@ -107,10 +84,16 @@ public final class Update {
     private ViewState togglePack(ViewState state, Action.PackToggled action) {
         var packs = new HashSet<>(state.selectedPacks());
         var pack = action.pack();
+        boolean changed;
+
         if (action.isSelected()) {
-            packs.add(pack);
+            changed = packs.add(pack);
         } else {
-            packs.remove(pack);
+            changed = packs.remove(pack);
+        }
+
+        if (!changed) {
+            return state;
         }
 
         var icons = filterIconsByPack(packs, state.searchText());
@@ -121,7 +104,7 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState toggleStyle(ViewState state, Action.StyleToggled action) {
+    private ViewState toggleStyle(ViewState state, Action.PackStyleToggled action) {
         var styles = new HashSet<>(state.selectedStyles());
         var style = action.style();
         boolean changed;
@@ -148,9 +131,9 @@ public final class Update {
         Set<Pack> packs;
 
         if (action.isSelected()) {
-            packs = Set.copyOf(orderedPacks);
+            packs = Set.copyOf(ikons.orderedPacks());
         } else {
-            packs = Set.of(orderedPacks.getFirst());
+            packs = Set.of(ikons.orderedPacks().getFirst());
         }
 
         var icons = filterIconsByPack(packs, state.searchText());
@@ -163,19 +146,27 @@ public final class Update {
 
     private List<PackIkon> filterIconsByStyle(Set<Style> selectedStyles, String searchText) {
         var icons = selectedStyles.isEmpty()
-                  ? iconStyleCache.values().stream().flatMap(List::stream).toList()
-                  : selectedStyles.stream()
-            .flatMap(style -> iconStyleCache.getOrDefault(style, List.of()).stream())
-            .toList();
+                  ? ikons.all()
+                  : selectedStyles.stream().flatMap(style -> ikons.byStyle(style).stream()).toList();
 
-        if (searchText == null || searchText.isBlank() || searchText.length() < 2) {
+        if (isInvalidSearch(searchText)) {
             return icons;
         }
 
+        return applySearchFilter(searchText, icons);
+    }
+
+    private boolean isInvalidSearch(String searchText) {
+        return searchText == null || searchText.isBlank() || searchText.length() < minSearchLength;
+    }
+
+    private List<PackIkon> applySearchFilter(String searchText, List<PackIkon> icons) {
         var lower = searchText.toLowerCase(Locale.ROOT);
         return icons.stream()
           .filter(pi ->
-            pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
+          {
+              return pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower);
+          })
           .toList();
     }
 
@@ -185,18 +176,14 @@ public final class Update {
         }
 
         var icons = selectedPacks.stream()
-          .flatMap(pack -> iconPackCache.get(pack).stream())
+          .flatMap(pack -> ikons.byPack(pack).stream())
           .toList();
 
-        if (searchText == null || searchText.isBlank() || searchText.length() < 2) {
+        if (isInvalidSearch(searchText)) {
             return icons;
         }
 
-        var lower = searchText.toLowerCase(Locale.ROOT);
-        return icons.stream()
-          .filter(pi ->
-            pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower))
-          .toList();
+        return applySearchFilter(searchText, icons);
     }
 
     private ViewState copyRequested(ViewState state, Action.CopyIconRequested action) {

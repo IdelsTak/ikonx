@@ -44,15 +44,15 @@ final class FlowProbe implements Flow {
         update = new Update();
         // Side effect stream for clipboard
         Observable<Action> sideEffects = actions
-          .filter(a -> a instanceof Action.CopyIconRequested)
+          .filter(a -> a instanceof Action.CopyIkonRequested)
           .flatMap(a -> {
-              var request = (Action.CopyIconRequested) a;
+              var request = (Action.CopyIkonRequested) a;
               return Observable.fromCallable(() -> {
-                  clipboard.copy(request.iconCode());
-                  return (Action) new Action.CopyIconSucceeded(request.iconCode());
+                  clipboard.copy(request.ikon().styledIkon().ikon().getDescription());
+                  return (Action) new Action.CopyIkonSucceeded(request.ikon());
               })
                 .subscribeOn(Schedulers.single())
-                .onErrorReturn(e -> new Action.CopyIconFailed(request.iconCode(), e));
+                .onErrorReturn(e -> new Action.CopyIkonFailed(request.ikon(), e));
           });
 
         // Merge original actions with side effect results

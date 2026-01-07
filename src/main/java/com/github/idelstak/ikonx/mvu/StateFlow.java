@@ -22,6 +22,7 @@
  */
 package com.github.idelstak.ikonx.mvu;
 
+import com.github.idelstak.ikonx.mvu.state.Update;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.view.*;

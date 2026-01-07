@@ -94,7 +94,7 @@ public class IconView {
         selectAllToggle.setSelected(state.selectedPacks().size() == Pack.values().length);
         selectTip.setText(selectAllToggle.isSelected() ? "Deselect all" : "Select all");
         tableFix.render(() -> {
-            iconsTable.getItems().setAll(partition(state.displayedIcons(), iconsTable.getColumns().size()));
+            iconsTable.getItems().setAll(partition(state.displayedIkons(), iconsTable.getColumns().size()));
         });
         statusBar.setText(state.statusMessage());
     }
@@ -124,7 +124,7 @@ public class IconView {
           flow.accept(new Action.SearchChanged(text))
         );
         selectAllToggle.setOnAction(_ ->
-          flow.accept(new Action.SelectAllToggled(selectAllToggle.isSelected()))
+          flow.accept(new Action.SelectPacksAllToggled(selectAllToggle.isSelected()))
         );
     }
 

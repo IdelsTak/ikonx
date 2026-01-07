@@ -22,16 +22,12 @@
  */
 package com.github.idelstak.ikonx.view;
 
-import com.github.idelstak.ikonx.icons.PackIkon;
-import com.github.idelstak.ikonx.mvu.action.Action;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableCell;
-import org.kordamp.ikonli.javafx.FontIcon;
-import java.util.List;
-import java.util.function.Consumer;
+import com.github.idelstak.ikonx.icons.*;
+import com.github.idelstak.ikonx.mvu.action.*;
+import java.util.*;
+import java.util.function.*;
+import javafx.scene.control.*;
+import org.kordamp.ikonli.javafx.*;
 
 final class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
 
@@ -75,14 +71,13 @@ final class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
 
             root.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 1) {
-                    dispatch.accept(new Action.CopyIconRequested(packIkon.styledIkon().ikon().getDescription()));
+                    dispatch.accept(new Action.CopyIkonRequested(packIkon));
                 }
             });
 
             var contextMenu = new ContextMenu();
             var copyItem = new MenuItem("Copy icon code");
-            copyItem.setOnAction(_ ->
-              dispatch.accept(new Action.CopyIconRequested(packIkon.styledIkon().ikon().getDescription())));
+            copyItem.setOnAction(_ -> dispatch.accept(new Action.CopyIkonRequested(packIkon)));
             contextMenu.getItems().add(copyItem);
             root.setContextMenu(contextMenu);
 

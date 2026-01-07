@@ -24,9 +24,21 @@ package com.github.idelstak.ikonx.view.grid;
 
 public sealed interface ViewMode {
 
+    String displayName();
+
     record Grid() implements ViewMode {
+
+        @Override
+        public String displayName() {
+            return "Grid";
+        }
     }
 
     record List() implements ViewMode {
+
+        @Override
+        public String displayName() {
+            return "List";
+        }
     }
 }

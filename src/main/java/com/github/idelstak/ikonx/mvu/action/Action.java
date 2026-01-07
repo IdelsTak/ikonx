@@ -45,6 +45,10 @@ public sealed interface Action {
 
     }
 
+    record FavoriteIkonToggled(PackIkon ikon, boolean isSelected) implements Action {
+
+    }
+
     record CopyIconRequested(String iconCode) implements Action {
 
     }

@@ -84,7 +84,7 @@ final class IconViewTest {
         });
         robot.clickOn("#searchField").write("über");
         var finalState = flow.probeState();
-        assertTrue(finalState.displayedIcons().isEmpty());
+        assertTrue(finalState.displayedIkons().isEmpty());
     }
 
     @Test

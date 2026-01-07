@@ -35,8 +35,8 @@ public record ViewState(
   String searchText,
   Set<Pack> selectedPacks,
   Set<Style> selectedStyles,
-  List<PackIkon> displayedIcons,
-  List<PackIkon> favoriteIcons,
+  List<PackIkon> displayedIkons,
+  List<PackIkon> favoriteIkons,
   List<PackIkon> recentIcons,
   ViewMode viewMode,
   ActivityState status,
@@ -46,64 +46,64 @@ public record ViewState(
     public ViewState {
         selectedPacks = Set.copyOf(selectedPacks);
         selectedStyles = Set.copyOf(selectedStyles);
-        displayedIcons = List.copyOf(displayedIcons);
-        favoriteIcons = List.copyOf(favoriteIcons);
+        displayedIkons = List.copyOf(displayedIkons);
+        favoriteIkons = List.copyOf(favoriteIkons);
         recentIcons = List.copyOf(recentIcons);
     }
 
     ViewState version(AppVersion version) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
-          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+          displayedIkons, favoriteIkons, recentIcons, viewMode, status, statusMessage);
     }
 
     ViewState stageIcons(StageIcons icons) {
         return new ViewState(version, icons, searchText, selectedPacks, selectedStyles,
-          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+          displayedIkons, favoriteIkons, recentIcons, viewMode, status, statusMessage);
     }
 
     ViewState search(String text) {
         return new ViewState(version, stageIcons, text, selectedPacks, selectedStyles,
-          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+          displayedIkons, favoriteIkons, recentIcons, viewMode, status, statusMessage);
     }
 
     ViewState select(Set<Pack> packs) {
         return new ViewState(version, stageIcons, searchText, packs, selectedStyles,
-          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+          displayedIkons, favoriteIkons, recentIcons, viewMode, status, statusMessage);
     }
 
     ViewState styles(Set<Style> styles) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, styles,
-          displayedIcons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+          displayedIkons, favoriteIkons, recentIcons, viewMode, status, statusMessage);
     }
 
     ViewState display(List<PackIkon> icons) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
-          icons, favoriteIcons, recentIcons, viewMode, status, statusMessage);
+          icons, favoriteIkons, recentIcons, viewMode, status, statusMessage);
     }
 
     ViewState favorites(List<PackIkon> icons) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
-          displayedIcons, icons, recentIcons, viewMode, status, statusMessage);
+          displayedIkons, icons, recentIcons, viewMode, status, statusMessage);
     }
 
     ViewState recent(List<PackIkon> icons) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
-          displayedIcons, favoriteIcons, icons, viewMode, status, statusMessage);
+          displayedIkons, favoriteIkons, icons, viewMode, status, statusMessage);
     }
 
     ViewState mode(ViewMode mode) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
-          displayedIcons, favoriteIcons, recentIcons, mode, status, statusMessage);
+          displayedIkons, favoriteIkons, recentIcons, mode, status, statusMessage);
     }
 
     ViewState signal(ActivityState state) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
-          displayedIcons, favoriteIcons, recentIcons, viewMode, state, statusMessage);
+          displayedIkons, favoriteIkons, recentIcons, viewMode, state, statusMessage);
     }
 
     ViewState message(String text) {
         return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
-          displayedIcons, favoriteIcons, recentIcons, viewMode, status, text);
+          displayedIkons, favoriteIkons, recentIcons, viewMode, status, text);
     }
 
     public static ViewState initial() {
@@ -123,7 +123,7 @@ public record ViewState(
           Set.of(firstPack),
           Set.of(), // selectedStyles empty initially
           icons,
-          List.of(), // favoriteIcons empty
+          List.of(), // favoriteIkons empty
           List.of(), // recentIcons empty
           new ViewMode.Grid(),
           new Idle(),

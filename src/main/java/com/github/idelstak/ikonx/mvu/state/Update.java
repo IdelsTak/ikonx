@@ -49,6 +49,8 @@ public final class Update {
                 toggleAllPacks(state, a);
             case Action.PackStyleToggled a ->
                 toggleStyle(state, a);
+            case Action.FavoriteIkonToggled a ->
+                toggleFavoriteIkon(state, a);
             case Action.CopyIconRequested a ->
                 copyRequested(state, a);
             case Action.CopyIconSucceeded a ->
@@ -125,6 +127,29 @@ public final class Update {
           .display(icons)
           .signal(new ActivityState.Idle())
           .message(String.format("%d icons found", icons.size()));
+    }
+
+    private ViewState toggleFavoriteIkon(ViewState state, Action.FavoriteIkonToggled action) {
+        var favorites = new HashSet<>(state.favoriteIkons());
+        var ikon = action.ikon();
+        boolean addToFavorites = action.isSelected();
+        boolean changed;
+
+        if (addToFavorites) {
+            changed = favorites.add(ikon);
+        } else {
+            changed = favorites.remove(ikon);
+        }
+
+        if (!changed) {
+            return state;
+        }
+
+        var desc = ikon.styledIkon().ikon().getDescription();
+        return state
+          .favorites(List.copyOf(favorites))
+          .signal(new ActivityState.Idle())
+          .message("%s %s favorites".formatted(desc, addToFavorites ? "added to" : "removed from"));
     }
 
     private ViewState toggleAllPacks(ViewState state, Action.SelectPacksAllToggled action) {

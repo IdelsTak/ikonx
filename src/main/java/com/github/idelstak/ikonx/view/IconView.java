@@ -94,7 +94,7 @@ public class IconView {
         selectAllToggle.setSelected(state.selectedPacks().size() == Pack.values().length);
         selectTip.setText(selectAllToggle.isSelected() ? "Deselect all" : "Select all");
         tableFix.render(() -> {
-            iconsTable.getItems().setAll(partition(state.displayedIcons(), iconsTable.getColumns().size()));
+            iconsTable.getItems().setAll(partition(state.displayedIkons(), iconsTable.getColumns().size()));
         });
         statusBar.setText(state.statusMessage());
     }

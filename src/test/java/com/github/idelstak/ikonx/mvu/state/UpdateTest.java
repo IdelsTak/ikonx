@@ -153,7 +153,7 @@ final class UpdateTest {
           new Action.SearchChanged("αβ")
         );
 
-        assertThat(next.displayedIcons(), is(empty()));
+        assertThat(next.displayedIkons(), is(empty()));
     }
 
     @Test
@@ -348,7 +348,7 @@ final class UpdateTest {
 
         var next = update.apply(state, new Action.PackStyleToggled(style, true));
 
-        var displayedStyles = next.displayedIcons().stream()
+        var displayedStyles = next.displayedIkons().stream()
           .map(PackIkon::styledIkon)
           .map(StyledIkon::style)
           .collect(Collectors.toSet());
@@ -367,7 +367,7 @@ final class UpdateTest {
         next = update.apply(next, new Action.PackStyleToggled(style1, true));
         next = update.apply(next, new Action.PackStyleToggled(style2, true));
 
-        var displayedStyles = next.displayedIcons().stream()
+        var displayedStyles = next.displayedIkons().stream()
           .map(PackIkon::styledIkon)
           .map(StyledIkon::style)
           .map(Style::getClass)
@@ -388,7 +388,7 @@ final class UpdateTest {
         next = update.apply(next, new Action.PackStyleToggled(bold, true));
         next = update.apply(next, new Action.PackStyleToggled(square, false));
 
-        var displayedIcons = next.displayedIcons()
+        var displayedIcons = next.displayedIkons()
           .stream()
           .map(PackIkon::styledIkon)
           .map(StyledIkon::style)
@@ -401,10 +401,10 @@ final class UpdateTest {
     void noSelectedStylesReturnsPreviouslyDisplayedIcons() {
         var update = new Update();
         var state = ViewState.initial();
-        var displayedIcons = state.displayedIcons();
+        var displayedIcons = state.displayedIkons();
 
         var next = update.apply(state, new Action.PackStyleToggled(new Style.Logo(), false));
-        var newDisplayedIconsCount = next.displayedIcons().size();
+        var newDisplayedIconsCount = next.displayedIkons().size();
 
         assertThat(displayedIcons.size(), is(newDisplayedIconsCount));
     }
@@ -421,7 +421,7 @@ final class UpdateTest {
         var searchText = "arrow"; // some description fragment that exists in the icons
         state = update.apply(state, new Action.PackStyleToggled(regular, true));
         state = update.apply(state, new Action.SearchChanged(searchText));
-        var filteredIconNames = state.displayedIcons()
+        var filteredIconNames = state.displayedIkons()
           .stream()
           .map(PackIkon::styledIkon)
           .map(StyledIkon::ikon)
@@ -429,5 +429,116 @@ final class UpdateTest {
           .toList();
 
         assertThat(filteredIconNames, everyItem(containsStringIgnoringCase(searchText)));
+    }
+
+    @Test
+    void favoriteToggleAddsIkon() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(
+          state,
+          new Action.FavoriteIkonToggled(ikon, true)
+        );
+
+        assertThat(next.favoriteIkons(), hasItem(ikon));
+    }
+
+    @Test
+    void favoriteToggleRemovesIkon() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        state = update.apply(state, new Action.FavoriteIkonToggled(ikon, true));
+
+        var next = update.apply(
+          state,
+          new Action.FavoriteIkonToggled(ikon, false)
+        );
+
+        assertThat(next.favoriteIkons(), not(hasItem(ikon)));
+    }
+
+    @Test
+    void favoriteToggleOnAlreadyFavoriteDoesNothing() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        state = update.apply(state, new Action.FavoriteIkonToggled(ikon, true));
+        var favorites = state.favoriteIkons();
+
+        var next = update.apply(
+          state,
+          new Action.FavoriteIkonToggled(ikon, true)
+        );
+
+        assertThat(next.favoriteIkons(), is(favorites));
+    }
+
+    @Test
+    void favoriteToggleOffWhenNotFavoriteDoesNothing() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        var favorites = state.favoriteIkons();
+
+        var next = update.apply(
+          state,
+          new Action.FavoriteIkonToggled(ikon, false)
+        );
+
+        assertThat(next.favoriteIkons(), is(favorites));
+    }
+
+    @Test
+    void favoriteToggleSignalsIdle() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+
+        var next = update.apply(
+          state,
+          new Action.FavoriteIkonToggled(ikon, true)
+        );
+
+        assertThat(next.status(), instanceOf(ActivityState.Idle.class));
+    }
+
+    @Test
+    void favoriteToggleShowsAddedMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        var desc = ikon.styledIkon().ikon().getDescription();
+
+        var next = update.apply(
+          state,
+          new Action.FavoriteIkonToggled(ikon, true)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          is(desc + " added to favorites")
+        );
+    }
+
+    @Test
+    void favoriteToggleShowsRemovedMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        var ikon = state.displayedIkons().getFirst();
+        state = update.apply(state, new Action.FavoriteIkonToggled(ikon, true));
+        var desc = ikon.styledIkon().ikon().getDescription();
+
+        var next = update.apply(
+          state,
+          new Action.FavoriteIkonToggled(ikon, false)
+        );
+
+        assertThat(
+          next.statusMessage(),
+          is(desc + " removed from favorites")
+        );
     }
 }

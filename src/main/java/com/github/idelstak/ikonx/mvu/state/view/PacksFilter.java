@@ -20,31 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.idelstak.ikonx.icons;
+package com.github.idelstak.ikonx.mvu.state.view;
 
-import java.util.*;
+public sealed interface PacksFilter {
 
-public record PackIkon(Pack pack, StyledIkon styledIkon) implements Comparable<PackIkon> {
-
-    public String description() {
-        return styledIkon.description();
+    record Show() implements PacksFilter {
     }
 
-    @Override
-    public int compareTo(PackIkon o) {
-        return Comparator
-          .comparing((PackIkon p) -> p.pack().toString())
-          .thenComparing(PackIkon::styledIkon)
-          .compare(this, o);
+    record Hidden() implements PacksFilter {
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append('{');
-        sb.append(pack);
-        sb.append(", ").append(styledIkon);
-        sb.append('}');
-        return sb.toString();
+    record Failed(Throwable error) implements PacksFilter {
+
     }
 }

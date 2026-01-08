@@ -68,6 +68,7 @@ public class HeaderView implements Initializable {
         setupActionsSubscription();
         setupViewToggle();
         setupSearchInput();
+        setupFilterButton();
     }
 
     private void setupStage() {
@@ -87,6 +88,10 @@ public class HeaderView implements Initializable {
     private void setupSearchInput() {
         searchInput.textProperty().addListener((_, _, text) ->
           flow.accept(new Action.SearchChanged(text)));
+    }
+
+    private void setupFilterButton() {
+        filterButton.setOnAction(_ -> flow.accept(new Action.FilterPacksRequested()));
     }
 
     private void render(ViewState state) {

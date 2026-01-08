@@ -22,7 +22,6 @@
  */
 package com.github.idelstak.ikonx.view;
 
-import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.view.grid.*;
@@ -88,7 +87,7 @@ public class InnerMainView implements Initializable {
 
         if (!oldItems.equals(newItems)) {
             var items = FXCollections.observableArrayList(newItems);
-            var sorted = new SortedList<>(items, Comparator.comparing(PackIkon::pack));
+            var sorted = new SortedList<>(items, Comparator.comparing(p -> p.pack().toString()));
             iconGrid.setItems(sorted);
         }
 

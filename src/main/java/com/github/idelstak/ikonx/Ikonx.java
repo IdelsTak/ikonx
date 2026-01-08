@@ -61,6 +61,9 @@ public class Ikonx extends Application {
                 if (type == HeaderView.class) {
                     return new HeaderView(primaryStage, flow);
                 }
+                if (type == PacksFilterView.class) {
+                    return new PacksFilterView(primaryStage, flow);
+                }
                 return type.getDeclaredConstructor().newInstance();
             } catch (Exception ex) {
                 System.err.println("[IKONX] ex = " + ex);

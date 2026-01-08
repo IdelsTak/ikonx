@@ -22,10 +22,12 @@
  */
 package com.github.idelstak.ikonx.mvu.state;
 
+import com.github.idelstak.ikonx.icons.Ikons;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
+import com.github.idelstak.ikonx.mvu.state.view.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
 
@@ -99,7 +101,11 @@ public final class Update {
     }
 
     private ViewState filterPacksRequested(ViewState state) {
+        var newFilter = state.filter() instanceof PacksFilter.Show
+                      ? new PacksFilter.Hidden()
+                      : new PacksFilter.Show();
         return state
+          .filter(newFilter)
           .signal(new ActivityState.Loading())
           .message("Filtering icons");
     }
@@ -161,7 +167,7 @@ public final class Update {
         var style = action.style();
         boolean changed;
 
-        if (action.isSelected() && !(action.style() instanceof Style.All)) {
+        if (!styles.contains(style) && !(action.style() instanceof Style.All)) {
             changed = styles.add(style);
         } else {
             changed = styles.remove(style);

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
     The MIT License
@@ -26,26 +25,37 @@
 -->
 
 <?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane styleClass="root-stack" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.IkonxView">
+<VBox fx:id="filterDropdown" styleClass="filter-dropdown-root" visible="false" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.PacksFilterView">
     <stylesheets>
         <URL value="@../styles/fonts.css" />
         <URL value="@../styles/ikonx-root.css" />
+        <URL value="@../styles/packs-filter.css" />
     </stylesheets>
     <children>
-        <BorderPane>
-            <top>
-                <fx:include source="header.fxml" />
-            </top>
-            <bottom>
-                <fx:include source="footer.fxml" />
-            </bottom>
-            <center>
-                <fx:include source="inner-main.fxml" />
-            </center>
-        </BorderPane>
-        <fx:include source="toast.fxml" />
-      <fx:include source="packs-filter.fxml" StackPane.alignment="TOP_RIGHT" />
+        <HBox styleClass="header-box">
+            <children>
+                <Label styleClass="header-label" text="ICON PACKS" />
+                <Region HBox.hgrow="ALWAYS" />
+                <ToggleButton fx:id="toggleAllButton" styleClass="toggle-all-button" text="Deselect All" />
+            </children>
+        </HBox>
+        <ScrollPane VBox.vgrow="ALWAYS">
+            <content>
+                <VBox fx:id="packsListVBox" styleClass="packs-list-vbox" />
+            </content>
+        </ScrollPane>
+        <VBox styleClass="style-section-box">
+            <children>
+                <Label styleClass="header-label" text="STYLE" />
+                <FlowPane fx:id="stylesListFlowPane" styleClass="styles-list-flowpane" />
+            </children>
+        </VBox>
     </children>
-</StackPane>
+    <StackPane.margin>
+        <Insets right="14" top="108" />
+    </StackPane.margin>
+</VBox>

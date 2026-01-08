@@ -22,86 +22,43 @@
  */
 package com.github.idelstak.ikonx.view;
 
-import com.github.idelstak.ikonx.mvu.*;
-import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.view.grid.*;
-import io.reactivex.rxjava3.disposables.*;
 import java.net.*;
 import java.util.*;
 import javafx.application.*;
 import javafx.collections.*;
-import javafx.collections.transformation.*;
 import javafx.fxml.*;
 import javafx.scene.layout.*;
-import javafx.stage.*;
-import org.pdfsam.rxjavafx.schedulers.*;
 
 public class InnerMainView implements Initializable {
 
-    private final Stage stage;
-    private final Flow flow;
-    private final IconGrid iconGrid;
-    private Disposable subscription;
     @FXML
     private BorderPane innerMainLayout;
-
-    public InnerMainView(Stage stage, Flow flow) {
-        this.stage = stage;
-        this.flow = flow;
-        this.iconGrid = new IconGrid();
-    }
+    private IconGrid iconGrid;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        setupStage();
-        setupActionsSubscription();
+        System.out.println("[INNER MAIN VIEW] init...");
+
         setupIconGrid();
-    }
 
-    private void setupStage() {
-        stage.setOnCloseRequest(_ -> {
-            this.dispose();
-            Platform.exit();
-            System.exit(0);
-        });
-    }
-
-    private void setupActionsSubscription() {
         Platform.runLater(() -> {
-            subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+            var allIkons = Arrays.stream(Pack.values())
+              .flatMap(p -> Arrays.stream(p.ikons()).map(i -> new PackIkon(p, i)))
+              .toList();
+            var icons = FXCollections.observableArrayList(allIkons);
+            System.out.println("[INNER MAIN VIEW] icons count = " + icons.size());
+            iconGrid.setItems(icons.sorted());
+            innerMainLayout.setCenter(iconGrid);
         });
     }
 
     private void setupIconGrid() {
+        iconGrid = new IconGrid();
         iconGrid.setCellFactory(IconGridCell::new);
         iconGrid.setCellWidth(220);
         iconGrid.setCellHeight(120);
         iconGrid.setListRowHeight(52);
-
-        Platform.runLater(() -> innerMainLayout.setCenter(iconGrid));
-    }
-
-    private void render(ViewState state) {
-        var oldItems = List.copyOf(iconGrid.getItems());
-        var newItems = state.displayedIkons();
-
-        if (!oldItems.equals(newItems)) {
-            var items = FXCollections.observableArrayList(newItems);
-            var sorted = new SortedList<>(items, Comparator.comparing(p -> p.pack().toString()));
-            iconGrid.setItems(sorted);
-        }
-
-        var stateViewMode = state.viewMode();
-        var viewMode = iconGrid.getViewMode();
-
-        if (!stateViewMode.equals(viewMode)) {
-            iconGrid.setViewMode(stateViewMode);
-        }
-    }
-
-    private void dispose() {
-        if (subscription != null && !subscription.isDisposed()) {
-            subscription.dispose();
-        }
     }
 }

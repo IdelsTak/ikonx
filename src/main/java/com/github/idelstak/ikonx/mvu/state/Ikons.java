@@ -20,12 +20,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.idelstak.ikonx.icons;
+package com.github.idelstak.ikonx.mvu.state;
 
+import com.github.idelstak.ikonx.icons.*;
 import java.util.*;
 import java.util.stream.*;
 
-public final class Ikons {
+final class Ikons {
 
     private final Map<Pack, List<PackIkon>> packs;
     private final Map<Style, List<PackIkon>> styles;
@@ -33,7 +34,7 @@ public final class Ikons {
     private final List<Pack> orderedPacks;
     private final List<Style> orderedStyles;
 
-    public Ikons(Pack[] packs) {
+    Ikons(Pack[] packs) {
         var allIcons = Arrays.stream(packs)
           .flatMap(pack -> Arrays.stream(pack.ikons())
             .map(ikon -> new PackIkon(pack, ikon)))
@@ -54,7 +55,6 @@ public final class Ikons {
               Collectors.toUnmodifiableList()
             )
           );
-        this.styles.put(new Style.All(), all);
         this.orderedPacks = this.packs.keySet().stream()
           .sorted(Comparator.comparing(Enum::name))
           .toList();
@@ -63,23 +63,23 @@ public final class Ikons {
           .toList();
     }
 
-    public List<PackIkon> byPack(Pack pack) {
+    List<PackIkon> byPack(Pack pack) {
         return packs.getOrDefault(pack, List.of());
     }
 
-    public List<PackIkon> byStyle(Style style) {
+    List<PackIkon> byStyle(Style style) {
         return styles.getOrDefault(style, List.of());
     }
 
-    public List<PackIkon> all() {
+    List<PackIkon> all() {
         return List.copyOf(all);
     }
 
-    public List<Pack> orderedPacks() {
+    List<Pack> orderedPacks() {
         return List.copyOf(orderedPacks);
     }
 
-    public List<Style> orderedStyles() {
+    List<Style> orderedStyles() {
         return List.copyOf(orderedStyles);
     }
 }

@@ -64,6 +64,7 @@ public final class StateFlow implements Flow {
 
         states = merged
           .scan(ViewState.initial(), update::apply)
+          .distinctUntilChanged()
           .replay(1)
           .autoConnect();
     }

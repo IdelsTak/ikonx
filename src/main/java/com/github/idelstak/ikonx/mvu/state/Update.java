@@ -22,7 +22,6 @@
  */
 package com.github.idelstak.ikonx.mvu.state;
 
-import com.github.idelstak.ikonx.icons.Ikons;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
@@ -30,6 +29,7 @@ import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.mvu.state.view.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
+import java.util.stream.*;
 
 public final class Update {
 
@@ -57,8 +57,8 @@ public final class Update {
                 toggleAllPacks(state, a);
             case Action.PackStyleToggled a ->
                 toggleStyle(state, a);
-            case Action.SelectAllPackStylesToggled a ->
-                toggleAllStyles(state, a);
+            case Action.SelectAllPackStylesToggled _ ->
+                toggleAllStyles(state);
             case Action.FavoriteIkonToggled a ->
                 toggleFavorite(state, a);
             case Action.ViewIkonRequested a ->
@@ -163,47 +163,50 @@ public final class Update {
     }
 
     private ViewState toggleStyle(ViewState state, Action.PackStyleToggled action) {
-        Set<Style> styles = new HashSet<>(state.selectedStyles());
         var style = action.style();
-        boolean changed;
+        var styles = state.selectedStyles();
+        var toggled = styles.contains(style)
+                    ? styles.stream().filter(item -> !item.equals(style))
+                    : Stream.concat(styles.stream(), Stream.of(style));
 
-        if (!styles.contains(style) && !(action.style() instanceof Style.All)) {
-            changed = styles.add(style);
-        } else {
-            changed = styles.remove(style);
+        var normalized = toggled
+          .filter(item -> !(item instanceof Style.All))
+          .collect(Collectors.toSet());
+
+        if (normalized.isEmpty() || normalized.size() == ikons.orderedStyles().size() - 1) {
+            normalized = Set.of(new Style.All());
         }
 
-        if (!changed) {
-            return state;
-        }
-
-        if (styles.isEmpty() || styles.size() == ikons.orderedStyles().size()) {
-            styles = Set.of(new Style.All());
-        }
-
-        var icons = filterIconsByStyle(styles, state.searchText());
+        var icons = filterIconsByStyle(state.selectedPacks(), normalized, state.searchText());
         return state
-          .styles(styles)
+          .styles(normalized)
           .display(icons)
           .signal(new ActivityState.Success())
-          .message(String.format("%d icons found", icons.size()));
+          .message(icons.size() + " icons found");
     }
 
-    private ViewState toggleAllStyles(ViewState state, Action.SelectAllPackStylesToggled action) {
-        Set<Style> styles;
+    private ViewState toggleAllStyles(ViewState state) {
+        var packs = state.selectedPacks();
+        var styles = state.selectedStyles();
+        var all = styles.stream().anyMatch(Style.All.class::isInstance);
 
-        if (action.isSelected()) {
-            styles = Set.of(new Style.All());
-        } else {
-            styles = Set.copyOf(state.selectedStyles());
+        var toggled = all
+                    ? packs.stream()
+            .flatMap(pack -> ikons.byPack(pack).stream())
+            .map(ikon -> ikon.styledIkon().style())
+            .collect(Collectors.toSet())
+                    : Set.<Style>of(new Style.All());
+
+        if (toggled.size() == ikons.orderedStyles().size() - 1) {
+            toggled = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByStyle(styles, state.searchText());
+        var icons = filterIconsByStyle(packs, toggled, state.searchText());
         return state
-          .styles(styles)
+          .styles(toggled)
           .display(icons)
           .signal(new ActivityState.Success())
-          .message(String.format("%d icons found", icons.size()));
+          .message(icons.size() + " icons found");
     }
 
     private ViewState toggleFavorite(ViewState state, Action.FavoriteIkonToggled action) {
@@ -229,10 +232,18 @@ public final class Update {
           .message("%s %s favorites".formatted(desc, addToFavorites ? "added to" : "removed from"));
     }
 
-    private List<PackIkon> filterIconsByStyle(Set<Style> selectedStyles, String searchText) {
-        var icons = selectedStyles.stream().anyMatch(Style.All.class::isInstance)
-                  ? ikons.all()
-                  : selectedStyles.stream().flatMap(style -> ikons.byStyle(style).stream()).toList();
+    private List<PackIkon> filterIconsByStyle(Set<Pack> selectedPacks, Set<Style> selectedStyles, String searchText) {
+        List<PackIkon> icons = selectedStyles.stream().anyMatch(Style.All.class::isInstance)
+                                 ? selectedPacks.stream()
+            .flatMap(pack -> ikons.byPack(pack).stream())
+            .toList()
+                                 : selectedStyles.stream()
+            .flatMap(style -> {
+                return ikons.byStyle(style)
+                  .stream()
+                  .filter(packIkon -> selectedPacks.contains(packIkon.pack()));
+            })
+            .toList();
 
         if (isInvalidSearch(searchText)) {
             return icons;

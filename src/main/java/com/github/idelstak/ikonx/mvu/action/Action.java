@@ -50,11 +50,11 @@ public sealed interface Action {
 
     }
 
-    record PackStyleToggled(Style style, boolean isSelected) implements Action {
+    record PackStyleToggled(Style style) implements Action {
 
     }
 
-    record SelectAllPackStylesToggled(boolean isSelected) implements Action {
+    record SelectAllPackStylesToggled() implements Action {
 
     }
 

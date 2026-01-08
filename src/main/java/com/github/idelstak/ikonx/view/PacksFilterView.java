@@ -142,11 +142,11 @@ public class PacksFilterView implements Initializable {
 
     private void populateStylesList(Set<Style> selectedStyles) {
         stylesListFlowPane.getChildren().clear();
-
+        
         for (var style : ikons.orderedStyles()) {
             var button = new ToggleButton(style.displayName());
             button.getStyleClass().add("style-button");
-            button.setOnAction(_ -> setStyle(style, button));
+            button.setOnAction(_ -> toggleStyle(style));
             button.setSelected(selectedStyles.contains(style));
 
             stylesListFlowPane.getChildren().add(button);
@@ -157,7 +157,10 @@ public class PacksFilterView implements Initializable {
         flow.accept(new Action.PackToggled(pack, isSelected));
     }
 
-    private void setStyle(Style style, ToggleButton button) {
-        flow.accept(new Action.PackStyleToggled(style, button.isSelected()));
+    private void toggleStyle(Style style) {
+        var action = style instanceof Style.All
+                   ? new Action.SelectAllPackStylesToggled()
+                   : new Action.PackStyleToggled(style);
+        flow.accept(action);
     }
 }

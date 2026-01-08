@@ -393,7 +393,7 @@ final class UpdateTest {
         var state = ViewState.initial();
 
         state = update.apply(state, new Action.SelectAllPacksToggled(true));
-        var next = update.apply(state, new Action.PackStyleToggled(style, true));
+        var next = update.apply(state, new Action.PackStyleToggled(style));
 
         var styles = next.displayedIkons().stream()
           .map(PackIkon::styledIkon)
@@ -411,8 +411,8 @@ final class UpdateTest {
 
         var state = ViewState.initial();
         state = update.apply(state, new Action.SelectAllPacksToggled(true));
-        state = update.apply(state, new Action.PackStyleToggled(square, true));
-        var next = update.apply(state, new Action.PackStyleToggled(filled, true));
+        state = update.apply(state, new Action.PackStyleToggled(square));
+        var next = update.apply(state, new Action.PackStyleToggled(filled));
 
         var styles = next.displayedIkons().stream()
           .map(PackIkon::styledIkon)
@@ -433,8 +433,8 @@ final class UpdateTest {
 
         var state = ViewState.initial();
         state = update.apply(state, new Action.SelectAllPacksToggled(true));
-        state = update.apply(state, new Action.PackStyleToggled(square, true));
-        var next = update.apply(state, new Action.PackStyleToggled(square, false));
+        state = update.apply(state, new Action.PackStyleToggled(square));
+        var next = update.apply(state, new Action.PackStyleToggled(square));
 
         assertThat(next.selectedStyles(), hasSize(1));
         assertThat(next.selectedStyles().iterator().next(), isA(Style.All.class));
@@ -448,9 +448,9 @@ final class UpdateTest {
         var state = ViewState.initial();
 
         var next = update.apply(state, new Action.SelectAllPacksToggled(true));
-        next = update.apply(next, new Action.PackStyleToggled(square, true));
-        next = update.apply(next, new Action.PackStyleToggled(bold, true));
-        next = update.apply(next, new Action.PackStyleToggled(square, false));
+        next = update.apply(next, new Action.PackStyleToggled(square));
+        next = update.apply(next, new Action.PackStyleToggled(bold));
+        next = update.apply(next, new Action.PackStyleToggled(square));
 
         var displayedIcons = next.displayedIkons()
           .stream()
@@ -462,28 +462,59 @@ final class UpdateTest {
     }
 
     @Test
-    void toggleAllStylesSelectsAll() {
+    void toggleAllStylesExpandsAllIntoConcreteStyles() {
         var update = new Update();
         var state = ViewState.initial();
+        var next = update.apply(state, new Action.SelectAllPackStylesToggled());
 
-        var next = update.apply(state, new Action.SelectAllPackStylesToggled(true));
-
-        assertThat(next.selectedStyles(), contains(isA(Style.All.class)));
+        assertThat(
+          next.selectedStyles().stream().anyMatch(Style.All.class::isInstance),
+          is(false)
+        );
     }
 
     @Test
-    void toggleAllStylesOffKeepsExistingStyles() {
+    void selectingEveryConcreteStyleCollapsesToAll() {
         var update = new Update();
-        var square = new Style.Square();
-
         var state = ViewState.initial();
         state = update.apply(state, new Action.SelectAllPacksToggled(true));
-        state = update.apply(state, new Action.PackStyleToggled(square, true));
-        var styles = state.selectedStyles();
 
-        var next = update.apply(state, new Action.SelectAllPackStylesToggled(false));
+        for (var style : orderedStyles()) {
+            state = update.apply(state, new Action.PackStyleToggled(style));
+        }
 
-        assertThat(next.selectedStyles(), is(styles));
+        assertThat(state.selectedStyles(), allOf(hasSize(1), everyItem(isA(Style.All.class))));
+    }
+
+    @Test
+    void togglingConcreteStyleRemovesAll() {
+        var update = new Update();
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.SelectAllPackStylesToggled());
+
+        var next = update.apply(state, new Action.PackStyleToggled(new Style.Bold()));
+
+        assertThat(
+          next.selectedStyles().stream().anyMatch(Style.All.class::isInstance),
+          is(false)
+        );
+    }
+
+    @Test
+    void toggleAllStylesOnlyIncludesStylesFromSelectedPacks() {
+        var update = new Update();
+        var packs = Set.of(Pack.values()[0]);
+        var state = ViewState.initial().select(packs);
+
+        var next = update.apply(state, new Action.SelectAllPackStylesToggled());
+
+        var styles = next.displayedIkons()
+          .stream()
+          .map(PackIkon::styledIkon)
+          .map(StyledIkon::style)
+          .collect(Collectors.toSet());
+
+        assertThat(styles, not(empty()));
     }
 
     @Test
@@ -493,10 +524,10 @@ final class UpdateTest {
         var regular = new Style.Regular();
         var state = ViewState.initial();
         state = update.apply(state, new Action.PackToggled(Pack.values()[Pack.values().length - 6], true));
-        state = update.apply(state, new Action.PackStyleToggled(outlined, true));
+        state = update.apply(state, new Action.PackStyleToggled(outlined));
 
         var searchText = "arrow"; // some description fragment that exists in the icons
-        state = update.apply(state, new Action.PackStyleToggled(regular, true));
+        state = update.apply(state, new Action.PackStyleToggled(regular));
         state = update.apply(state, new Action.SearchChanged(searchText));
         var filteredIconNames = state.displayedIkons()
           .stream()
@@ -714,5 +745,13 @@ final class UpdateTest {
           next.statusMessage(),
           containsString("façade view exploded")
         );
+    }
+
+    private Set<Style> orderedStyles() {
+        return new Ikons(Pack.values())
+          .orderedStyles()
+          .stream()
+          .filter(style -> !(style instanceof Style.All))
+          .collect(Collectors.toSet());
     }
 }

@@ -96,8 +96,7 @@ public class PacksFilterView implements Initializable {
     }
 
     private void setupToggleAllButton() {
-        toggleAllButton.setOnAction(_ ->
-          flow.accept(new Action.SelectAllPacksToggled(toggleAllButton.isSelected())));
+        toggleAllButton.setOnAction(_ -> flow.accept(new Action.SelectAllPacksToggled()));
     }
 
     private void render(ViewState state) {
@@ -128,13 +127,12 @@ public class PacksFilterView implements Initializable {
             checkBox.setSelected(selectedPacks.contains(pack));
             checkBox.getStyleClass().add("pack-checkbox");
 
-            // Event handler to update state
-            checkBox.setOnAction(e -> togglePack(pack, checkBox.isSelected()));
+            checkBox.setOnAction(_ -> flow.accept(new Action.PackToggled(pack)));
 
             // Wrap in a Label to make the whole area clickable, like the HTML version
             Label label = new Label(null, checkBox);
             label.getStyleClass().add("pack-label");
-            label.setMaxWidth(Double.MAX_VALUE); // Make label fill width
+            label.setMaxWidth(Double.MAX_VALUE);
 
             packsListVBox.getChildren().add(label);
         }
@@ -142,7 +140,7 @@ public class PacksFilterView implements Initializable {
 
     private void populateStylesList(Set<Style> selectedStyles) {
         stylesListFlowPane.getChildren().clear();
-        
+
         for (var style : ikons.orderedStyles()) {
             var button = new ToggleButton(style.displayName());
             button.getStyleClass().add("style-button");
@@ -151,10 +149,6 @@ public class PacksFilterView implements Initializable {
 
             stylesListFlowPane.getChildren().add(button);
         }
-    }
-
-    private void togglePack(Pack pack, boolean isSelected) {
-        flow.accept(new Action.PackToggled(pack, isSelected));
     }
 
     private void toggleStyle(Style style) {

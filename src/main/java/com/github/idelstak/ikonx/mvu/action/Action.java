@@ -42,11 +42,11 @@ public sealed interface Action {
 
     }
 
-    record PackToggled(Pack pack, boolean isSelected) implements Action {
+    record PackToggled(Pack pack) implements Action {
 
     }
 
-    record SelectAllPacksToggled(boolean isSelected) implements Action {
+    record SelectAllPacksToggled() implements Action {
 
     }
 

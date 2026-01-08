@@ -53,8 +53,8 @@ public final class Update {
                 filterPacksFailed(state, a);
             case Action.PackToggled a ->
                 togglePack(state, a);
-            case Action.SelectAllPacksToggled a ->
-                toggleAllPacks(state, a);
+            case Action.SelectAllPacksToggled _ ->
+                toggleAllPacks(state);
             case Action.PackStyleToggled a ->
                 toggleStyle(state, a);
             case Action.SelectAllPackStylesToggled _ ->
@@ -123,40 +123,55 @@ public final class Update {
     }
 
     private ViewState togglePack(ViewState state, Action.PackToggled action) {
-        var packs = new HashSet<>(state.selectedPacks());
         var pack = action.pack();
-        boolean changed;
+        var packs = new HashSet<>(state.selectedPacks());
 
-        if (action.isSelected()) {
-            changed = packs.add(pack);
-        } else {
-            changed = packs.remove(pack);
+        if (!packs.remove(pack)) {
+            packs.add(pack);
         }
 
-        if (!changed) {
-            return state;
+        var styles = packs.stream()
+          .flatMap(p -> ikons.byPack(p).stream())
+          .map(ikon -> ikon.styledIkon().style())
+          .filter(style -> !(style instanceof Style.All))
+          .collect(Collectors.toSet());
+
+        if (styles.size() == ikons.orderedStyles().size() - 1) {
+            styles = Set.of(new Style.All());
         }
 
         var icons = filterIconsByPack(packs, state.searchText());
         return state
           .select(packs)
+          .styles(styles)
           .display(icons)
           .signal(new ActivityState.Success())
-          .message(String.format("%d icons found", icons.size()));
+          .message(icons.size() + " icons found");
     }
 
-    private ViewState toggleAllPacks(ViewState state, Action.SelectAllPacksToggled action) {
+    private ViewState toggleAllPacks(ViewState state) {
         Set<Pack> packs;
 
-        if (action.isSelected()) {
+        if (state.selectedPacks().size() != ikons.orderedPacks().size()) {
             packs = Set.copyOf(ikons.orderedPacks());
         } else {
             packs = Set.of(ikons.orderedPacks().getFirst());
         }
 
+        var styles = packs.stream()
+          .flatMap(p -> ikons.byPack(p).stream())
+          .map(ikon -> ikon.styledIkon().style())
+          .filter(style -> !(style instanceof Style.All))
+          .collect(Collectors.toSet());
+
+        if (styles.size() == ikons.orderedStyles().size() - 1) {
+            styles = Set.of(new Style.All());
+        }
+
         var icons = filterIconsByPack(packs, state.searchText());
         return state
           .select(packs)
+          .styles(styles)
           .display(icons)
           .signal(new ActivityState.Success())
           .message(String.format("%d icons found", icons.size()));

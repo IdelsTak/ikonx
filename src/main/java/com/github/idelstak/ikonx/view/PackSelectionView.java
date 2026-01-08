@@ -39,10 +39,10 @@ final class PackSelectionView {
         this.listener = change -> {
             while (change.next()) {
                 for (var pack : change.getRemoved()) {
-                    actions.accept(new Action.PackToggled(pack, false));
+                    actions.accept(new Action.PackToggled(pack));
                 }
                 for (var pack : change.getAddedSubList()) {
-                    actions.accept(new Action.PackToggled(pack, true));
+                    actions.accept(new Action.PackToggled(pack));
                 }
             }
         };

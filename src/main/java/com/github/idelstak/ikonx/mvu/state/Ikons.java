@@ -31,7 +31,8 @@ final class Ikons {
     private final Map<Pack, List<PackIkon>> packs;
     private final Map<Style, List<PackIkon>> styles;
     private final List<PackIkon> all;
-    private final List<Pack> ordered;
+    private final List<Pack> orderedPacks;
+    private final List<Style> orderedStyles;
 
     Ikons(Pack[] packs) {
         var allIcons = Arrays.stream(packs)
@@ -54,8 +55,11 @@ final class Ikons {
               Collectors.toUnmodifiableList()
             )
           );
-        this.ordered = this.packs.keySet().stream()
+        this.orderedPacks = this.packs.keySet().stream()
           .sorted(Comparator.comparing(Enum::name))
+          .toList();
+        this.orderedStyles = this.styles.keySet().stream()
+          .sorted(Comparator.comparing(Style::displayName))
           .toList();
     }
 
@@ -72,6 +76,10 @@ final class Ikons {
     }
 
     List<Pack> orderedPacks() {
-        return List.copyOf(ordered);
+        return List.copyOf(orderedPacks);
+    }
+
+    List<Style> orderedStyles() {
+        return List.copyOf(orderedStyles);
     }
 }

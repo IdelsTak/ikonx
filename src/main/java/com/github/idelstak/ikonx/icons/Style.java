@@ -24,48 +24,133 @@ package com.github.idelstak.ikonx.icons;
 
 public sealed interface Style {
 
+    String displayName();
+
     record Filled() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Filled";
+        }
     }
 
     record Regular() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Regular";
+        }
     }
 
     record Solid() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Solid";
+        }
     }
 
     record Bold() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Bold";
+        }
     }
 
     record ExtraBold() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Extra Bold";
+        }
     }
 
     record Outlined() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Outlined";
+        }
     }
 
     record Round() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Round";
+        }
     }
 
     record Sharp() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Sharp";
+        }
     }
 
     record Stroke() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Stroke";
+        }
     }
 
     record Square() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Square";
+        }
     }
 
     record Logo() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Logo";
+        }
     }
 
     record Brand() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Brand";
+        }
     }
 
     record Monochrome() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Monochrome";
+        }
     }
 
     record Line() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Line";
+        }
     }
 
     record Alternate() implements Style {
+
+        @Override
+        public String displayName() {
+            return "Alt";
+        }
+    }
+
+    record All() implements Style {
+
+        @Override
+        public String displayName() {
+            return "All";
+        }
     }
 }

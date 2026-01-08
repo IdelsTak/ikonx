@@ -124,7 +124,7 @@ public class IconView {
           flow.accept(new Action.SearchChanged(text))
         );
         selectAllToggle.setOnAction(_ ->
-          flow.accept(new Action.SelectPacksAllToggled(selectAllToggle.isSelected()))
+          flow.accept(new Action.SelectAllPacksToggled(selectAllToggle.isSelected()))
         );
     }
 

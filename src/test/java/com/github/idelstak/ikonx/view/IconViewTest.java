@@ -127,7 +127,7 @@ final class IconViewTest {
         robot.clickOn("#selectAllToggle");
 
         assertInstanceOf(
-          Action.SelectPacksAllToggled.class,
+          Action.SelectAllPacksToggled.class,
           flow.probeLastAfter(before).orElseThrow()
         );
     }
@@ -189,7 +189,7 @@ final class IconViewTest {
 
         var action = (Action.CopyIkonSucceeded) flow.probeLastAfter(before).orElseThrow();
 
-        assertEquals(ikon.getDescription(), action.ikon().styledIkon().ikon().getDescription());
+        assertEquals(ikon.getDescription(), action.ikon().description());
     }
 
     @Test

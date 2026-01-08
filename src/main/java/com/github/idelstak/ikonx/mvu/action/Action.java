@@ -33,15 +33,29 @@ public sealed interface Action {
 
     }
 
+    record FilterPacksRequested() implements Action {
+    }
+
+    record FilterPacksSucceeded() implements Action {
+    }
+
+    record FilterPacksFailed(Throwable error) implements Action {
+
+    }
+
     record PackToggled(Pack pack, boolean isSelected) implements Action {
 
     }
 
-    record SelectPacksAllToggled(boolean isSelected) implements Action {
+    record SelectAllPacksToggled(boolean isSelected) implements Action {
 
     }
 
     record PackStyleToggled(Style style, boolean isSelected) implements Action {
+
+    }
+
+    record SelectAllPackStylesToggled(boolean isSelected) implements Action {
 
     }
 

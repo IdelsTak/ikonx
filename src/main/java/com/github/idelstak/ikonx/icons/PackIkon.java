@@ -26,6 +26,10 @@ import java.util.*;
 
 public record PackIkon(Pack pack, StyledIkon styledIkon) implements Comparable<PackIkon> {
 
+    public String description() {
+        return styledIkon.description();
+    }
+
     @Override
     public int compareTo(PackIkon o) {
         return Comparator

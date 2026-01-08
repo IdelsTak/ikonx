@@ -127,7 +127,7 @@ final class IconViewTest {
         robot.clickOn("#selectAllToggle");
 
         assertInstanceOf(
-          Action.SelectPacksAllToggled.class,
+          Action.SelectAllPacksToggled.class,
           flow.probeLastAfter(before).orElseThrow()
         );
     }

@@ -43,12 +43,20 @@ public final class Update {
         return switch (action) {
             case Action.SearchChanged a ->
                 search(state, a);
+            case Action.FilterPacksRequested _ ->
+                filterPacksRequested(state);
+            case Action.FilterPacksSucceeded _ ->
+                filterPacksSucceeded(state);
+            case Action.FilterPacksFailed a ->
+                filterPacksFailed(state, a);
             case Action.PackToggled a ->
                 togglePack(state, a);
-            case Action.SelectPacksAllToggled a ->
+            case Action.SelectAllPacksToggled a ->
                 toggleAllPacks(state, a);
             case Action.PackStyleToggled a ->
                 toggleStyle(state, a);
+            case Action.SelectAllPackStylesToggled a ->
+                toggleAllStyles(state, a);
             case Action.FavoriteIkonToggled a ->
                 toggleFavorite(state, a);
             case Action.ViewIkonRequested a ->
@@ -85,8 +93,26 @@ public final class Update {
         return state
           .search(action.query())
           .display(icons)
-          .signal(new ActivityState.Idle())
+          .signal(new ActivityState.Success())
           .message(String.format("%d icons found", icons.size()));
+    }
+
+    private ViewState filterPacksRequested(ViewState state) {
+        return state
+          .signal(new ActivityState.Loading())
+          .message("Filtering icons");
+    }
+
+    private ViewState filterPacksSucceeded(ViewState state) {
+        return state
+          .signal(new ActivityState.Success())
+          .message("Filtered icons. %d shown.".formatted(state.displayedIkons().size()));
+    }
+
+    private ViewState filterPacksFailed(ViewState state, Action.FilterPacksFailed a) {
+        return state
+          .signal(new ActivityState.Error())
+          .message("Failed to filter icons: ".formatted(a.error().getMessage()));
     }
 
     private ViewState togglePack(ViewState state, Action.PackToggled action) {
@@ -108,16 +134,33 @@ public final class Update {
         return state
           .select(packs)
           .display(icons)
-          .signal(new ActivityState.Idle())
+          .signal(new ActivityState.Success())
+          .message(String.format("%d icons found", icons.size()));
+    }
+
+    private ViewState toggleAllPacks(ViewState state, Action.SelectAllPacksToggled action) {
+        Set<Pack> packs;
+
+        if (action.isSelected()) {
+            packs = Set.copyOf(ikons.orderedPacks());
+        } else {
+            packs = Set.of(ikons.orderedPacks().getFirst());
+        }
+
+        var icons = filterIconsByPack(packs, state.searchText());
+        return state
+          .select(packs)
+          .display(icons)
+          .signal(new ActivityState.Success())
           .message(String.format("%d icons found", icons.size()));
     }
 
     private ViewState toggleStyle(ViewState state, Action.PackStyleToggled action) {
-        var styles = new HashSet<>(state.selectedStyles());
+        Set<Style> styles = new HashSet<>(state.selectedStyles());
         var style = action.style();
         boolean changed;
 
-        if (action.isSelected()) {
+        if (action.isSelected() && !(action.style() instanceof Style.All)) {
             changed = styles.add(style);
         } else {
             changed = styles.remove(style);
@@ -127,11 +170,32 @@ public final class Update {
             return state;
         }
 
+        if (styles.isEmpty() || styles.size() == ikons.orderedStyles().size()) {
+            styles = Set.of(new Style.All());
+        }
+
         var icons = filterIconsByStyle(styles, state.searchText());
         return state
           .styles(styles)
           .display(icons)
-          .signal(new ActivityState.Idle())
+          .signal(new ActivityState.Success())
+          .message(String.format("%d icons found", icons.size()));
+    }
+
+    private ViewState toggleAllStyles(ViewState state, Action.SelectAllPackStylesToggled action) {
+        Set<Style> styles;
+
+        if (action.isSelected()) {
+            styles = Set.of(new Style.All());
+        } else {
+            styles = Set.copyOf(state.selectedStyles());
+        }
+
+        var icons = filterIconsByStyle(styles, state.searchText());
+        return state
+          .styles(styles)
+          .display(icons)
+          .signal(new ActivityState.Success())
           .message(String.format("%d icons found", icons.size()));
     }
 
@@ -154,29 +218,12 @@ public final class Update {
         var desc = ikon.description();
         return state
           .favorites(List.copyOf(favorites))
-          .signal(new ActivityState.Idle())
+          .signal(new ActivityState.Success())
           .message("%s %s favorites".formatted(desc, addToFavorites ? "added to" : "removed from"));
     }
 
-    private ViewState toggleAllPacks(ViewState state, Action.SelectPacksAllToggled action) {
-        Set<Pack> packs;
-
-        if (action.isSelected()) {
-            packs = Set.copyOf(ikons.orderedPacks());
-        } else {
-            packs = Set.of(ikons.orderedPacks().getFirst());
-        }
-
-        var icons = filterIconsByPack(packs, state.searchText());
-        return state
-          .select(packs)
-          .display(icons)
-          .signal(new ActivityState.Idle())
-          .message(String.format("%d icons found", icons.size()));
-    }
-
     private List<PackIkon> filterIconsByStyle(Set<Style> selectedStyles, String searchText) {
-        var icons = selectedStyles.isEmpty()
+        var icons = selectedStyles.stream().anyMatch(Style.All.class::isInstance)
                   ? ikons.all()
                   : selectedStyles.stream().flatMap(style -> ikons.byStyle(style).stream()).toList();
 
@@ -219,7 +266,7 @@ public final class Update {
 
     private ViewState copyRequested(ViewState state, Action.CopyIkonRequested action) {
         return state
-          .signal(new ActivityState.Idle())
+          .signal(new ActivityState.Loading())
           .message("Copying '" + action.ikon().description() + "' to clipboard");
     }
 
@@ -251,7 +298,7 @@ public final class Update {
 
     private ViewState viewRequested(ViewState state, Action.ViewIkonRequested action) {
         return state
-          .signal(new ActivityState.Idle())
+          .signal(new ActivityState.Loading())
           .message("View '" + action.ikon().description() + "' details");
     }
 
@@ -270,7 +317,7 @@ public final class Update {
     }
 
     private ViewState versionRequested(ViewState state) {
-        return state.signal(new ActivityState.Idle());
+        return state.signal(new ActivityState.Loading());
     }
 
     private ViewState versionResolved(ViewState state, Action.AppVersionResolved action) {
@@ -288,7 +335,7 @@ public final class Update {
     }
 
     private ViewState stageIconsRequested(ViewState state) {
-        return state.signal(new ActivityState.Idle());
+        return state.signal(new ActivityState.Loading());
     }
 
     private ViewState stageIconsResolved(ViewState state, Action.StageIconsResolved action) {
@@ -309,7 +356,7 @@ public final class Update {
         var oldMode = state.viewMode();
         var newMode = computeNewMode(oldMode, action);
         return state
-          .signal(new ActivityState.Idle())
+          .signal(new ActivityState.Success())
           .mode(newMode)
           .message("Switched icon browser view to " + newMode.displayName().toLowerCase(Locale.ROOT));
     }

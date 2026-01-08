@@ -67,8 +67,6 @@ public class IconGridCell extends IndexedCell<PackIkon> {
     protected void updateItem(PackIkon item, boolean empty) {
         super.updateItem(item, empty);
 
-        System.out.println("[ICON GRID CELL] updateItem = " + item);
-
         if (empty || item == null) {
             setGraphic(null);
             getStyleClass().removeAll("grid-mode", "list-mode");

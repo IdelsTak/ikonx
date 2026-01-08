@@ -1,0 +1,156 @@
+/**
+ * The MIT License
+ * Copyright © 2026 Hiram K. <https://github.com/IdelsTak>
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+.filter-dropdown-root {
+    /* bg-white border shadow-xl rounded-xl p-3 */
+    -fx-pref-width: 256px;
+    -fx-max-width: 256px;
+    -fx-pref-height: 256px;
+    -fx-background-color: white;
+    -fx-border-color: #e5e7eb; /* neutral-200 for border */
+    -fx-border-width: 1px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-padding: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 20, 0, 0, 8);
+}
+
+.toggle-button {
+    -fx-background-color: #374151; /* gray-700 */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 16px 8px 16px;
+}
+
+.header-box {
+    /* flex items-center justify-between mb-2 pb-2 border-b */
+    -fx-margin: 0 0 8px 0;
+    -fx-padding: 0 0 8px 0;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+    -fx-border-width: 0 0 1px 0;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.header-label {
+    /* text-xs font-bold uppercase text-neutral-400 */
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #a3a3a3;
+}
+
+.toggle-all-button {
+    /* text-xs text-indigo-600 hover:underline */
+    -fx-font-size: 12px;
+    -fx-text-fill: #4f46e5;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.toggle-all-button:hover {
+    -fx-underline: true;
+}
+
+.scroll-pane {
+    /* max-h-48 overflow-y-auto mb-3 */
+    -fx-max-height: 'Infinity'; /* 48 * 4px = 192px */
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-margin: 0 0 12px 0;
+    -fx-fit-to-width: true;
+}
+
+.packs-list-vbox {
+    /* space-y-1 */
+    -fx-spacing: 4px;
+}
+
+/* Styling for the clickable label containing the checkbox */
+.pack-label {
+    /* p-1.5 hover:bg-neutral-50 rounded cursor-pointer */
+    -fx-padding: 6px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+}
+.pack-label:hover {
+    -fx-background-color: #fafafa;
+}
+.pack-label .check-box {
+    -fx-text-fill: #374151; /* neutral-700 for text */
+}
+
+/* Styling for the checkbox itself */
+.pack-checkbox .box {
+    /* rounded */
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+}
+.pack-checkbox:selected .mark {
+    /* text-indigo-600 */
+    -fx-background-color: #4f46e5;
+}
+.pack-checkbox:focused .box {
+    /* focus:ring-indigo-500 */
+    -fx-border-color: #6366f1;
+    -fx-border-width: 2px;
+}
+
+.style-section-box {
+    /* pt-2 border-t */
+    -fx-padding: 8px 0 0 0;
+    -fx-border-color: #e5e7eb transparent transparent transparent;
+    -fx-border-width: 1px 0 0 0;
+    -fx-spacing: 6px;
+}
+
+.styles-list-flowpane {
+    /* flex flex-wrap gap-2 */
+    -fx-hgap: 8px;
+    -fx-vgap: 8px;
+}
+
+.style-button {
+    /* px-2 py-1 text-xs rounded-full border transition-all bg-white text-neutral-600 */
+    -fx-padding: 4px 8px 4px 8px;
+    -fx-font-size: 12px;
+    -fx-background-radius: 9999px;
+    -fx-border-radius: 9999px;
+    -fx-border-color: #d4d4d4; /* neutral-300 */
+    -fx-border-width: 1px;
+    -fx-background-color: white;
+    -fx-text-fill: #525252;
+    -fx-cursor: hand;
+}
+
+.style-button:hover {
+    /* hover:border-neutral-400 */
+    -fx-border-color: #a3a3a3;
+}
+
+.style-button:selected {
+    /* bg-indigo-600 text-white border-indigo-600 */
+    -fx-background-color: #4f46e5;
+    -fx-text-fill: white;
+    -fx-border-color: #4f46e5;
+}

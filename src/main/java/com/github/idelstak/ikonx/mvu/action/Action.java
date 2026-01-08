@@ -23,7 +23,6 @@
 package com.github.idelstak.ikonx.mvu.action;
 
 import com.github.idelstak.ikonx.icons.*;
-import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
 import javafx.scene.image.*;
 
@@ -43,19 +42,19 @@ public sealed interface Action {
 
     }
 
-    record PackToggled(Pack pack, boolean isSelected) implements Action {
+    record PackToggled(Pack pack) implements Action {
 
     }
 
-    record SelectAllPacksToggled(boolean isSelected) implements Action {
+    record SelectAllPacksToggled() implements Action {
 
     }
 
-    record PackStyleToggled(Style style, boolean isSelected) implements Action {
+    record PackStyleToggled(Style style) implements Action {
 
     }
 
-    record SelectAllPackStylesToggled(boolean isSelected) implements Action {
+    record SelectAllPackStylesToggled() implements Action {
 
     }
 
@@ -109,7 +108,7 @@ public sealed interface Action {
 
     }
 
-    record ViewModeToggled(ViewMode mode, boolean isSelected) implements Action {
+    record ViewModeToggled() implements Action {
 
     }
 }

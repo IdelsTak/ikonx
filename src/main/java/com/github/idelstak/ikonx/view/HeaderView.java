@@ -22,18 +22,30 @@
  */
 package com.github.idelstak.ikonx.view;
 
+import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.mvu.action.*;
+import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.version.*;
+import com.github.idelstak.ikonx.view.grid.*;
+import io.reactivex.rxjava3.disposables.*;
 import java.net.*;
 import java.util.*;
+import javafx.application.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
+import javafx.stage.*;
+import org.pdfsam.rxjavafx.schedulers.*;
 
 public class HeaderView implements Initializable {
 
+    private final Stage stage;
+    private final Flow flow;
+    private Disposable subscription;
     @FXML
-    private TextFlow titleTextFlow;
+    private ToggleButton toggleViewButton;
     @FXML
-    private Button toggleViewButton;
+    private Tooltip toggleViewTip;
     @FXML
     private ComboBox<?> copyFormatComboBox;
     @FXML
@@ -45,8 +57,72 @@ public class HeaderView implements Initializable {
     @FXML
     private Text titleVersion;
 
+    public HeaderView(Stage stage, Flow flow) {
+        this.stage = stage;
+        this.flow = flow;
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // TODO
+        setupStage();
+        setupActionsSubscription();
+        setupViewToggle();
+        setupSearchInput();
+        setupFilterButton();
+    }
+
+    private void setupStage() {
+        stage.setOnCloseRequest(_ -> this.dispose());
+    }
+
+    private void setupActionsSubscription() {
+        Platform.runLater(() -> {
+            subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+        });
+    }
+
+    private void setupViewToggle() {
+        toggleViewButton.setOnAction(_ -> flow.accept(new Action.ViewModeToggled()));
+    }
+
+    private void setupSearchInput() {
+        searchInput.textProperty().addListener((_, _, text) ->
+          flow.accept(new Action.SearchChanged(text)));
+    }
+
+    private void setupFilterButton() {
+        filterButton.setOnAction(_ -> flow.accept(new Action.FilterPacksRequested()));
+    }
+
+    private void render(ViewState state) {
+        var version = switch (state.version()) {
+            case AppVersion.Ready(String appValue, String _) ->
+                appValue;
+            case AppVersion.Failed _ ->
+                "(version unavailable)";
+            case AppVersion.Unknown _ ->
+                "";
+        };
+        titleVersion.setText("v" + version);
+
+        var isGridView = state.viewMode() instanceof ViewMode.Grid;
+        toggleViewButton.setSelected(isGridView);
+        toggleViewButton.getStyleClass().removeAll("grid", "list");
+        toggleViewButton.getStyleClass().add(isGridView ? "grid" : "list");
+        var prefix = "View icons in a ";
+        var targetView = isGridView ? "list" : "grid";
+        toggleViewTip.setText(prefix + targetView);
+
+        var iconsCount = state.displayedIkons().size();
+        searchInput.setPromptText("Search %d icons...".formatted(iconsCount));
+
+        var packsCount = state.selectedPacks().size();
+        packCountLabel.setText("Packs (%d)".formatted(packsCount));
+    }
+
+    private void dispose() {
+        if (subscription != null && !subscription.isDisposed()) {
+            subscription.dispose();
+        }
     }
 }

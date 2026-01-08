@@ -33,7 +33,7 @@ public record PackIkon(Pack pack, StyledIkon styledIkon) implements Comparable<P
     @Override
     public int compareTo(PackIkon o) {
         return Comparator
-          .comparing((PackIkon p) -> p.pack().name())
+          .comparing((PackIkon p) -> p.pack().toString())
           .thenComparing(PackIkon::styledIkon)
           .compare(this, o);
     }

@@ -136,7 +136,7 @@ final class IconViewTest {
     void packSelectionUpdatesState(FxRobot robot) {
         var flow = launch(robot, _ -> {
         });
-        robot.interact(() -> flow.accept(new Action.PackToggled(Pack.BOOTSTRAP)));
+        robot.interact(() -> flow.accept(new Action.PackToggled(Pack.BOOTSTRAP, true)));
         var finalState = flow.probeState();
         assertTrue(finalState.selectedPacks().contains(Pack.BOOTSTRAP));
     }
@@ -162,8 +162,8 @@ final class IconViewTest {
         var flow = launch(robot, clipboardContent::set);
 
         robot.interact(() -> {
-            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS));
-            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP));
+            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS, false));
+            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP, true));
         });
 
         var iconDescription = Pack.BOOTSTRAP.ikons()[0].ikon().getDescription();
@@ -178,8 +178,8 @@ final class IconViewTest {
         var flow = launch(robot, _ -> {
         });
         robot.interact(() -> {
-            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS));
-            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP));
+            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS, false));
+            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP, true));
         });
 
         var before = flow.probeActionCount();
@@ -197,8 +197,8 @@ final class IconViewTest {
         var flow = launch(robot, _ -> {
         });
         robot.interact(() -> {
-            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS));
-            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP));
+            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS, false));
+            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP, true));
         });
 
         var table = robot.lookup(".icon-browser").queryAs(TableView.class);
@@ -219,8 +219,8 @@ final class IconViewTest {
         var flow = launch(robot, _ -> {
         });
         robot.interact(() -> {
-            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS));
-            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP));
+            flow.accept(new Action.PackToggled(Pack.ANT_DESIGN_ICONS, false));
+            flow.accept(new Action.PackToggled(Pack.BOOTSTRAP, true));
         });
 
         var table = robot.lookup(".icon-browser").queryAs(TableView.class);

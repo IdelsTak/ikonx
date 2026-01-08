@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
     The MIT License
@@ -25,7 +24,6 @@
 
 -->
 
-<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -49,7 +47,7 @@
                 <FontIcon iconLiteral="bi-lightning-charge-fill" styleClass="logo-icon" />
             </StackPane>
             <VBox>
-                <TextFlow>
+                <TextFlow fx:id="titleTextFlow">
                     <children>
                         <Text styleClass="title-text-main" text="IkonX " />
                         <Text fx:id="titleVersion" layoutX="10.0" layoutY="10.0" styleClass="title-text-version" text="v1.2" />
@@ -64,18 +62,11 @@
 
         <!-- Right-side Controls -->
         <HBox styleClass="controls-area">
-         <ToggleButton fx:id="toggleViewButton">
-            <graphic>
-               <FontIcon />
-            </graphic>
-            <tooltip>
-               <Tooltip fx:id="toggleViewTip" />
-            </tooltip>
-            <styleClass>
-               <String fx:value="icon-button" />
-               <String fx:value="grid" />
-            </styleClass>
-         </ToggleButton>
+            <Button fx:id="toggleViewButton" styleClass="icon-button">
+                <graphic>
+                    <FontIcon iconLiteral="ti-view-grid" styleClass="control-icon" />
+                </graphic>
+            </Button>
             <Separator styleClass="control-separator" />
             <ComboBox fx:id="copyFormatComboBox" styleClass="copy-format-combo" />
         </HBox>
@@ -90,7 +81,7 @@
                     <Insets left="6.0" />
                 </StackPane.margin>
             </FontIcon>
-            <TextField fx:id="searchInput" styleClass="search-input" />
+            <TextField fx:id="searchInput" promptText="Search 2,000+ icons..." styleClass="search-input" />
         </StackPane>
 
         <!-- Filter Button -->

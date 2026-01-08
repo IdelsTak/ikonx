@@ -26,10 +26,8 @@ import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
-import com.github.idelstak.ikonx.mvu.state.view.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
-import java.util.stream.*;
 
 public final class Update {
 
@@ -53,12 +51,12 @@ public final class Update {
                 filterPacksFailed(state, a);
             case Action.PackToggled a ->
                 togglePack(state, a);
-            case Action.SelectAllPacksToggled _ ->
-                toggleAllPacks(state);
+            case Action.SelectAllPacksToggled a ->
+                toggleAllPacks(state, a);
             case Action.PackStyleToggled a ->
                 toggleStyle(state, a);
-            case Action.SelectAllPackStylesToggled _ ->
-                toggleAllStyles(state);
+            case Action.SelectAllPackStylesToggled a ->
+                toggleAllStyles(state, a);
             case Action.FavoriteIkonToggled a ->
                 toggleFavorite(state, a);
             case Action.ViewIkonRequested a ->
@@ -85,9 +83,8 @@ public final class Update {
                 stageIconsResolved(state, a);
             case Action.StageIconsFailed a ->
                 stageIconsFailed(state, a);
-            case Action.ViewModeToggled _ ->
-                toggleViewMode(state);
-
+            case Action.ViewModeToggled a ->
+                toggleViewMode(state, a);
         };
     }
 
@@ -101,11 +98,7 @@ public final class Update {
     }
 
     private ViewState filterPacksRequested(ViewState state) {
-        var newFilter = state.filter() instanceof PacksFilter.Show
-                      ? new PacksFilter.Hidden()
-                      : new PacksFilter.Show();
         return state
-          .filter(newFilter)
           .signal(new ActivityState.Loading())
           .message("Filtering icons");
     }
@@ -123,105 +116,87 @@ public final class Update {
     }
 
     private ViewState togglePack(ViewState state, Action.PackToggled action) {
-        var pack = action.pack();
         var packs = new HashSet<>(state.selectedPacks());
+        var pack = action.pack();
+        boolean changed;
 
-        if (!packs.remove(pack)) {
-            packs.add(pack);
+        if (action.isSelected()) {
+            changed = packs.add(pack);
+        } else {
+            changed = packs.remove(pack);
         }
 
-        var styles = packs.stream()
-          .flatMap(p -> ikons.byPack(p).stream())
-          .map(ikon -> ikon.styledIkon().style())
-          .filter(style -> !(style instanceof Style.All))
-          .collect(Collectors.toSet());
-
-        if (styles.size() == ikons.orderedStyles().size() - 1) {
-            styles = Set.of(new Style.All());
+        if (!changed) {
+            return state;
         }
 
         var icons = filterIconsByPack(packs, state.searchText());
         return state
           .select(packs)
-          .styles(styles)
           .display(icons)
           .signal(new ActivityState.Success())
-          .message(icons.size() + " icons found");
+          .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState toggleAllPacks(ViewState state) {
+    private ViewState toggleAllPacks(ViewState state, Action.SelectAllPacksToggled action) {
         Set<Pack> packs;
 
-        if (state.selectedPacks().size() != ikons.orderedPacks().size()) {
+        if (action.isSelected()) {
             packs = Set.copyOf(ikons.orderedPacks());
         } else {
             packs = Set.of(ikons.orderedPacks().getFirst());
         }
 
-        var styles = packs.stream()
-          .flatMap(p -> ikons.byPack(p).stream())
-          .map(ikon -> ikon.styledIkon().style())
-          .filter(style -> !(style instanceof Style.All))
-          .collect(Collectors.toSet());
-
-        if (styles.size() == ikons.orderedStyles().size() - 1) {
-            styles = Set.of(new Style.All());
-        }
-
         var icons = filterIconsByPack(packs, state.searchText());
         return state
           .select(packs)
-          .styles(styles)
           .display(icons)
           .signal(new ActivityState.Success())
           .message(String.format("%d icons found", icons.size()));
     }
 
     private ViewState toggleStyle(ViewState state, Action.PackStyleToggled action) {
+        Set<Style> styles = new HashSet<>(state.selectedStyles());
         var style = action.style();
-        var styles = state.selectedStyles();
-        var toggled = styles.contains(style)
-                    ? styles.stream().filter(item -> !item.equals(style))
-                    : Stream.concat(styles.stream(), Stream.of(style));
+        boolean changed;
 
-        var normalized = toggled
-          .filter(item -> !(item instanceof Style.All))
-          .collect(Collectors.toSet());
-
-        if (normalized.isEmpty() || normalized.size() == ikons.orderedStyles().size() - 1) {
-            normalized = Set.of(new Style.All());
+        if (action.isSelected() && !(action.style() instanceof Style.All)) {
+            changed = styles.add(style);
+        } else {
+            changed = styles.remove(style);
         }
 
-        var icons = filterIconsByStyle(state.selectedPacks(), normalized, state.searchText());
+        if (!changed) {
+            return state;
+        }
+
+        if (styles.isEmpty() || styles.size() == ikons.orderedStyles().size()) {
+            styles = Set.of(new Style.All());
+        }
+
+        var icons = filterIconsByStyle(styles, state.searchText());
         return state
-          .styles(normalized)
+          .styles(styles)
           .display(icons)
           .signal(new ActivityState.Success())
-          .message(icons.size() + " icons found");
+          .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState toggleAllStyles(ViewState state) {
-        var packs = state.selectedPacks();
-        var styles = state.selectedStyles();
-        var all = styles.stream().anyMatch(Style.All.class::isInstance);
+    private ViewState toggleAllStyles(ViewState state, Action.SelectAllPackStylesToggled action) {
+        Set<Style> styles;
 
-        var toggled = all
-                    ? packs.stream()
-            .flatMap(pack -> ikons.byPack(pack).stream())
-            .map(ikon -> ikon.styledIkon().style())
-            .collect(Collectors.toSet())
-                    : Set.<Style>of(new Style.All());
-
-        if (toggled.size() == ikons.orderedStyles().size() - 1) {
-            toggled = Set.of(new Style.All());
+        if (action.isSelected()) {
+            styles = Set.of(new Style.All());
+        } else {
+            styles = Set.copyOf(state.selectedStyles());
         }
 
-        var icons = filterIconsByStyle(packs, toggled, state.searchText());
+        var icons = filterIconsByStyle(styles, state.searchText());
         return state
-          .styles(toggled)
+          .styles(styles)
           .display(icons)
           .signal(new ActivityState.Success())
-          .message(icons.size() + " icons found");
+          .message(String.format("%d icons found", icons.size()));
     }
 
     private ViewState toggleFavorite(ViewState state, Action.FavoriteIkonToggled action) {
@@ -247,18 +222,10 @@ public final class Update {
           .message("%s %s favorites".formatted(desc, addToFavorites ? "added to" : "removed from"));
     }
 
-    private List<PackIkon> filterIconsByStyle(Set<Pack> selectedPacks, Set<Style> selectedStyles, String searchText) {
-        List<PackIkon> icons = selectedStyles.stream().anyMatch(Style.All.class::isInstance)
-                                 ? selectedPacks.stream()
-            .flatMap(pack -> ikons.byPack(pack).stream())
-            .toList()
-                                 : selectedStyles.stream()
-            .flatMap(style -> {
-                return ikons.byStyle(style)
-                  .stream()
-                  .filter(packIkon -> selectedPacks.contains(packIkon.pack()));
-            })
-            .toList();
+    private List<PackIkon> filterIconsByStyle(Set<Style> selectedStyles, String searchText) {
+        var icons = selectedStyles.stream().anyMatch(Style.All.class::isInstance)
+                  ? ikons.all()
+                  : selectedStyles.stream().flatMap(style -> ikons.byStyle(style).stream()).toList();
 
         if (isInvalidSearch(searchText)) {
             return icons;
@@ -385,12 +352,22 @@ public final class Update {
           .message(message);
     }
 
-    private ViewState toggleViewMode(ViewState state) {
+    private ViewState toggleViewMode(ViewState state, Action.ViewModeToggled action) {
         var oldMode = state.viewMode();
-        var newMode = oldMode instanceof ViewMode.Grid ? new ViewMode.List() : new ViewMode.Grid();
+        var newMode = computeNewMode(oldMode, action);
         return state
           .signal(new ActivityState.Success())
           .mode(newMode)
           .message("Switched icon browser view to " + newMode.displayName().toLowerCase(Locale.ROOT));
+    }
+
+    private ViewMode computeNewMode(ViewMode oldMode, Action.ViewModeToggled action) {
+        if (action.isSelected()) {
+            return action.mode();
+        }
+        if (oldMode.equals(action.mode())) {
+            return oldMode instanceof ViewMode.Grid ? new ViewMode.List() : new ViewMode.Grid();
+        }
+        return oldMode;
     }
 }

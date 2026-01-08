@@ -61,7 +61,7 @@
 }
 .controls-area {
     -fx-alignment: CENTER_LEFT;
-    -fx-spacing: 6px
+    -fx-spacing: 3px
 }
 .icon-button {
     -fx-background-color: transparent;
@@ -69,24 +69,16 @@
     -fx-background-radius: 6px;
     -fx-cursor: hand
 }
+.icon-button .ikonli-font-icon {
+    -fx-icon-color: #6b7280;
+    -fx-icon-size: 16px
+}
 .icon-button:hover {
     -fx-background-color: #f3f4f6
 }
-.icon-button:selected {
-    -fx-background-color: derive(#f3f4f6, -5%)
-}
-.icon-button:selected:hover {
-    -fx-background-color: derive(#f3f4f6, -10%)
-}
-.icon-button .ikonli-font-icon {
-    -fx-icon-color: #6b7280;
-    -fx-icon-size: 16px;
-}
-.icon-button.grid .ikonli-font-icon {
-    -fx-icon-code: 'ti-view-grid';
-}
-.icon-button.list .ikonli-font-icon {
-    -fx-icon-code: 'ti-view-list';
+.control-icon {
+    -fx-icon-size: 20px;
+    -fx-icon-color: #6b7280
 }
 .control-separator {
     -fx-orientation: vertical;

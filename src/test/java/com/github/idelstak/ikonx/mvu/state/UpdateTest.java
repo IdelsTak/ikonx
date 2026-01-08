@@ -357,37 +357,33 @@ final class UpdateTest {
     }
 
     @Test
-    void setsNewModeWhenToggleSelected() {
+    void toggleViewModeFromGridSwitchesToList() {
+        var update = new Update();
+        var state = ViewState.initial().mode(new ViewMode.Grid());
+
+        var next = update.apply(state, new Action.ViewModeToggled());
+
+        assertThat(next.viewMode(), instanceOf(ViewMode.List.class));
+    }
+
+    @Test
+    void toggleViewModeFromListSwitchesToGrid() {
         var update = new Update();
         var state = ViewState.initial().mode(new ViewMode.List());
-        var newMode = new ViewMode.Grid();
 
-        var next = update.apply(state, new Action.ViewModeToggled(newMode, true));
+        var next = update.apply(state, new Action.ViewModeToggled());
 
-        assertThat(next.viewMode(), equalTo(newMode));
+        assertThat(next.viewMode(), instanceOf(ViewMode.Grid.class));
     }
 
     @Test
-    void keepsOldModeWhenToggleDeselectedAndOtherMode() {
+    void toggleViewModeAlwaysSignalsSuccess() {
         var update = new Update();
-        var oldMode = new ViewMode.List();
-        var state = ViewState.initial().mode(oldMode);
-        var newMode = new ViewMode.Grid();
+        var state = ViewState.initial().mode(new ViewMode.List());
 
-        var next = update.apply(state, new Action.ViewModeToggled(newMode, false));
+        var next = update.apply(state, new Action.ViewModeToggled());
 
-        assertThat(next.viewMode(), equalTo(oldMode));
-    }
-
-    @Test
-    void togglesModeWhenToggleDeselectedAndSameMode() {
-        var update = new Update();
-        var oldMode = new ViewMode.List();
-        var state = ViewState.initial().mode(oldMode);
-
-        var next = update.apply(state, new Action.ViewModeToggled(oldMode, false));
-
-        assertThat(next.viewMode(), equalTo(new ViewMode.Grid()));
+        assertThat(next.status(), instanceOf(ActivityState.Success.class));
     }
 
     @Test

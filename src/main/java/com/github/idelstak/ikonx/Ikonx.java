@@ -42,10 +42,31 @@ public class Ikonx extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
-        loader.setControllerFactory(_ -> new IconView(new StateFlow(new IconClipboard(), meta)));
-        // var loader = new FXMLLoader(getClass().getResource("/fxml/ikonx-view.fxml"));
-        // loader.setControllerFactory(_ -> new IkonxView());
+        // var loader = new FXMLLoader(getClass().getResource("/fxml/icon-view.fxml"));
+        // loader.setControllerFactory(_ -> new IconView(new StateFlow(new IconClipboard(), meta)));
+        var loader = new FXMLLoader(getClass().getResource("/fxml/ikonx-view.fxml"));
+//        loader.setControllerFactory(_ -> new IkonxView());
+
+        var flow = new StateFlow(new IconClipboard(), meta);
+        
+        loader.setControllerFactory(type -> {
+            System.out.println("[IKONX] type = " + type.getSimpleName());
+            try {
+                if (type == IkonxView.class) {
+                    return new IkonxView(primaryStage, flow);
+                }
+                if (type == InnerMainView.class) {
+                    return new InnerMainView(primaryStage, flow);
+                }
+                if (type == HeaderView.class) {
+                    return new HeaderView(primaryStage, flow);
+                }
+                return type.getDeclaredConstructor().newInstance();
+            } catch (Exception ex) {
+                System.err.println("[IKONX] ex = " + ex);
+                throw new RuntimeException(ex);
+            }
+        });
 
         var root = loader.<Parent>load();
         var scene = new Scene(root);

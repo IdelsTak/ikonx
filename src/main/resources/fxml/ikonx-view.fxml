@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 
     The MIT License
@@ -27,35 +28,23 @@
 <?import java.net.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane
-    fx:id="rootStack"
-    styleClass="root-stack"
-    xmlns="http://javafx.com/javafx/25"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="com.github.idelstak.ikonx.view.IkonxView">
+<StackPane styleClass="root-stack" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.IkonxView">
     <stylesheets>
-        <URL
-            value="@../styles/fonts.css" />
-        <URL
-            value="@../styles/ikonx-root.css" />
+        <URL value="@../styles/fonts.css" />
+        <URL value="@../styles/ikonx-root.css" />
     </stylesheets>
     <children>
-        <BorderPane
-            fx:id="mainLayout">
+        <BorderPane>
             <top>
-                <fx:include
-                    source="header.fxml" />
+                <fx:include source="header.fxml" />
             </top>
             <bottom>
-                <fx:include
-                    source="footer.fxml" />
+                <fx:include source="footer.fxml" />
             </bottom>
             <center>
-                <fx:include
-                    source="inner-main.fxml" />
+                <fx:include source="inner-main.fxml" />
             </center>
         </BorderPane>
-        <fx:include
-            source="toast.fxml" />
+        <fx:include source="toast.fxml" />
     </children>
 </StackPane>

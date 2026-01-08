@@ -83,8 +83,9 @@ public final class Update {
                 stageIconsResolved(state, a);
             case Action.StageIconsFailed a ->
                 stageIconsFailed(state, a);
-            case Action.ViewModeToggled a ->
-                toggleViewMode(state, a);
+            case Action.ViewModeToggled _ ->
+                toggleViewMode(state);
+
         };
     }
 
@@ -352,22 +353,12 @@ public final class Update {
           .message(message);
     }
 
-    private ViewState toggleViewMode(ViewState state, Action.ViewModeToggled action) {
+    private ViewState toggleViewMode(ViewState state) {
         var oldMode = state.viewMode();
-        var newMode = computeNewMode(oldMode, action);
+        var newMode = oldMode instanceof ViewMode.Grid ? new ViewMode.List() : new ViewMode.Grid();
         return state
           .signal(new ActivityState.Success())
           .mode(newMode)
           .message("Switched icon browser view to " + newMode.displayName().toLowerCase(Locale.ROOT));
-    }
-
-    private ViewMode computeNewMode(ViewMode oldMode, Action.ViewModeToggled action) {
-        if (action.isSelected()) {
-            return action.mode();
-        }
-        if (oldMode.equals(action.mode())) {
-            return oldMode instanceof ViewMode.Grid ? new ViewMode.List() : new ViewMode.Grid();
-        }
-        return oldMode;
     }
 }

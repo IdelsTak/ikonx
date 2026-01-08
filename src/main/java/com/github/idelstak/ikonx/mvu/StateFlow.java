@@ -22,12 +22,14 @@
  */
 package com.github.idelstak.ikonx.mvu;
 
-import com.github.idelstak.ikonx.mvu.state.Update;
+import com.github.idelstak.ikonx.mvu.Flow;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import com.github.idelstak.ikonx.view.*;
 import io.reactivex.rxjava3.core.*;
+import io.reactivex.rxjava3.schedulers.*;
 import io.reactivex.rxjava3.subjects.*;
+import java.util.concurrent.*;
 
 public final class StateFlow implements Flow {
 
@@ -35,18 +37,30 @@ public final class StateFlow implements Flow {
     private final Observable<ViewState> states;
 
     public StateFlow(LocalClipboard clipboard, AppMeta appMeta) {
+        this(clipboard, appMeta, Schedulers.computation());
+    }
+
+    StateFlow(LocalClipboard clipboard, AppMeta appMeta, Scheduler time) {
         actions = PublishSubject.<Action>create().toSerialized();
 
-        var update = new Update();
-        var effects = new EffectFlow(clipboard, appMeta);
+        var search = actions
+          .ofType(Action.SearchChanged.class)
+          .debounce(300, TimeUnit.MILLISECONDS, time)
+          .distinctUntilChanged();
 
-        var seededActions = actions.startWithArray(
+        var others = actions.filter(a -> !(a instanceof Action.SearchChanged));
+
+        var throttled = Observable.merge(search, others);
+
+        var seeded = throttled.startWithArray(
           new Action.AppVersionRequested(),
           new Action.StageIconsRequested()
         );
 
-        var sideEffects = effects.apply(seededActions);
-        var merged = Observable.merge(seededActions, sideEffects);
+        var effects = new EffectFlow(clipboard, appMeta);
+        var merged = Observable.merge(seeded, effects.apply(seeded));
+
+        var update = new Update();
 
         states = merged
           .scan(ViewState.initial(), update::apply)

@@ -151,7 +151,7 @@ public final class Update {
             return state;
         }
 
-        var desc = ikon.styledIkon().ikon().getDescription();
+        var desc = ikon.description();
         return state
           .favorites(List.copyOf(favorites))
           .signal(new ActivityState.Idle())
@@ -196,7 +196,7 @@ public final class Update {
         return icons.stream()
           .filter(pi ->
           {
-              return pi.styledIkon().ikon().getDescription().toLowerCase(Locale.ROOT).contains(lower);
+              return pi.description().toLowerCase(Locale.ROOT).contains(lower);
           })
           .toList();
     }
@@ -220,7 +220,7 @@ public final class Update {
     private ViewState copyRequested(ViewState state, Action.CopyIkonRequested action) {
         return state
           .signal(new ActivityState.Idle())
-          .message("Copying '" + action.ikon().styledIkon().ikon().getDescription() + "' to clipboard");
+          .message("Copying '" + action.ikon().description() + "' to clipboard");
     }
 
     private ViewState copySucceeded(ViewState state, Action.CopyIkonSucceeded action) {
@@ -231,20 +231,20 @@ public final class Update {
         if (!changed) {
             return state
               .signal(new ActivityState.Success())
-              .message("Copied '" + action.ikon().styledIkon().ikon().getDescription() + "' to clipboard");
+              .message("Copied '" + action.ikon().description() + "' to clipboard");
         }
 
         return state
           .recent(List.copyOf(recents))
           .signal(new ActivityState.Success())
-          .message("Copied '" + action.ikon().styledIkon().ikon().getDescription() + "' to clipboard");
+          .message("Copied '" + action.ikon().description() + "' to clipboard");
     }
 
     private ViewState copyFailed(ViewState state, Action.CopyIkonFailed action) {
         return state
           .signal(new ActivityState.Error())
           .message("Failed to copy '"
-            + action.ikon().styledIkon().ikon().getDescription()
+            + action.ikon().description()
             + "' to clipboard: "
             + action.error().getMessage());
     }
@@ -252,20 +252,20 @@ public final class Update {
     private ViewState viewRequested(ViewState state, Action.ViewIkonRequested action) {
         return state
           .signal(new ActivityState.Idle())
-          .message("View '" + action.ikon().styledIkon().ikon().getDescription() + "' details");
+          .message("View '" + action.ikon().description() + "' details");
     }
 
     private ViewState viewSucceeded(ViewState state, Action.ViewIkonSucceeded action) {
         return state
           .signal(new ActivityState.Success())
-          .message("Viewed '" + action.ikon().styledIkon().ikon().getDescription() + "' details");
+          .message("Viewed '" + action.ikon().description() + "' details");
     }
 
     private ViewState viewFailed(ViewState state, Action.ViewIkonFailed action) {
         return state
           .signal(new ActivityState.Error())
           .message("Failed to view '"
-            + action.ikon().styledIkon().ikon().getDescription()
+            + action.ikon().description()
             + "' details: " + action.error().getMessage());
     }
 

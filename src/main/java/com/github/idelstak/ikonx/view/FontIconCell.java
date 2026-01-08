@@ -66,7 +66,7 @@ final class FontIconCell extends TableCell<List<PackIkon>, PackIkon> {
         if (packIkon == null || empty) {
             setGraphic(null);
         } else {
-            root.setText(packIkon.styledIkon().ikon().getDescription());
+            root.setText(packIkon.description());
             fontIcon.setIconCode(packIkon.styledIkon().ikon());
 
             root.setOnMouseClicked(event -> {

@@ -139,7 +139,7 @@ final class UpdateTest {
 
         assertThat(
           next.statusMessage(),
-          is("Copying '%s' to clipboard".formatted(ikon.styledIkon().ikon().getDescription()))
+          is("Copying '%s' to clipboard".formatted(ikon.description()))
         );
     }
 
@@ -200,7 +200,7 @@ final class UpdateTest {
 
         assertThat(
           next.statusMessage(),
-          is("Copied '" + ikon.styledIkon().ikon().getDescription() + "' to clipboard")
+          is("Copied '" + ikon.description() + "' to clipboard")
         );
     }
 
@@ -560,7 +560,7 @@ final class UpdateTest {
         var update = new Update();
         var state = ViewState.initial();
         var ikon = state.displayedIkons().getFirst();
-        var desc = ikon.styledIkon().ikon().getDescription();
+        var desc = ikon.description();
 
         var next = update.apply(
           state,
@@ -579,7 +579,7 @@ final class UpdateTest {
         var state = ViewState.initial();
         var ikon = state.displayedIkons().getFirst();
         state = update.apply(state, new Action.FavoriteIkonToggled(ikon, true));
-        var desc = ikon.styledIkon().ikon().getDescription();
+        var desc = ikon.description();
 
         var next = update.apply(
           state,
@@ -611,7 +611,7 @@ final class UpdateTest {
         var update = new Update();
         var state = ViewState.initial();
         var ikon = state.displayedIkons().getFirst();
-        var desc = ikon.styledIkon().ikon().getDescription();
+        var desc = ikon.description();
 
         var next = update.apply(
           state,
@@ -643,7 +643,7 @@ final class UpdateTest {
         var update = new Update();
         var state = ViewState.initial();
         var ikon = state.displayedIkons().getFirst();
-        var desc = ikon.styledIkon().ikon().getDescription();
+        var desc = ikon.description();
 
         var next = update.apply(
           state,

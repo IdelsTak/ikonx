@@ -97,7 +97,7 @@ final class EffectFlow {
               var request = (Action.CopyIkonRequested) a;
               return Observable
                 .fromCallable(() -> {
-                    clipboard.copy(request.ikon().styledIkon().ikon().getDescription());
+                    clipboard.copy(request.ikon().description());
                     return (Action) new Action.CopyIkonSucceeded(request.ikon());
                 })
                 .subscribeOn(JavaFxScheduler.platform())

@@ -27,9 +27,13 @@ import org.kordamp.ikonli.*;
 
 public record StyledIkon(Ikon ikon, Style style) implements Comparable<StyledIkon> {
 
+    public String description() {
+        return ikon.getDescription();
+    }
+
     @Override
     public int compareTo(StyledIkon o) {
-        return Comparator.comparing((StyledIkon si) -> si.ikon().getDescription()).compare(this, o);
+        return Comparator.comparing(StyledIkon::description).compare(this, o);
     }
 
     @Override
@@ -37,10 +41,8 @@ public record StyledIkon(Ikon ikon, Style style) implements Comparable<StyledIko
         StringBuilder sb = new StringBuilder();
         sb.append('{');
         sb.append(style.getClass().getSimpleName());
-        sb.append(", ").append(ikon.getDescription());
+        sb.append(", ").append(description());
         sb.append('}');
         return sb.toString();
     }
-    
-    
 }

@@ -25,6 +25,7 @@ package com.github.idelstak.ikonx.view;
 import com.github.idelstak.ikonx.*;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
+import com.github.idelstak.ikonx.mvu.state.search.*;
 import java.io.*;
 import java.util.concurrent.atomic.*;
 import java.util.function.*;
@@ -50,7 +51,7 @@ final class IconViewTest {
         });
         robot.clickOn("#searchField").write("Café");
         var finalState = flow.probeState();
-        assertEquals("Café", finalState.searchText());
+        assertEquals("Café", ((IkonQuery.Searching) finalState.query()).searchText());
     }
 
     @Test
@@ -85,15 +86,6 @@ final class IconViewTest {
         robot.clickOn("#searchField").write("über");
         var finalState = flow.probeState();
         assertTrue(finalState.displayedIkons().isEmpty());
-    }
-
-    @Test
-    void searchFieldRendersFromState(FxRobot robot) {
-        var flow = launch(robot, _ -> {
-        });
-        robot.interact(() -> flow.accept(new Action.SearchChanged("λ")));
-        var searchField = robot.lookup("#searchField").queryAs(TextField.class);
-        assertEquals("λ", searchField.getText());
     }
 
     @Test

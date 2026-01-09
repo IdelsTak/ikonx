@@ -66,8 +66,18 @@
 .icon-button {
     -fx-background-color: transparent;
     -fx-padding: 8px;
-    -fx-background-radius: 6px;
+    /* Border: rounded-lg (8px) */
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    /* This border is used for the focus ring effect */
+    -fx-border-width: 2px;
+    -fx-border-color: transparent;
     -fx-cursor: hand
+}
+/* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
+.icon-button:focused {
+    -fx-background-color: white;
+    -fx-border-color: #6366f1; /* indigo-500 */
 }
 .icon-button:hover {
     -fx-background-color: #f3f4f6
@@ -96,38 +106,126 @@
     -fx-font-size: 12px;
     -fx-font-family: 'Inter Medium';
     -fx-background-color: #f3f4f6;
-    -fx-background-radius: 6px;
-    -fx-border-width: 0;
+    /* Border: rounded-lg (8px) */
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    /* This border is used for the focus ring effect */
+    -fx-border-width: 2px;
+    -fx-border-color: transparent;
     -fx-padding: 2px 6px 2px 6px
+}
+/* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
+.copy-format-combo:focused {
+    -fx-background-color: white;
+    -fx-border-color: #6366f1; /* indigo-500 */
 }
 .copy-format-combo:focused .arrow-button {
     -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.5), 10, 0, 0, 0)
 }
 .search-bar {
-    -fx-background-color: #f3f4f6;
-    -fx-background-radius: 8px;
-    -fx-border-radius: 8px;
-    -fx-border-width: 2px;
-    -fx-border-color: transparent;
-    -fx-alignment: CENTER_LEFT
+    /*    -fx-background-color: #f3f4f6;
+        -fx-background-radius: 8px;
+        -fx-border-radius: 8px;
+        -fx-border-width: 2px;
+        -fx-border-color: transparent;
+        -fx-alignment: CENTER_LEFT;*/
+    -fx-pref-height: 40px;
+    -fx-max-width: 'Infinity'
 }
-.search-bar:focused-within {
+/*.search-bar:focused-within {
     -fx-background-color: white;
     -fx-border-color: #4f46e5
-}
-.search-bar-icon {
+}*/
+/*.search-bar-icon {
     -fx-icon-size: 16px;
     -fx-icon-color: #9ca3af;
     -fx-padding: 0 0 0 12px
-}
+}*/
 .search-input {
-    -fx-background-color: transparent;
+    /*    -fx-background-color: transparent;
+        -fx-font-size: 14px;
+        -fx-padding: 8px 36px 8px 40px*/
+
     -fx-font-size: 14px;
-    -fx-padding: 8px 16px 8px 40px
+
+    /* Spacing: top/bottom=8px, left=40px (for icon), right=36px (for clear button) */
+    -fx-padding: 8px 36px 8px 40px;
+
+    /* Colors: bg-neutral-100 (#f5f5f5) */
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #171717; /* A dark neutral for good contrast */
+    -fx-prompt-text-fill: #a3a3a3; /* neutral-400 */
+
+    /* Border: rounded-lg (8px) */
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+
+    /* This border is used for the focus ring effect */
+    -fx-border-width: 2px;
+    -fx-border-color: transparent;
+
+    /* Smooth transitions for background and border color */
+    -fx-transition: -fx-background-color 0.2s ease-in-out, -fx-border-color 0.2s ease-in-out;
 }
+
+/* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
+.search-input:focused {
+    -fx-background-color: white;
+    -fx-border-color: #6366f1; /* indigo-500 */
+}
+
+/* --- ICONS --- */
+
+/* Corresponds to: <svg class="absolute left-3 ... text-neutral-400"> */
+.search-icon {
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    /* SVG Path for a magnifying glass icon */
+    -fx-shape: "M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z";
+    -fx-background-color: #a3a3a3; /* text-neutral-400 */
+    -fx-scale-shape: false;
+}
+
+/* --- CLEAR BUTTON --- */
+
+.clear-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4px;
+    -fx-cursor: hand;
+    -fx-background-radius: 50%; /* Makes the hover effect circular */
+    -fx-focus-traversable: false
+}
+
+.clear-button:hover {
+    -fx-background-color: #e5e5e5; /* neutral-200 for hover */
+}
+
+.close-icon {
+    -fx-min-width: 16px;
+    -fx-min-height: 16px;
+    -fx-max-width: 16px;
+    -fx-max-height: 16px;
+    /* SVG Path for a close (X) icon */
+    -fx-shape: "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z";
+    -fx-background-color: #737373; /* neutral-500 */
+    -fx-scale-shape: false;
+}
+
+.clear-button:hover .close-icon {
+    -fx-background-color: #404040; /* neutral-700 */
+}
+
 .filter-button {
     -fx-background-color: #f3f4f6;
     -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    /*-fx-pref-height: 40px;*/
+    -fx-padding: 8px 0 8px 0;
+    /* This border is used for the focus ring effect */
+    -fx-border-width: 2px;
+    -fx-border-color: transparent;
     -fx-font-size: 14px;
     -fx-font-family: 'Inter Medium';
     -fx-text-fill: #374151;
@@ -136,6 +234,11 @@
 }
 .filter-button:hover {
     -fx-background-color: #e5e7eb
+}
+/* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
+.filter-button:focused {
+    -fx-background-color: white;
+    -fx-border-color: #6366f1; /* indigo-500 */
 }
 .filter-button-graphic {
     -fx-alignment: CENTER_LEFT;

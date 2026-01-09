@@ -25,6 +25,7 @@ package com.github.idelstak.ikonx.view;
 import com.github.idelstak.ikonx.mvu.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.search.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import io.reactivex.rxjava3.disposables.*;
@@ -50,6 +51,8 @@ public class HeaderView implements Initializable {
     private ComboBox<?> copyFormatComboBox;
     @FXML
     private TextField searchInput;
+    @FXML
+    private Button clearButton;
     @FXML
     private Button filterButton;
     @FXML
@@ -87,7 +90,15 @@ public class HeaderView implements Initializable {
 
     private void setupSearchInput() {
         searchInput.textProperty().addListener((_, _, text) ->
-          flow.accept(new Action.SearchChanged(text)));
+        {
+            if (text != null && !text.isBlank()) {
+                flow.accept(new Action.SearchChanged(text));
+            } else {
+                flow.accept(new Action.SearchCleared());
+            }
+        });
+
+        clearButton.setOnAction(_ -> flow.accept(new Action.SearchCleared()));
     }
 
     private void setupFilterButton() {
@@ -115,6 +126,12 @@ public class HeaderView implements Initializable {
 
         var iconsCount = state.displayedIkons().size();
         searchInput.setPromptText("Search %d icons...".formatted(iconsCount));
+        
+        var isSearching = state.query() instanceof IkonQuery.Searching;
+        if (!isSearching) {
+            searchInput.clear();
+        }
+        clearButton.setVisible(isSearching);
 
         var packsCount = state.selectedPacks().size();
         packCountLabel.setText("Packs (%d)".formatted(packsCount));

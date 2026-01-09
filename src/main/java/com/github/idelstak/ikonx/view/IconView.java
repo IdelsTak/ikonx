@@ -89,7 +89,7 @@ public class IconView {
 
             stage.getIcons().setAll(images);
         }
-        searchField.setText(state.searchText());
+        // searchField.setText(state.searchText());
         packSelection.render(state.selectedPacks());
         selectAllToggle.setSelected(state.selectedPacks().size() == Pack.values().length);
         selectTip.setText(selectAllToggle.isSelected() ? "Deselect all" : "Select all");

@@ -26,6 +26,7 @@ import com.github.idelstak.ikonx.*;
 import com.github.idelstak.ikonx.mvu.Flow;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.search.*;
 import com.github.idelstak.ikonx.view.*;
 import io.reactivex.rxjava3.core.*;
 import io.reactivex.rxjava3.schedulers.*;
@@ -58,7 +59,7 @@ final class StateFlowTest {
 
         states.assertValueAt(
           states.values().size() - 1,
-          s -> "αλφ".equals(s.searchText())
+          s -> "αλφ".equals(((IkonQuery.Searching) s.query()).searchText())
         );
     }
 
@@ -67,7 +68,7 @@ final class StateFlowTest {
         };
         var meta = AppMeta.empty();
         var flow = new StateFlow(clipboard, meta, time);
-        
+
         robot.interact(() -> {
             var loader = new FXMLLoader(Ikonx.class.getResource("/fxml/icon-view.fxml"));
             loader.setControllerFactory(_ -> new IconView(flow));

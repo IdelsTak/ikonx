@@ -32,6 +32,9 @@ public sealed interface Action {
 
     }
 
+    record SearchCleared() implements Action {
+    }
+
     record FilterPacksRequested() implements Action {
     }
 
@@ -47,7 +50,6 @@ public sealed interface Action {
     }
 
     record SelectAllPacksToggled() implements Action {
-
     }
 
     record PackStyleToggled(Style style) implements Action {
@@ -55,7 +57,6 @@ public sealed interface Action {
     }
 
     record SelectAllPackStylesToggled() implements Action {
-
     }
 
     record FavoriteIkonToggled(PackIkon ikon, boolean isSelected) implements Action {
@@ -109,6 +110,5 @@ public sealed interface Action {
     }
 
     record ViewModeToggled() implements Action {
-
     }
 }

@@ -85,12 +85,23 @@
     <HBox styleClass="header-row">
         <!-- Search Bar -->
         <StackPane styleClass="search-bar" HBox.hgrow="ALWAYS">
-            <FontIcon iconLiteral="bi-search" styleClass="search-bar-icon">
-                <StackPane.margin>
-                    <Insets left="6.0" />
-                </StackPane.margin>
-            </FontIcon>
             <TextField fx:id="searchInput" styleClass="search-input" />
+         <Region mouseTransparent="true" styleClass="search-icon" StackPane.alignment="CENTER_LEFT">
+            <StackPane.margin>
+               <Insets left="12.0" />
+            </StackPane.margin>
+         </Region>
+         <Button fx:id="clearButton" styleClass="clear-button" StackPane.alignment="CENTER_RIGHT">
+            <StackPane.margin>
+               <Insets right="8.0" />
+            </StackPane.margin>
+            <graphic>
+               <Region styleClass="close-icon" />
+            </graphic>
+            <tooltip>
+               <Tooltip text="Clear search" />
+            </tooltip>
+         </Button>
         </StackPane>
 
         <!-- Filter Button -->

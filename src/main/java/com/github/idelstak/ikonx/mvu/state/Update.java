@@ -25,6 +25,7 @@ package com.github.idelstak.ikonx.mvu.state;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
+import com.github.idelstak.ikonx.mvu.state.search.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.mvu.state.view.*;
 import com.github.idelstak.ikonx.view.grid.*;
@@ -43,6 +44,8 @@ public final class Update {
         return switch (action) {
             case Action.SearchChanged a ->
                 search(state, a);
+            case Action.SearchCleared _ ->
+                clearSearch(state);
             case Action.FilterPacksRequested _ ->
                 filterPacksRequested(state);
             case Action.FilterPacksSucceeded _ ->
@@ -90,9 +93,20 @@ public final class Update {
     }
 
     private ViewState search(ViewState state, Action.SearchChanged action) {
-        var icons = filterIconsByPack(state.ikonCatalog(), state.selectedPacks(), action.query());
+        var query = action.query();
+        var icons = filterIconsByPack(state.ikonCatalog(), state.selectedPacks(), query);
         return state
-          .search(action.query())
+          .search(new IkonQuery.Searching(query))
+          .display(icons)
+          .signal(new ActivityState.Success())
+          .message(String.format("%d icons found", icons.size()));
+    }
+
+    private ViewState clearSearch(ViewState state) {
+        var query = "";
+        var icons = filterIconsByPack(state.ikonCatalog(), state.selectedPacks(), query);
+        return state
+          .search(new IkonQuery.Clear())
           .display(icons)
           .signal(new ActivityState.Success())
           .message(String.format("%d icons found", icons.size()));
@@ -140,7 +154,14 @@ public final class Update {
             styles = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByPack(state.ikonCatalog(), packs, state.searchText());
+        var searchText = switch (state.query()) {
+            case IkonQuery.Searching s ->
+                s.searchText();
+            case IkonQuery.Clear _ ->
+                "";
+        };
+
+        var icons = filterIconsByPack(state.ikonCatalog(), packs, searchText);
         return state
           .select(packs)
           .styles(styles)
@@ -169,7 +190,14 @@ public final class Update {
             styles = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByPack(state.ikonCatalog(), packs, state.searchText());
+        var searchText = switch (state.query()) {
+            case IkonQuery.Searching s ->
+                s.searchText();
+            case IkonQuery.Clear _ ->
+                "";
+        };
+
+        var icons = filterIconsByPack(state.ikonCatalog(), packs, searchText);
         return state
           .select(packs)
           .styles(styles)
@@ -195,7 +223,14 @@ public final class Update {
             normalized = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByStyle(catalog, state.selectedPacks(), normalized, state.searchText());
+        var searchText = switch (state.query()) {
+            case IkonQuery.Searching s ->
+                s.searchText();
+            case IkonQuery.Clear _ ->
+                "";
+        };
+
+        var icons = filterIconsByStyle(catalog, state.selectedPacks(), normalized, searchText);
         return state
           .styles(normalized)
           .display(icons)
@@ -220,7 +255,14 @@ public final class Update {
             toggled = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByStyle(catalog, packs, toggled, state.searchText());
+        var searchText = switch (state.query()) {
+            case IkonQuery.Searching s ->
+                s.searchText();
+            case IkonQuery.Clear _ ->
+                "";
+        };
+
+        var icons = filterIconsByStyle(catalog, packs, toggled, searchText);
         return state
           .styles(toggled)
           .display(icons)

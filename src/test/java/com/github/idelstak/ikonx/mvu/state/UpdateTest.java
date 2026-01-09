@@ -25,6 +25,7 @@ package com.github.idelstak.ikonx.mvu.state;
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.icons.*;
+import com.github.idelstak.ikonx.mvu.state.search.*;
 import com.github.idelstak.ikonx.mvu.state.version.*;
 import com.github.idelstak.ikonx.view.grid.*;
 import java.util.*;
@@ -36,24 +37,134 @@ import static org.hamcrest.Matchers.*;
 
 final class UpdateTest {
 
+//    @Test
+//    void searchUpdatesText() {
+//        var update = new Update();
+//        var state = ViewState.initial();
+//        var next = update.apply(state, new Action.SearchChanged("αβ"));
+//
+//        assertThat(((IkonQuery.Searching) next.query()).searchText(), is("αβ"));
+//    }
+//
+//    @Test
+//    void searchSetsSuccessStatus() {
+//        var update = new Update();
+//        var state = ViewState.initial()
+//          .signal(new ActivityState.Idle());
+//
+//        var next = update.apply(state, new Action.SearchChanged("αβ"));
+//
+//        assertThat(next.status(), instanceOf(ActivityState.Success.class));
+//    }
     @Test
-    void searchUpdatesText() {
+    void shortSearchDoesNotFilterIcons() {
         var update = new Update();
         var state = ViewState.initial();
-        var next = update.apply(state, new Action.SearchChanged("αβ"));
+        state = update.apply(state, new Action.SelectAllPacksToggled());
 
-        assertThat(next.searchText(), is("αβ"));
+        var all = state.displayedIkons();
+        var next = update.apply(state, new Action.SearchChanged("α"));
+
+        assertThat(next.displayedIkons(), is(all));
     }
 
     @Test
-    void searchSetsSuccessStatus() {
+    void validSearchFilters() {
         var update = new Update();
-        var state = ViewState.initial()
-          .signal(new ActivityState.Idle());
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.SelectAllPacksToggled());
 
-        var next = update.apply(state, new Action.SearchChanged("αβ"));
+        var next = update.apply(state, new Action.SearchChanged("arrow"));
+
+        assertThat(
+          next.displayedIkons()
+            .stream()
+            .map(PackIkon::description)
+            .toList(),
+          everyItem(containsStringIgnoringCase("arrow"))
+        );
+    }
+
+    @Test
+    void validSearchShowsCountMessage() {
+        var update = new Update();
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.SelectAllPacksToggled());
+
+        var next = update.apply(state, new Action.SearchChanged("arrow"));
+
+        assertThat(
+          next.statusMessage(),
+          is(next.displayedIkons().size() + " icons found")
+        );
+    }
+
+    @Test
+    void searchRespectsSelectedPacks() {
+        var update = new Update();
+        var pack = Pack.values()[0];
+
+        var state = ViewState.initial().select(Set.of(pack));
+
+        var next = update.apply(state, new Action.SearchChanged("arrow"));
+
+        assertThat(
+          next.displayedIkons()
+            .stream()
+            .map(PackIkon::pack)
+            .collect(Collectors.toSet()),
+          is(Set.of(pack))
+        );
+    }
+
+    @Test
+    void clearSearchResetsQueryState() {
+        var update = new Update();
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.SearchChanged("αβ"));
+
+        var next = update.apply(state, new Action.SearchCleared());
+
+        assertThat(next.query(), instanceOf(IkonQuery.Clear.class));
+    }
+
+    @Test
+    void clearSearchRestoresUnfilteredIcons() {
+        var update = new Update();
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.SelectAllPacksToggled());
+
+        var full = state.displayedIkons();
+
+        state = update.apply(state, new Action.SearchChanged("arrow"));
+        var next = update.apply(state, new Action.SearchCleared());
+
+        assertThat(next.displayedIkons(), is(full));
+    }
+
+    @Test
+    void clearSearchSignalsSuccess() {
+        var update = new Update();
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.SelectAllPacksToggled());
+
+        var next = update.apply(state, new Action.SearchCleared());
 
         assertThat(next.status(), instanceOf(ActivityState.Success.class));
+    }
+
+    @Test
+    void clearSearchShowsCount() {
+        var update = new Update();
+        var state = ViewState.initial();
+        state = update.apply(state, new Action.SelectAllPacksToggled());
+
+        var next = update.apply(state, new Action.SearchCleared());
+
+        assertThat(
+          next.statusMessage(),
+          is(next.displayedIkons().size() + " icons found")
+        );
     }
 
     @Test

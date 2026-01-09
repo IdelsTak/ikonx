@@ -73,7 +73,8 @@ public class InnerMainView implements Initializable {
     }
 
     private void setupIconGrid() {
-        iconGrid.setCellFactory(IconGridCell::new);
+        // iconGrid.setCellFactory(IconGridCell::new);
+        iconGrid.setCellFactory(grid -> new IkonGridCell(grid, stage, flow));
         iconGrid.setCellWidth(220);
         iconGrid.setCellHeight(120);
         iconGrid.setListRowHeight(52);

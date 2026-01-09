@@ -31,7 +31,7 @@ import javafx.util.*;
 public final class IconGrid extends Control {
 
     private final ObjectProperty<ObservableList<PackIkon>> items = new SimpleObjectProperty<>(this, "items", FXCollections.observableArrayList());
-    private final ObjectProperty<Callback<IconGrid, IconGridCell>> cellFactory = new SimpleObjectProperty<>(this, "cellFactory");
+    private final ObjectProperty<Callback<IconGrid, IkonGridCell>> cellFactory = new SimpleObjectProperty<>(this, "cellFactory");
     private final DoubleProperty cellWidth = new SimpleDoubleProperty(this, "cellWidth", 120);
     private final DoubleProperty cellHeight = new SimpleDoubleProperty(this, "cellHeight", 110);
     private final DoubleProperty listRowHeight = new SimpleDoubleProperty(this, "listRowHeight", 52);
@@ -58,15 +58,15 @@ public final class IconGrid extends Control {
     }
 
     // --- Cell Factory ---
-    public ObjectProperty<Callback<IconGrid, IconGridCell>> cellFactoryProperty() {
+    public ObjectProperty<Callback<IconGrid, IkonGridCell>> cellFactoryProperty() {
         return cellFactory;
     }
 
-    public void setCellFactory(Callback<IconGrid, IconGridCell> value) {
+    public void setCellFactory(Callback<IconGrid, IkonGridCell> value) {
         cellFactory.set(value);
     }
 
-    public Callback<IconGrid, IconGridCell> getCellFactory() {
+    public Callback<IconGrid, IkonGridCell> getCellFactory() {
         return cellFactory.get();
     }
 

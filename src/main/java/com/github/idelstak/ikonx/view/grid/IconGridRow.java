@@ -29,16 +29,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.skin.*;
 import javafx.scene.layout.*;
 
-/**
- * Represents a single virtualized row. It must extend IndexedCell.
- * This row manages a pool of IconGridCell children and lays them out
- * based on the current view mode.
- */
-public class IconGridRow extends IndexedCell<Integer> {
+public final class IconGridRow extends IndexedCell<Integer> {
 
     private final IconGrid iconGrid;
     private final HBox root = new HBox();
-    private final List<IconGridCell> cells = new ArrayList<>();
+    private final List<IkonGridCell> cells = new ArrayList<>();
 
     IconGridRow(IconGrid iconGrid) {
         this.iconGrid = iconGrid;
@@ -81,8 +76,8 @@ public class IconGridRow extends IndexedCell<Integer> {
         int startIndex = rowIndex * columnCount;
 
         for (int i = 0; i < columnCount; i++) {
-            IconGridCell cell = (i >= cells.size()) ? iconGrid.getCellFactory().call(iconGrid)
-                                  : cells.get(i);
+            var cell = (i >= cells.size()) ? iconGrid.getCellFactory().call(iconGrid)
+                     : cells.get(i);
             if (i >= cells.size()) {
                 cells.add(cell);
             }
@@ -101,8 +96,8 @@ public class IconGridRow extends IndexedCell<Integer> {
                     }
                     case ViewMode.List _ -> {
                         cell.setMinSize(iconGrid.getCellWidth(), iconGrid.getListRowHeight());
-                        cell.setPrefSize(iconGrid.getWidth() * 0.92, iconGrid.getListRowHeight());
-                        cell.setMaxSize(iconGrid.getWidth() * 0.92, iconGrid.getListRowHeight());
+                        cell.setPrefSize(iconGrid.getWidth() * 0.95, iconGrid.getListRowHeight());
+                        cell.setMaxSize(iconGrid.getWidth() * 0.95, iconGrid.getListRowHeight());
                     }
                 }
 

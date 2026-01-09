@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 
     The MIT License
@@ -45,9 +46,7 @@
                         <children>
                             <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
                                 <children>
-                                    <StackPane prefHeight="14.0" prefWidth="14.0">
-                                        <SVGPath content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z" styleClass="svg-icon" />
-                                    </StackPane>
+                                     <SVGPath content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z" styleClass="svg-icon" />
                                     <Label text="FAVORITES" />
                                 </children>
                             </HBox>
@@ -63,9 +62,7 @@
                         <children>
                             <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
                                 <children>
-                                    <StackPane prefHeight="14.0" prefWidth="14.0">
-                                        <SVGPath content="M22,12A10,10 0 1 1 2,12A10,10 0 0 1 22,12ZM12,6L12,12L16,14" styleClass="svg-icon" />
-                                    </StackPane>
+                                     <SVGPath content="M22,12A10,10 0 1 1 2,12A10,10 0 0 1 22,12ZM12,6L12,12L16,14" styleClass="svg-icon" />
                                     <Label text="RECENT" />
                                 </children>
                             </HBox>

@@ -20,56 +20,169 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
+/* --- Grid Layout --- */
+
 .icon-grid {
     -fx-padding: 12px;
-    -fx-background-color: #f5f5f5
+    -fx-background-color: #f5f5f5;
 }
+
 .icon-grid-row {
-    -fx-alignment: center-left
+    -fx-alignment: center-left;
 }
-.icon-grid-cell {
+
+/* --- Cell Container --- */
+
+.grid-cell {
     -fx-background-color: white;
     -fx-border-color: #e5e5e5;
     -fx-border-width: 1px;
-    -fx-border-radius: 12px;
     -fx-background-radius: 12px;
-    -fx-padding: 16px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 4, 0, 0, 2)
+    -fx-border-radius: 12px;
+    -fx-cursor: hand;
+    -fx-transition: -fx-border-color 0.2s ease-out,
+        -fx-effect 0.2s ease-out,
+        -fx-translate-y 0.2s ease-out;
 }
-.icon-grid-cell:hover {
+
+.grid-cell.list-view {
+    -fx-background-radius: 36px;
+    -fx-border-radius: 36px;
+}
+
+.grid-cell:hover {
     -fx-border-color: #a5b4fc;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 4);
-    -fx-translate-y: -2px
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.2, 0, 4);
+    -fx-translate-y: -2;
 }
-.grid-root {
-    -fx-spacing: 12px
+
+/* --- Content Pane --- */
+
+.content-pane {
+    -fx-padding: 16px;
 }
-.list-root {
-    -fx-spacing: 16px
+
+.content-pane.list-view {
+    -fx-padding: 14px;
+    -fx-background-color: transparent;
 }
-.grid-root .icon-font {
-    -fx-icon-size: 36px
+
+/* --- Icon Wrapper --- */
+
+.icon-wrapper {
+    -fx-pref-width: 48px;
+    -fx-pref-height: 48px;
+    -fx-alignment: center;
+    -fx-text-fill: #525252;
 }
-.list-root .icon-font {
-    -fx-icon-size: 24px
+
+.icon-wrapper.list-view {
+    -fx-pref-width: 40px;
+    -fx-pref-height: 40px;
+    -fx-padding: 0 16px 0 16px;
+    -fx-border-color: white;
 }
-.text-container {
-    -fx-alignment: CENTER;
-    -fx-spacing: 4px
+
+.icon-placeholder {
+    -fx-icon-color: -fx-text-fill;
+    -fx-icon-size: 36px;
+    -fx-transition: -fx-background-color 0.2s ease-out;
 }
-.grid-mode .text-container, .grid-mode .grid-root {
-    -fx-alignment: CENTER
+
+.grid-cell:hover .icon-placeholder {
+    -fx-icon-color: #4f46e5;
 }
-.list-mode .text-container, .list-mode .list-root {
-    -fx-alignment: CENTER_LEFT
+
+/* --- Text Wrapper --- */
+
+.text-wrapper {
+    -fx-alignment: center;
+    -fx-spacing: 2px;
+    -fx-padding: 0 0 6px 0;
 }
-.name-label {
-    -fx-font-family: 'Inter SemiBold';
-    -fx-font-size: 0.95em;
-    -fx-text-fill: #404040
+
+.text-wrapper.list-view {
+    -fx-alignment: center-left;
+    -fx-padding: 0 0 0 6px;
+    -fx-border-color: white;
 }
-.pack-label {
-    -fx-font-family: 'Inter Medium';
-    -fx-font-size: 0.8em;
-    -fx-text-fill: #a3a3a3
+
+.icon-name {
+    -fx-font-family: "Inter Semibold";
+    -fx-font-size: 11px;
+    -fx-text-fill: #404040;
+}
+
+.icon-pack {
+    -fx-font-family: "Inter Medium";
+    -fx-font-size: 9px;
+    -fx-text-fill: #a3a3a3;
+}
+
+.grid-cell:hover .icon-name,
+.grid-cell:hover .icon-pack {
+    -fx-text-fill: #4f46e5;
+}
+
+/* --- Action Buttons --- */
+
+.action-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4px;
+    -fx-opacity: 0.0;
+    -fx-cursor: hand;
+    -fx-background-radius: 50em;
+    -fx-border-radius: 50em;
+    -fx-border-color: transparent;
+    -fx-transition: -fx-opacity 0.2s ease-in-out,
+        -fx-background-color 0.2s ease-in-out;
+}
+
+.action-button:focused {
+    -fx-background-radius: 50em;
+    -fx-border-radius: 50em;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.grid-cell:hover .action-button {
+    -fx-opacity: 1.0;
+}
+
+.action-button:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+.action-button.favorite-selected {
+    -fx-opacity: 1.0;
+}
+
+/* --- Icons --- */
+
+.favorite-icon-selected {
+    -fx-background-color: #facc15;
+    -fx-shape: "M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z";
+}
+
+.favorite-icon-unselected {
+    -fx-background-color: #d4d4d4;
+    -fx-shape: "M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z M12 15.4l-3.76 2.27 1-4.28-3.32-2.88 4.4-.38L12 6.1l1.68 4.04 4.4.38-3.32 2.88 1 4.28z";
+}
+
+.details-icon {
+    -fx-background-color: #d4d4d4;
+    -fx-shape: "M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm0 18c4.41 0 8-3.59 8-8s-3.59-8-8-8-8 3.59-8 8 3.59 8 8 8zm-1-13h2v2h-2zm0 4h2v6h-2z";
+}
+
+.action-button:hover .details-icon {
+    -fx-background-color: #4f46e5;
+}
+
+.favorite-icon-unselected,
+.favorite-icon-selected,
+.details-icon {
+    -fx-min-width: 14px;
+    -fx-min-height: 14px;
+    -fx-max-width: 14px;
+    -fx-max-height: 14px;
 }

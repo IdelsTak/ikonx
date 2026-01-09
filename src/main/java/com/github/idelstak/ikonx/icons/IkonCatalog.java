@@ -25,7 +25,7 @@ package com.github.idelstak.ikonx.icons;
 import java.util.*;
 import java.util.stream.*;
 
-public final class Ikons {
+public final class IkonCatalog {
 
     private final Map<Pack, List<PackIkon>> packs;
     private final Map<Style, List<PackIkon>> styles;
@@ -33,7 +33,7 @@ public final class Ikons {
     private final List<Pack> orderedPacks;
     private final List<Style> orderedStyles;
 
-    public Ikons(Pack[] packs) {
+    public IkonCatalog(Pack[] packs) {
         var allIcons = Arrays.stream(packs)
           .flatMap(pack -> Arrays.stream(pack.ikons())
             .map(ikon -> new PackIkon(pack, ikon)))

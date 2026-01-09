@@ -34,10 +34,8 @@ import java.util.stream.*;
 public final class Update {
 
     private final int minSearchLength;
-    private final Ikons ikons;
 
     public Update() {
-        ikons = new Ikons(Pack.values());
         minSearchLength = 2;
     }
 
@@ -92,7 +90,7 @@ public final class Update {
     }
 
     private ViewState search(ViewState state, Action.SearchChanged action) {
-        var icons = filterIconsByPack(state.selectedPacks(), action.query());
+        var icons = filterIconsByPack(state.ikonCatalog(), state.selectedPacks(), action.query());
         return state
           .search(action.query())
           .display(icons)
@@ -130,17 +128,19 @@ public final class Update {
             packs.add(pack);
         }
 
+        var catalog = state.ikonCatalog();
+
         var styles = packs.stream()
-          .flatMap(p -> ikons.byPack(p).stream())
+          .flatMap(p -> catalog.byPack(p).stream())
           .map(ikon -> ikon.styledIkon().style())
           .filter(style -> !(style instanceof Style.All))
           .collect(Collectors.toSet());
 
-        if (styles.size() == ikons.orderedStyles().size() - 1) {
+        if (styles.size() == catalog.orderedStyles().size() - 1) {
             styles = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByPack(packs, state.searchText());
+        var icons = filterIconsByPack(state.ikonCatalog(), packs, state.searchText());
         return state
           .select(packs)
           .styles(styles)
@@ -151,24 +151,25 @@ public final class Update {
 
     private ViewState toggleAllPacks(ViewState state) {
         Set<Pack> packs;
+        var catalog = state.ikonCatalog();
 
-        if (state.selectedPacks().size() != ikons.orderedPacks().size()) {
-            packs = Set.copyOf(ikons.orderedPacks());
+        if (state.selectedPacks().size() != catalog.orderedPacks().size()) {
+            packs = Set.copyOf(catalog.orderedPacks());
         } else {
-            packs = Set.of(ikons.orderedPacks().getFirst());
+            packs = Set.of(catalog.orderedPacks().getFirst());
         }
 
         var styles = packs.stream()
-          .flatMap(p -> ikons.byPack(p).stream())
+          .flatMap(p -> catalog.byPack(p).stream())
           .map(ikon -> ikon.styledIkon().style())
           .filter(style -> !(style instanceof Style.All))
           .collect(Collectors.toSet());
 
-        if (styles.size() == ikons.orderedStyles().size() - 1) {
+        if (styles.size() == catalog.orderedStyles().size() - 1) {
             styles = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByPack(packs, state.searchText());
+        var icons = filterIconsByPack(state.ikonCatalog(), packs, state.searchText());
         return state
           .select(packs)
           .styles(styles)
@@ -188,11 +189,13 @@ public final class Update {
           .filter(item -> !(item instanceof Style.All))
           .collect(Collectors.toSet());
 
-        if (normalized.isEmpty() || normalized.size() == ikons.orderedStyles().size() - 1) {
+        var catalog = state.ikonCatalog();
+
+        if (normalized.isEmpty() || normalized.size() == catalog.orderedStyles().size() - 1) {
             normalized = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByStyle(state.selectedPacks(), normalized, state.searchText());
+        var icons = filterIconsByStyle(catalog, state.selectedPacks(), normalized, state.searchText());
         return state
           .styles(normalized)
           .display(icons)
@@ -204,19 +207,20 @@ public final class Update {
         var packs = state.selectedPacks();
         var styles = state.selectedStyles();
         var all = styles.stream().anyMatch(Style.All.class::isInstance);
+        var catalog = state.ikonCatalog();
 
         var toggled = all
                     ? packs.stream()
-            .flatMap(pack -> ikons.byPack(pack).stream())
+            .flatMap(pack -> catalog.byPack(pack).stream())
             .map(ikon -> ikon.styledIkon().style())
             .collect(Collectors.toSet())
                     : Set.<Style>of(new Style.All());
 
-        if (toggled.size() == ikons.orderedStyles().size() - 1) {
+        if (toggled.size() == catalog.orderedStyles().size() - 1) {
             toggled = Set.of(new Style.All());
         }
 
-        var icons = filterIconsByStyle(packs, toggled, state.searchText());
+        var icons = filterIconsByStyle(catalog, packs, toggled, state.searchText());
         return state
           .styles(toggled)
           .display(icons)
@@ -247,14 +251,18 @@ public final class Update {
           .message("%s %s favorites".formatted(desc, addToFavorites ? "added to" : "removed from"));
     }
 
-    private List<PackIkon> filterIconsByStyle(Set<Pack> selectedPacks, Set<Style> selectedStyles, String searchText) {
+    private List<PackIkon> filterIconsByStyle(
+      IkonCatalog catalog,
+      Set<Pack> selectedPacks,
+      Set<Style> selectedStyles,
+      String searchText) {
         List<PackIkon> icons = selectedStyles.stream().anyMatch(Style.All.class::isInstance)
                                  ? selectedPacks.stream()
-            .flatMap(pack -> ikons.byPack(pack).stream())
+            .flatMap(pack -> catalog.byPack(pack).stream())
             .toList()
                                  : selectedStyles.stream()
             .flatMap(style -> {
-                return ikons.byStyle(style)
+                return catalog.byStyle(style)
                   .stream()
                   .filter(packIkon -> selectedPacks.contains(packIkon.pack()));
             })
@@ -281,13 +289,13 @@ public final class Update {
           .toList();
     }
 
-    private List<PackIkon> filterIconsByPack(Set<Pack> selectedPacks, String searchText) {
+    private List<PackIkon> filterIconsByPack(IkonCatalog catalog, Set<Pack> selectedPacks, String searchText) {
         if (selectedPacks.isEmpty()) {
             return List.of();
         }
 
         var icons = selectedPacks.stream()
-          .flatMap(pack -> ikons.byPack(pack).stream())
+          .flatMap(pack -> catalog.byPack(pack).stream())
           .toList();
 
         if (isInvalidSearch(searchText)) {

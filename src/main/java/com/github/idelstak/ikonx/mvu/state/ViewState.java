@@ -33,6 +33,7 @@ public record ViewState(
   AppVersion version,
   StageIcons stageIcons,
   String searchText,
+  IkonCatalog ikonCatalog,
   Set<Pack> selectedPacks,
   Set<Style> selectedStyles,
   List<PackIkon> displayedIkons,
@@ -53,61 +54,61 @@ public record ViewState(
     }
 
     ViewState version(AppVersion version) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
     ViewState stageIcons(StageIcons ikons) {
-        return new ViewState(version, ikons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, ikons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
     ViewState search(String text) {
-        return new ViewState(version, stageIcons, text, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, text, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
     ViewState select(Set<Pack> packs) {
-        return new ViewState(version, stageIcons, searchText, packs, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, packs, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
     ViewState styles(Set<Style> styles) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, styles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, styles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
     ViewState display(List<PackIkon> ikons) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           ikons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
     ViewState favorites(List<PackIkon> ikons) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, ikons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
     ViewState recent(List<PackIkon> ikons) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, ikons, viewMode, filter, status, statusMessage);
     }
 
     ViewState mode(ViewMode mode) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, mode, filter, status, statusMessage);
     }
 
     ViewState filter(PacksFilter filter) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
     ViewState signal(ActivityState state) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, state, statusMessage);
     }
 
     ViewState message(String text) {
-        return new ViewState(version, stageIcons, searchText, selectedPacks, selectedStyles,
+        return new ViewState(version, stageIcons, searchText, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, text);
     }
 
@@ -125,6 +126,7 @@ public record ViewState(
           new AppVersion.Unknown(),
           new StageIcons.Unknown(),
           "",
+          new IkonCatalog(Pack.values()),
           Set.of(firstPack),
           Set.of(new Style.All()),
           ikons,

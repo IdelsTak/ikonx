@@ -61,7 +61,7 @@ final class UpdateTest {
         var update = new Update();
         var state = ViewState.initial();
         var pack = Pack.values()[0];
-        
+
         var next = update.apply(
           state,
           new Action.PackToggled(pack)
@@ -536,7 +536,7 @@ final class UpdateTest {
         var state = ViewState.initial();
         state = update.apply(state, new Action.SelectAllPacksToggled());
 
-        for (var style : orderedStyles()) {
+        for (var style : orderedStyles(state.ikonCatalog())) {
             state = update.apply(state, new Action.PackStyleToggled(style));
         }
 
@@ -804,8 +804,8 @@ final class UpdateTest {
         );
     }
 
-    private Set<Style> orderedStyles() {
-        return new Ikons(Pack.values())
+    private Set<Style> orderedStyles(IkonCatalog catalog) {
+        return catalog
           .orderedStyles()
           .stream()
           .filter(style -> !(style instanceof Style.All))

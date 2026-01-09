@@ -41,7 +41,6 @@ public class PacksFilterView implements Initializable {
 
     private final Stage stage;
     private final Flow flow;
-    private final Ikons ikons;
     private Disposable subscription;
     @FXML
     private VBox filterDropdown;
@@ -55,7 +54,6 @@ public class PacksFilterView implements Initializable {
     public PacksFilterView(Stage stage, Flow flow) {
         this.stage = stage;
         this.flow = flow;
-        ikons = new Ikons(Pack.values());
     }
 
     @Override
@@ -111,18 +109,19 @@ public class PacksFilterView implements Initializable {
         }
 
         if (filterDropdown.isVisible()) {
-            var allPacksSelected = state.selectedPacks().size() == ikons.orderedPacks().size();
+            var catalog = state.ikonCatalog();
+            var allPacksSelected = state.selectedPacks().size() == catalog.orderedPacks().size();
             toggleAllButton.setSelected(allPacksSelected);
             toggleAllButton.setText(allPacksSelected ? "Deselect All" : "Select All");
 
-            populatePacksList(state.selectedPacks());
-            populateStylesList(state.selectedStyles());
+            populatePacksList(catalog, state.selectedPacks());
+            populateStylesList(catalog, state.selectedStyles());
         }
     }
 
-    private void populatePacksList(Set<Pack> selectedPacks) {
+    private void populatePacksList(IkonCatalog catalog, Set<Pack> selectedPacks) {
         packsListVBox.getChildren().clear();
-        for (var pack : ikons.orderedPacks()) {
+        for (var pack : catalog.orderedPacks()) {
             CheckBox checkBox = new CheckBox(pack.toString());
             checkBox.setSelected(selectedPacks.contains(pack));
             checkBox.getStyleClass().add("pack-checkbox");
@@ -138,10 +137,10 @@ public class PacksFilterView implements Initializable {
         }
     }
 
-    private void populateStylesList(Set<Style> selectedStyles) {
+    private void populateStylesList(IkonCatalog catalog, Set<Style> selectedStyles) {
         stylesListFlowPane.getChildren().clear();
 
-        for (var style : ikons.orderedStyles()) {
+        for (var style : catalog.orderedStyles()) {
             var button = new ToggleButton(style.displayName());
             button.getStyleClass().add("style-button");
             button.setOnAction(_ -> toggleStyle(style));

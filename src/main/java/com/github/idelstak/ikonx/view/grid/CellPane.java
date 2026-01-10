@@ -23,35 +23,60 @@
 package com.github.idelstak.ikonx.view.grid;
 
 import com.github.idelstak.ikonx.icons.*;
+import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.mvu.action.*;
+import com.github.idelstak.ikonx.mvu.state.*;
+import io.reactivex.rxjava3.disposables.*;
 import java.util.*;
+import javafx.application.*;
 import javafx.geometry.*;
 import javafx.scene.control.*;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
+import javafx.stage.*;
 import org.kordamp.ikonli.javafx.*;
+import org.pdfsam.rxjavafx.schedulers.*;
 
 final class CellPane extends StackPane {
 
-    private final BorderPane content;
-    private final StackPane iconWrapper;
-    private final FontIcon icon;
-    private final VBox textWrapper;
-    private final Label iconName;
-    private final Label iconPack;
-    private final Button favorite;
-    private final Region favoriteIcon;
-    private final Button details;
+    private final Stage stage;
+    private final Flow flow;
+    private Disposable actionsSubscription;
+    private Disposable stateSubscription;
+    private PackIkon currentIkon;
+    private ViewState currentState;
+    private final BorderPane content = new BorderPane();
+    private final StackPane iconWrapper = new StackPane();
+    private final FontIcon icon = new FontIcon();
+    private final VBox textWrapper = new VBox();
+    private final Label iconName = new Label();
+    private final Label iconPack = new Label();
+    private final Button favorite = new Button();
+    private final Region favoriteIcon = new Region();
+    private final Button details = new Button();
 
-    CellPane() {
-        this.content = new BorderPane();
-        this.iconWrapper = new StackPane();
-        this.icon = new FontIcon();
-        this.textWrapper = new VBox();
-        this.iconName = new Label();
-        this.iconPack = new Label();
-        this.favorite = new Button();
-        this.favoriteIcon = new Region();
-        this.details = new Button();
+    CellPane(Stage stage, Flow flow) {
+        this.stage = stage;
+        this.flow = flow;
 
+        initComponents();
+        setupStage();
+        setupActionsSubscription();
+        setupCopyAction();
+        setupFavoriteAction();
+    }
+
+    void renderIkon(PackIkon ikon) {
+        currentIkon = ikon;
+
+        iconName.setText(ikon.description());
+        iconPack.setText(ikon.pack().toString().toUpperCase(Locale.ROOT));
+        icon.setIconCode(ikon.styledIkon().ikon());
+
+        render(currentState);
+    }
+
+    private void initComponents() {
         content.getStyleClass().add("content-pane");
 
         iconWrapper.getStyleClass().add("icon-wrapper");
@@ -70,7 +95,7 @@ final class CellPane extends StackPane {
         favoriteIcon.getStyleClass().add("favorite-icon-unselected");
         favorite.setGraphic(favoriteIcon);
         StackPane.setAlignment(favorite, Pos.TOP_RIGHT);
-        StackPane.setMargin(favorite, new Insets(8));
+        StackPane.setMargin(favorite, new Insets(8, 8, 0, 0));
 
         details.getStyleClass().add("action-button");
         details.setGraphic(new Region() {
@@ -84,13 +109,72 @@ final class CellPane extends StackPane {
         getChildren().addAll(content, favorite, details);
     }
 
-    void setIkon(PackIkon ikon) {
-        iconName.setText(ikon.description());
-        iconPack.setText(ikon.pack().toString().toUpperCase(Locale.ROOT));
-        icon.setIconLiteral(ikon.description());
+    private void setupStage() {
+        stage.setOnCloseRequest(_ -> {
+            this.dispose();
+            Platform.exit();
+            System.exit(0);
+        });
     }
-    
-    void setViewMode(ViewMode mode) {
+
+    private void setupActionsSubscription() {
+        Platform.runLater(() -> {
+            actionsSubscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+            stateSubscription = flow.observe().subscribe(state -> currentState = state);
+        });
+    }
+
+    private void setupCopyAction() {
+        super.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1 && currentIkon != null) {
+                flow.accept(new Action.CopyIkonRequested(currentIkon));
+            }
+        });
+    }
+
+    private void setupFavoriteAction() {
+        favorite.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            event.consume();
+            if (currentIkon == null) {
+                return;
+            }
+            flow.accept(new Action.FavoriteIkonToggled(currentIkon));
+        });
+    }
+
+    private void dispose() {
+        if (actionsSubscription != null && !actionsSubscription.isDisposed()) {
+            actionsSubscription.dispose();
+        }
+        if (stateSubscription != null && !stateSubscription.isDisposed()) {
+            stateSubscription.dispose();
+        }
+    }
+
+    private void render(ViewState state) {
+        if (currentIkon == null || state == null) {
+            return;
+        }
+
+        renderFavorite(state.favoriteIkons());
+        renderViewMode(state.viewMode());
+    }
+
+    private void renderFavorite(Set<PackIkon> favoriteIkons) {
+        var isFavorite = currentIkon != null && favoriteIkons.contains(currentIkon);
+
+        favorite.getStyleClass().remove("favorite-selected");
+        favoriteIcon.getStyleClass().removeAll("favorite-icon-selected", "favorite-icon-unselected");
+
+        if (isFavorite) {
+            favorite.getStyleClass().add("favorite-selected");
+            favoriteIcon.getStyleClass().add("favorite-icon-selected");
+        } else {
+            favoriteIcon.getStyleClass().add("favorite-icon-unselected");
+        }
+    }
+
+    private void renderViewMode(ViewMode mode) {
         content.getStyleClass().remove("list-view");
         iconWrapper.getStyleClass().remove("list-view");
         textWrapper.getStyleClass().remove("list-view");
@@ -98,21 +182,15 @@ final class CellPane extends StackPane {
         content.getChildren().clear();
 
         if (mode instanceof ViewMode.List) {
-            // LIST MODE: Icon on left, text in center, aligned left
             content.getStyleClass().add("list-view");
             iconWrapper.getStyleClass().add("list-view");
             textWrapper.getStyleClass().add("list-view");
 
             content.setLeft(iconWrapper);
             content.setCenter(textWrapper);
-            content.setBottom(null); // Unset bottom
-            textWrapper.setAlignment(Pos.CENTER_LEFT);
         } else {
-            // GRID MODE: Icon in center, text on bottom, aligned center
             content.setCenter(iconWrapper);
             content.setBottom(textWrapper);
-            content.setLeft(null); // Unset left
-            textWrapper.setAlignment(Pos.CENTER);
         }
     }
 }

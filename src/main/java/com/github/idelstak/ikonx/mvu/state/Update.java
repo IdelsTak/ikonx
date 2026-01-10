@@ -88,7 +88,6 @@ public final class Update {
                 stageIconsFailed(state, a);
             case Action.ViewModeToggled _ ->
                 toggleViewMode(state);
-
         };
     }
 
@@ -273,24 +272,17 @@ public final class Update {
     private ViewState toggleFavorite(ViewState state, Action.FavoriteIkonToggled action) {
         var favorites = new HashSet<>(state.favoriteIkons());
         var ikon = action.ikon();
-        boolean addToFavorites = action.isSelected();
-        boolean changed;
+        boolean added = favorites.add(ikon);
 
-        if (addToFavorites) {
-            changed = favorites.add(ikon);
-        } else {
-            changed = favorites.remove(ikon);
-        }
-
-        if (!changed) {
-            return state;
+        if (!added) {
+            favorites.remove(ikon);
         }
 
         var desc = ikon.description();
         return state
-          .favorites(List.copyOf(favorites))
+          .favorites(favorites)
           .signal(new ActivityState.Success())
-          .message("%s %s favorites".formatted(desc, addToFavorites ? "added to" : "removed from"));
+          .message("%s %s favorites".formatted(desc, added ? "added to" : "removed from"));
     }
 
     private List<PackIkon> filterIconsByStyle(
@@ -354,20 +346,15 @@ public final class Update {
     }
 
     private ViewState copySucceeded(ViewState state, Action.CopyIkonSucceeded action) {
-        var recents = new HashSet<>(state.recentIkons());
         var ikon = action.ikon();
-        var changed = recents.add(ikon);
+        var recents = new HashSet<>(state.recentIkons());
+        boolean changed = recents.add(ikon);
 
-        if (!changed) {
-            return state
-              .signal(new ActivityState.Success())
-              .message("Copied '" + action.ikon().description() + "' to clipboard");
-        }
+        var next = changed ? state.recent(recents) : state;
 
-        return state
-          .recent(List.copyOf(recents))
+        return next
           .signal(new ActivityState.Success())
-          .message("Copied '" + action.ikon().description() + "' to clipboard");
+          .message("Copied '%s' to clipboard".formatted(ikon.description()));
     }
 
     private ViewState copyFailed(ViewState state, Action.CopyIkonFailed action) {

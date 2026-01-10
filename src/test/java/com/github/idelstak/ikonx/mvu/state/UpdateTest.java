@@ -37,25 +37,6 @@ import static org.hamcrest.Matchers.*;
 
 final class UpdateTest {
 
-//    @Test
-//    void searchUpdatesText() {
-//        var update = new Update();
-//        var state = ViewState.initial();
-//        var next = update.apply(state, new Action.SearchChanged("αβ"));
-//
-//        assertThat(((IkonQuery.Searching) next.query()).searchText(), is("αβ"));
-//    }
-//
-//    @Test
-//    void searchSetsSuccessStatus() {
-//        var update = new Update();
-//        var state = ViewState.initial()
-//          .signal(new ActivityState.Idle());
-//
-//        var next = update.apply(state, new Action.SearchChanged("αβ"));
-//
-//        assertThat(next.status(), instanceOf(ActivityState.Success.class));
-//    }
     @Test
     void shortSearchDoesNotFilterIcons() {
         var update = new Update();
@@ -715,7 +696,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.FavoriteIkonToggled(ikon, true)
+          new Action.FavoriteIkonToggled(ikon)
         );
 
         assertThat(next.favoriteIkons(), hasItem(ikon));
@@ -726,45 +707,14 @@ final class UpdateTest {
         var update = new Update();
         var state = ViewState.initial();
         var ikon = state.displayedIkons().getFirst();
-        state = update.apply(state, new Action.FavoriteIkonToggled(ikon, true));
+        state = update.apply(state, new Action.FavoriteIkonToggled(ikon));
 
         var next = update.apply(
           state,
-          new Action.FavoriteIkonToggled(ikon, false)
+          new Action.FavoriteIkonToggled(ikon)
         );
 
         assertThat(next.favoriteIkons(), not(hasItem(ikon)));
-    }
-
-    @Test
-    void favoriteToggleOnAlreadyFavoriteDoesNothing() {
-        var update = new Update();
-        var state = ViewState.initial();
-        var ikon = state.displayedIkons().getFirst();
-        state = update.apply(state, new Action.FavoriteIkonToggled(ikon, true));
-        var favorites = state.favoriteIkons();
-
-        var next = update.apply(
-          state,
-          new Action.FavoriteIkonToggled(ikon, true)
-        );
-
-        assertThat(next.favoriteIkons(), is(favorites));
-    }
-
-    @Test
-    void favoriteToggleOffWhenNotFavoriteDoesNothing() {
-        var update = new Update();
-        var state = ViewState.initial();
-        var ikon = state.displayedIkons().getFirst();
-        var favorites = state.favoriteIkons();
-
-        var next = update.apply(
-          state,
-          new Action.FavoriteIkonToggled(ikon, false)
-        );
-
-        assertThat(next.favoriteIkons(), is(favorites));
     }
 
     @Test
@@ -775,7 +725,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.FavoriteIkonToggled(ikon, true)
+          new Action.FavoriteIkonToggled(ikon)
         );
 
         assertThat(next.status(), instanceOf(ActivityState.Success.class));
@@ -790,7 +740,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.FavoriteIkonToggled(ikon, true)
+          new Action.FavoriteIkonToggled(ikon)
         );
 
         assertThat(
@@ -804,12 +754,12 @@ final class UpdateTest {
         var update = new Update();
         var state = ViewState.initial();
         var ikon = state.displayedIkons().getFirst();
-        state = update.apply(state, new Action.FavoriteIkonToggled(ikon, true));
+        state = update.apply(state, new Action.FavoriteIkonToggled(ikon));
         var desc = ikon.description();
 
         var next = update.apply(
           state,
-          new Action.FavoriteIkonToggled(ikon, false)
+          new Action.FavoriteIkonToggled(ikon)
         );
 
         assertThat(

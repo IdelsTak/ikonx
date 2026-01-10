@@ -59,7 +59,7 @@ public sealed interface Action {
     record SelectAllPackStylesToggled() implements Action {
     }
 
-    record FavoriteIkonToggled(PackIkon ikon, boolean isSelected) implements Action {
+    record FavoriteIkonToggled(PackIkon ikon) implements Action {
 
     }
 

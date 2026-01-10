@@ -38,8 +38,8 @@ public record ViewState(
   Set<Pack> selectedPacks,
   Set<Style> selectedStyles,
   List<PackIkon> displayedIkons,
-  List<PackIkon> favoriteIkons,
-  List<PackIkon> recentIkons,
+  Set<PackIkon> favoriteIkons,
+  Set<PackIkon> recentIkons,
   ViewMode viewMode,
   PacksFilter filter,
   ActivityState status,
@@ -50,8 +50,8 @@ public record ViewState(
         selectedPacks = Set.copyOf(selectedPacks);
         selectedStyles = Set.copyOf(selectedStyles);
         displayedIkons = List.copyOf(displayedIkons);
-        favoriteIkons = List.copyOf(favoriteIkons);
-        recentIkons = List.copyOf(recentIkons);
+        favoriteIkons = Set.copyOf(favoriteIkons);
+        recentIkons = Set.copyOf(recentIkons);
     }
 
     ViewState version(AppVersion version) {
@@ -84,12 +84,12 @@ public record ViewState(
           ikons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
-    ViewState favorites(List<PackIkon> ikons) {
+    ViewState favorites(Set<PackIkon> ikons) {
         return new ViewState(version, stageIcons, query, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, ikons, recentIkons, viewMode, filter, status, statusMessage);
     }
 
-    ViewState recent(List<PackIkon> ikons) {
+    ViewState recent(Set<PackIkon> ikons) {
         return new ViewState(version, stageIcons, query, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, ikons, viewMode, filter, status, statusMessage);
     }
@@ -103,6 +103,7 @@ public record ViewState(
         return new ViewState(version, stageIcons, query, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, status, statusMessage);
     }
+
     ViewState signal(ActivityState state) {
         return new ViewState(version, stageIcons, query, ikonCatalog, selectedPacks, selectedStyles,
           displayedIkons, favoriteIkons, recentIkons, viewMode, filter, state, statusMessage);
@@ -131,8 +132,8 @@ public record ViewState(
           Set.of(firstPack),
           Set.of(new Style.All()),
           ikons,
-          List.of(), // favoriteIkons empty
-          List.of(), // recentIkons empty
+          Set.of(),
+          Set.of(),
           new ViewMode.Grid(),
           new PacksFilter.Hidden(),
           new ActivityState.Idle(),

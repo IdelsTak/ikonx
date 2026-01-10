@@ -53,9 +53,9 @@ public class InnerMainView implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        setupIconGrid();
         setupStage();
         setupActionsSubscription();
-        setupIconGrid();
     }
 
     private void setupStage() {

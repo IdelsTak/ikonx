@@ -31,8 +31,6 @@ import javafx.stage.*;
 public final class IkonGridCell extends Cell<PackIkon> {
 
     private final IconGrid grid;
-//    private final Parent root;
-//    private final IkonGridCellView cellView;
     private final Stage stage;
     private final Flow flow;
     private CellPane root;
@@ -42,9 +40,9 @@ public final class IkonGridCell extends Cell<PackIkon> {
         this.stage = stage;
         this.flow = flow;
 
-        getStyleClass().add("grid-cell");
+        super.getStyleClass().add("grid-cell");
 
-        root = new CellPane();
+        root = new CellPane(stage, flow);
     }
 
     @Override
@@ -62,8 +60,7 @@ public final class IkonGridCell extends Cell<PackIkon> {
             return;
         }
 
-        root.setIkon(item);
-        root.setViewMode(grid.getViewMode());
-        super.setGraphic(root);
+        root.renderIkon(item);
+        setGraphic(root);
     }
 }

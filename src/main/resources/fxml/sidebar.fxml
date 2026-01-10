@@ -25,10 +25,10 @@
 
 -->
 
+<?import java.lang.*?>
 <?import java.net.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.*?>
 
 <VBox styleClass="sidebar" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.SidebarView">
     <stylesheets>
@@ -44,13 +44,17 @@
                     <!-- Favorites Section -->
                     <VBox spacing="12.0">
                         <children>
-                            <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
+                            <HBox styleClass="section-header">
                                 <children>
-                                     <SVGPath content="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z" styleClass="svg-icon" />
-                                    <Label text="FAVORITES" />
+                                    <Region>
+                              <styleClass>
+                                 <String fx:value="header-icon" />
+                                 <String fx:value="favorites-star" />
+                              </styleClass></Region>
+                                    <Label styleClass="section-title" text="FAVORITES" />
                                 </children>
                             </HBox>
-                            <TilePane fx:id="favoritesGrid" hgap="8.0" prefColumns="4" vgap="8.0">
+                            <TilePane fx:id="favoritesGrid" styleClass="favorites-grid">
                                 <children>
                                     <Label styleClass="placeholder-text" text="No favorites yet" TilePane.alignment="TOP_LEFT" />
                                 </children>
@@ -60,13 +64,18 @@
                     <!-- Recent Section -->
                     <VBox spacing="12.0">
                         <children>
-                            <HBox alignment="CENTER_LEFT" spacing="8.0" styleClass="section-header">
+                            <HBox styleClass="section-header">
                                 <children>
-                                     <SVGPath content="M22,12A10,10 0 1 1 2,12A10,10 0 0 1 22,12ZM12,6L12,12L16,14" styleClass="svg-icon" />
-                                    <Label text="RECENT" />
+                           <Region>
+                              <styleClass>
+                                 <String fx:value="header-icon" />
+                                 <String fx:value="recent-clock" />
+                              </styleClass>
+                           </Region>
+                                    <Label styleClass="section-title" text="RECENT" />
                                 </children>
                             </HBox>
-                            <VBox fx:id="historyList" spacing="8.0" />
+                            <VBox fx:id="historyList" spacing="6.0" />
                         </children>
                     </VBox>
                 </VBox>

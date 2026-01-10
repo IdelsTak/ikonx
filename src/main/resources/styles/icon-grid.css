@@ -90,7 +90,7 @@
 }
 
 .grid-cell:hover .icon-placeholder {
-    -fx-icon-color: #4f46e5;
+    -fx-icon-color: #0b57d0;
 }
 
 /* --- Text Wrapper --- */
@@ -121,7 +121,7 @@
 
 .grid-cell:hover .icon-name,
 .grid-cell:hover .icon-pack {
-    -fx-text-fill: #4f46e5;
+    -fx-text-fill: #0b57d0;
 }
 
 /* --- Action Buttons --- */
@@ -175,7 +175,7 @@
 }
 
 .action-button:hover .details-icon {
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #0b57d0;
 }
 
 .favorite-icon-unselected,

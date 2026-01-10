@@ -101,7 +101,6 @@ public class SidebarView implements Initializable {
             var button = new Button();
             button.getStyleClass().add("favorite-button");
             button.setOnAction(_ -> {
-                System.out.println("Show details for: " + favorite.description());
                 flow.accept(new Action.ViewIkonDetailsRequested(favorite));
             });
 
@@ -129,7 +128,6 @@ public class SidebarView implements Initializable {
         Button historyItem = new Button();
         historyItem.getStyleClass().add("history-item");
         historyItem.setOnAction(_ -> {
-            System.out.println("Show details for: " + ikon.description());
             flow.accept(new Action.ViewIkonDetailsRequested(ikon));
         });
 

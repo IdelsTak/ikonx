@@ -104,7 +104,7 @@ public class InnerMainView implements Initializable {
 
         switch (detailsDisplay) {
             case IkonDetailsDisplay.ShowRequested _ -> {
-                var blur = new GaussianBlur(15); // intensity of blur
+                var blur = new GaussianBlur(7); // intensity of blur
                 innerMainLayout.setEffect(blur);
             }
             case IkonDetailsDisplay.HideRequested _ -> {

@@ -22,31 +22,141 @@
  */
 package com.github.idelstak.ikonx.view;
 
+import com.github.idelstak.ikonx.icons.*;
+import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.mvu.action.*;
+import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.view.*;
+import io.reactivex.rxjava3.disposables.*;
 import java.net.*;
 import java.util.*;
+import javafx.animation.*;
+import javafx.application.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.stage.*;
+import javafx.util.*;
+import org.kordamp.ikonli.javafx.*;
+import org.pdfsam.rxjavafx.schedulers.*;
 
 public class IconDetailsView implements Initializable {
 
+    private final Stage stage;
+    private final Flow flow;
+    private Disposable subscription;
+    private PackIkon currentIkon;
+    @FXML
+    private VBox detailsRoot;
     @FXML
     private Button closeButton;
     @FXML
-    private VBox detailsContentBox;
-    @FXML
-    private Region iconPreview;
+    private FontIcon icon;
     @FXML
     private Label title;
     @FXML
     private Label subtitle;
     @FXML
-    private VBox infoBox;
+    private Label packLabel;
+    @FXML
+    private Label licenseLabel;
+    @FXML
+    private Label authorLabel;
     @FXML
     private Button copyButton;
 
+    public IconDetailsView(Stage stage, Flow flow) {
+        this.stage = stage;
+        this.flow = flow;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        setupInitialPosition();
+        setupStage();
+        setupActionsSubscription();
+        setupCopyButton();
+        setupCloseButton();
+    }
+
+    private void setupInitialPosition() {
+        detailsRoot.setVisible(false);
+        detailsRoot.setTranslateX(detailsRoot.getPrefWidth());
+    }
+
+    private void setupStage() {
+        stage.setOnCloseRequest(_ -> this.dispose());
+    }
+
+    private void setupActionsSubscription() {
+        Platform.runLater(() -> {
+            subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+        });
+    }
+
+    private void setupCopyButton() {
+        copyButton.setOnAction(_ -> {
+            if (currentIkon != null) {
+                flow.accept(new Action.CopyIkonRequested(currentIkon));
+            }
+            flow.accept(new Action.HideIkonDetailsRequested());
+        });
+    }
+
+    private void setupCloseButton() {
+        closeButton.setOnAction(_ -> {
+            flow.accept(new Action.HideIkonDetailsRequested());
+        });
+    }
+
+    private void render(ViewState state) {
+        var detailsDisplay = state.detailsDisplay();
+
+        Optional<PackIkon> maybeIkon = switch (detailsDisplay) {
+            case IkonDetailsDisplay.ShowRequested show ->
+                Optional.of(show.ikon());
+            case IkonDetailsDisplay.HideRequested _ ->
+                Optional.empty();
+            case IkonDetailsDisplay.Failed _ ->
+                Optional.empty();
+        };
+
+        maybeIkon.ifPresentOrElse(this::show, this::slideOut);
+    }
+
+    private void show(PackIkon ikon) {
+        currentIkon = ikon;
+
+        title.setText(ikon.description());
+        subtitle.setText(ikon.styledIkon().style().displayName());
+        packLabel.setText(ikon.pack().toString().toUpperCase(Locale.ROOT));
+        licenseLabel.setText("Apache");
+        authorLabel.setText("Team Kordamp");
+        icon.setIconCode(ikon.styledIkon().ikon());
+
+        slideIn();
+    }
+
+    private void slideIn() {
+        detailsRoot.setVisible(true);
+
+        var animation = new TranslateTransition(Duration.millis(320), detailsRoot);
+        animation.setFromX(detailsRoot.getWidth());
+        animation.setToX(0);
+        animation.play();
+    }
+
+    private void slideOut() {
+        var animation = new TranslateTransition(Duration.millis(180), detailsRoot);
+        animation.setFromX(0);
+        animation.setToX(detailsRoot.getWidth());
+        animation.setOnFinished(_ -> detailsRoot.setVisible(false));
+        animation.play();
+    }
+
+    private void dispose() {
+        if (subscription != null && !subscription.isDisposed()) {
+            subscription.dispose();
+        }
     }
 }

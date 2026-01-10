@@ -48,7 +48,7 @@ public class Ikonx extends Application {
         var flow = new StateFlow(new IconClipboard(), meta);
 
         loader.setControllerFactory(type -> {
-            System.out.println("[IKONX] type = " + type.getSimpleName());
+            System.out.println("[IKONX] init view: " + type.getSimpleName());
             try {
                 if (type == IkonxView.class) {
                     return new IkonxView(primaryStage, flow);
@@ -67,6 +67,9 @@ public class Ikonx extends Application {
                 }
                 if (type == OverlayView.class) {
                     return new OverlayView(primaryStage, flow);
+                }
+                if (type == IconDetailsView.class) {
+                    return new IconDetailsView(primaryStage, flow);
                 }
                 if (type == PacksFilterView.class) {
                     return new PacksFilterView(primaryStage, flow);

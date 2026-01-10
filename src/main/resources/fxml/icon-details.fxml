@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 
     The MIT License
@@ -29,8 +30,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<VBox styleClass="details-panel" visible="false" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.IconDetailsView">
+<VBox fx:id="detailsRoot" styleClass="details-panel" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.IconDetailsView">
    <stylesheets>
       <URL value="@../styles/fonts.css" />
       <URL value="@../styles/ikonx-root.css" />
@@ -48,28 +50,35 @@
                            <SVGPath content="M18,6 L6,18 M6,6 L18,18" styleClass="close-icon" />
                         </StackPane>
                      </graphic>
+               <tooltip>
+                  <Tooltip text="Close" />
+               </tooltip>
                   </Button>
                </children>
             </HBox>
             <!-- Content -->
             <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" styleClass="content-scroll-pane" VBox.vgrow="ALWAYS">
                <content>
-                   <VBox fx:id="detailsContentBox" styleClass="content-box">
+                   <VBox styleClass="content-box">
                        <!-- Icon Display -->
     <VBox spacing="8" styleClass="icon-display-box">
-        <Region fx:id="iconPreview" styleClass="icon-preview" />
+                  <StackPane styleClass="icon-preview">
+                     <children>
+                        <FontIcon fx:id="icon" />
+                     </children>
+                  </StackPane>
         <Label fx:id="title" styleClass="icon-title" text="{title}" />
         <Label fx:id="subtitle" styleClass="icon-subtitle" text="{subtitle}" />
     </VBox>
 
     <!-- Info Section -->
-    <VBox fx:id="infoBox" spacing="16">
+    <VBox spacing="16">
                   <children>
                      <HBox styleClass="info-row">
                         <children>
                            <Label styleClass="info-label" text="Pack" />
                            <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                           <Label text="{pack name}">
+                           <Label fx:id="packLabel" text="{pack name}">
                               <styleClass>
                                  <String fx:value="info-value" />
                                  <String fx:value="tag-neutral" />
@@ -81,7 +90,7 @@
                         <children>
                            <Label styleClass="info-label" text="License" />
                            <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                           <Label text="{license name}">
+                           <Label fx:id="licenseLabel" text="{license name}">
                               <styleClass>
                                  <String fx:value="info-value" />
                                  <String fx:value="tag-emerald" />
@@ -93,7 +102,7 @@
                         <children>
                            <Label styleClass="info-label" text="Author" />
                            <Region maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                           <Label styleClass="info-value" text="{author name}" />
+                           <Label fx:id="authorLabel" styleClass="info-value" text="{author name}" />
                         </children>
                      </HBox>
                   </children></VBox>

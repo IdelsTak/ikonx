@@ -37,7 +37,7 @@ import javafx.scene.layout.*;
 import javafx.stage.*;
 import org.pdfsam.rxjavafx.schedulers.*;
 
-public class PacksFilterView implements Initializable {
+public final class PacksFilterView implements Initializable {
 
     private final Stage stage;
     private final Flow flow;
@@ -61,16 +61,7 @@ public class PacksFilterView implements Initializable {
         setupStage();
         setupActionsSubscription();
         setupToggleAllButton();
-
-//        filterDropdown.parentProperty().addListener((obs, oldVal, newVal) -> {
-//            if (newVal != null) {
-//                newVal.setOnMouseClicked(event -> {
-//                    if (!filterDropdown.getBoundsInParent().contains(event.getX(), event.getY())) {
-//                        flow.accept(new Action.FilterPacksRequested());
-//                    }
-//                });
-//            }
-//        });
+        setupHideOnClick();
     }
 
     private void setupStage() {
@@ -79,12 +70,6 @@ public class PacksFilterView implements Initializable {
             Platform.exit();
             System.exit(0);
         });
-    }
-
-    private void dispose() {
-        if (subscription != null && !subscription.isDisposed()) {
-            subscription.dispose();
-        }
     }
 
     private void setupActionsSubscription() {
@@ -97,9 +82,21 @@ public class PacksFilterView implements Initializable {
         toggleAllButton.setOnAction(_ -> flow.accept(new Action.SelectAllPacksToggled()));
     }
 
+    private void setupHideOnClick() {
+        filterDropdown.parentProperty().addListener((_, _, parent) -> {
+            if (parent != null) {
+                parent.setOnMouseClicked(event -> {
+                    if (!filterDropdown.getBoundsInParent().contains(event.getX(), event.getY())) {
+                        flow.accept(new Action.FilterPacksSucceeded());
+                    }
+                });
+            }
+        });
+    }
+
     private void render(ViewState state) {
         var filter = state.filter();
-
+        
         if (filter instanceof PacksFilter.Show) {
             filterDropdown.setVisible(true);
             filterDropdown.setManaged(true);
@@ -155,5 +152,11 @@ public class PacksFilterView implements Initializable {
                    ? new Action.SelectAllPackStylesToggled()
                    : new Action.PackStyleToggled(style);
         flow.accept(action);
+    }
+
+    private void dispose() {
+        if (subscription != null && !subscription.isDisposed()) {
+            subscription.dispose();
+        }
     }
 }

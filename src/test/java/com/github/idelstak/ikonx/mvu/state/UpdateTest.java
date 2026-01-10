@@ -817,8 +817,6 @@ final class UpdateTest {
     void viewSucceededShowsMessage() {
         var update = new Update();
         var state = ViewState.initial();
-        var ikon = state.displayedIkons().getFirst();
-        var desc = ikon.description();
 
         var next = update.apply(
           state,
@@ -827,7 +825,7 @@ final class UpdateTest {
 
         assertThat(
           next.statusMessage(),
-          is("Viewed '" + desc + "' details")
+          is("Viewed icon details")
         );
     }
 

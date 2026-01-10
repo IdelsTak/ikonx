@@ -28,22 +28,19 @@ import javafx.collections.*;
 import javafx.scene.control.*;
 import javafx.scene.control.skin.*;
 
-/**
- * Skin for IconGrid using a virtualized row approach.
- */
-public final class IconGridSkin extends SkinBase<IconGrid> {
+final class IconGridSkin extends SkinBase<IconGrid> {
 
-    private final GridVirtualFlow flow;
+    private final GridVirtualFlow virtualFlow;
     private final ListChangeListener<PackIkon> itemsListener;
     private final WeakListChangeListener<PackIkon> weakItemsListener;
     private int columnCount = 1;
 
-    public IconGridSkin(IconGrid control) {
+    IconGridSkin(IconGrid control) {
         super(control);
 
-        flow = new GridVirtualFlow();
-        flow.setCellFactory(_ -> new IconGridRow(control));
-        getChildren().add(flow);
+        virtualFlow = new GridVirtualFlow();
+        virtualFlow.setCellFactory(_ -> new IconGridRow(control));
+        getChildren().add(virtualFlow);
 
         itemsListener = _ -> updateItemCount();
         weakItemsListener = new WeakListChangeListener<>(itemsListener);
@@ -68,23 +65,23 @@ public final class IconGridSkin extends SkinBase<IconGrid> {
         registerChangeListener(control.listRowHeightProperty(), _ -> updateItemCount());
     }
 
-    public int getColumnCount() {
+    @Override
+    protected void layoutChildren(double x, double y, double w, double h) {
+        virtualFlow.resizeRelocate(x, y, w, h);
+    }
+
+    int getColumnCount() {
         return columnCount;
     }
 
-    public double getHorizontalGap() {
+    double getHorizontalGap() {
         return getSkinnable().getHorizontalGap();
-    }
-
-    @Override
-    protected void layoutChildren(double x, double y, double w, double h) {
-        flow.resizeRelocate(x, y, w, h);
     }
 
     private void updateItemCount() {
         IconGrid grid = getSkinnable();
         if (grid.getItems() == null || grid.getItems().isEmpty()) {
-            flow.setCellCount(0);
+            virtualFlow.setCellCount(0);
             return;
         }
 
@@ -110,9 +107,9 @@ public final class IconGridSkin extends SkinBase<IconGrid> {
                 grid.getListRowHeight() + verticalGap + offset;
         };
 
-        flow.setFixedCellSize(rowHeight);
-        flow.setCellCount(rowCount);
-        flow.requestLayout();
+        virtualFlow.setFixedCellSize(rowHeight);
+        virtualFlow.setCellCount(rowCount);
+        virtualFlow.requestLayout();
     }
 
     private class GridVirtualFlow extends VirtualFlow<IconGridRow> {

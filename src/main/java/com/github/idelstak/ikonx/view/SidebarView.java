@@ -24,6 +24,7 @@ package com.github.idelstak.ikonx.view;
 
 import com.github.idelstak.ikonx.icons.*;
 import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.mvu.action.*;
 import com.github.idelstak.ikonx.mvu.state.*;
 import io.reactivex.rxjava3.disposables.*;
 import java.net.*;
@@ -99,8 +100,13 @@ public class SidebarView implements Initializable {
         for (var favorite : favorites) {
             var button = new Button();
             button.getStyleClass().add("favorite-button");
-            button.setOnAction(e ->
-              System.out.println("Show details for: " + favorite.description()));
+            button.setOnAction(_ -> {
+                System.out.println("Show details for: " + favorite.description());
+                flow.accept(new Action.ViewIkonDetailsRequested(favorite));
+            });
+
+            var tooltip = new Tooltip(favorite.description());
+            Tooltip.install(button, tooltip);
 
             var icon = new StackPane();
             icon.getStyleClass().add("icon-placeholder");
@@ -122,7 +128,10 @@ public class SidebarView implements Initializable {
         // Create the main container (Button wrapped in HBox)
         Button historyItem = new Button();
         historyItem.getStyleClass().add("history-item");
-        historyItem.setOnAction(_ -> System.out.println("Show details for: " + ikon.description()));
+        historyItem.setOnAction(_ -> {
+            System.out.println("Show details for: " + ikon.description());
+            flow.accept(new Action.ViewIkonDetailsRequested(ikon));
+        });
 
         // Icon container
         var iconPlaceholder = new StackPane();

@@ -62,12 +62,12 @@ public final class Update {
                 toggleAllStyles(state);
             case Action.FavoriteIkonToggled a ->
                 toggleFavorite(state, a);
-            case Action.ViewIkonRequested a ->
-                viewRequested(state, a);
-            case Action.ViewIkonSucceeded a ->
-                viewSucceeded(state, a);
-            case Action.ViewIkonFailed a ->
-                viewFailed(state, a);
+            case Action.ViewIkonDetailsRequested a ->
+                showIkonDetails(state, a);
+            case Action.HideIkonDetailsRequested _ ->
+                hideIkonDetails(state);
+            case Action.ViewIkonDetailsFailed a ->
+                viewIkonDetailsFailed(state, a);
             case Action.CopyIkonRequested a ->
                 copyRequested(state, a);
             case Action.CopyIkonSucceeded a ->
@@ -366,24 +366,25 @@ public final class Update {
             + action.error().getMessage());
     }
 
-    private ViewState viewRequested(ViewState state, Action.ViewIkonRequested action) {
+    private ViewState showIkonDetails(ViewState state, Action.ViewIkonDetailsRequested action) {
         return state
+          .show(new IkonDetailsDisplay.ShowRequested(action.ikon()))
           .signal(new ActivityState.Loading())
           .message("View '" + action.ikon().description() + "' details");
     }
 
-    private ViewState viewSucceeded(ViewState state, Action.ViewIkonSucceeded action) {
+    private ViewState hideIkonDetails(ViewState state) {
         return state
+          .show(new IkonDetailsDisplay.HideRequested())
           .signal(new ActivityState.Success())
-          .message("Viewed '" + action.ikon().description() + "' details");
+          .message("Viewed icon details");
     }
 
-    private ViewState viewFailed(ViewState state, Action.ViewIkonFailed action) {
+    private ViewState viewIkonDetailsFailed(ViewState state, Action.ViewIkonDetailsFailed action) {
         return state
+          .show(new IkonDetailsDisplay.Failed(action.error()))
           .signal(new ActivityState.Error())
-          .message("Failed to view '"
-            + action.ikon().description()
-            + "' details: " + action.error().getMessage());
+          .message("Failed to view icon details: " + action.error().getMessage());
     }
 
     private ViewState versionRequested(ViewState state) {

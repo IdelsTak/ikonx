@@ -776,7 +776,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.ViewIkonRequested(ikon)
+          new Action.ViewIkonDetailsRequested(ikon)
         );
 
         assertThat(next.status(), instanceOf(ActivityState.Loading.class));
@@ -791,7 +791,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.ViewIkonRequested(ikon)
+          new Action.ViewIkonDetailsRequested(ikon)
         );
 
         assertThat(
@@ -804,11 +804,10 @@ final class UpdateTest {
     void viewSucceededSignalsSuccess() {
         var update = new Update();
         var state = ViewState.initial();
-        var ikon = state.displayedIkons().getFirst();
 
         var next = update.apply(
           state,
-          new Action.ViewIkonSucceeded(ikon)
+          new Action.HideIkonDetailsRequested()
         );
 
         assertThat(next.status(), instanceOf(ActivityState.Success.class));
@@ -823,7 +822,7 @@ final class UpdateTest {
 
         var next = update.apply(
           state,
-          new Action.ViewIkonSucceeded(ikon)
+          new Action.HideIkonDetailsRequested()
         );
 
         assertThat(
@@ -836,12 +835,11 @@ final class UpdateTest {
     void viewFailedSignalsError() {
         var update = new Update();
         var state = ViewState.initial();
-        var ikon = state.displayedIkons().getFirst();
         var ex = new RuntimeException("über view failure");
 
         var next = update.apply(
           state,
-          new Action.ViewIkonFailed(ikon, ex)
+          new Action.ViewIkonDetailsFailed(ex)
         );
 
         assertThat(next.status(), instanceOf(ActivityState.Error.class));
@@ -851,12 +849,11 @@ final class UpdateTest {
     void viewFailedShowsErrorMessage() {
         var update = new Update();
         var state = ViewState.initial();
-        var ikon = state.displayedIkons().getFirst();
         var ex = new RuntimeException("façade view exploded");
 
         var next = update.apply(
           state,
-          new Action.ViewIkonFailed(ikon, ex)
+          new Action.ViewIkonDetailsFailed(ex)
         );
 
         assertThat(

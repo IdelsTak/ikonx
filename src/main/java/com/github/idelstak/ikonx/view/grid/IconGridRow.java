@@ -22,7 +22,6 @@
  */
 package com.github.idelstak.ikonx.view.grid;
 
-import com.github.idelstak.ikonx.icons.*;
 import java.util.*;
 import javafx.geometry.*;
 import javafx.scene.control.*;
@@ -84,22 +83,36 @@ public final class IconGridRow extends IndexedCell<Integer> {
 
             int itemIndex = startIndex + i;
             if (itemIndex < iconGrid.getItems().size()) {
-                PackIkon ikon = iconGrid.getItems().get(itemIndex);
+                var ikon = iconGrid.getItems().get(itemIndex);
                 cell.updateItem(ikon, false);
                 cell.setVisible(true);
 
-                switch (iconGrid.getViewMode()) {
-                    case ViewMode.Grid _ -> {
-                        cell.setMinSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
-                        cell.setPrefSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
-                        cell.setMaxSize(iconGrid.getCellWidth(), iconGrid.getCellHeight());
-                    }
-                    case ViewMode.List _ -> {
-                        cell.setMinSize(iconGrid.getCellWidth(), iconGrid.getListRowHeight());
-                        cell.setPrefSize(iconGrid.getWidth() * 0.95, iconGrid.getListRowHeight());
-                        cell.setMaxSize(iconGrid.getWidth() * 0.95, iconGrid.getListRowHeight());
-                    }
+                double width = iconGrid.getWidth();
+                int columns = skin.getColumnCount();
+                double gap = skin.getHorizontalGap();
+                Insets padding = iconGrid.getPadding();
+
+                double usable = width
+                  - (padding.getLeft() * 2.1)
+                  - (padding.getRight() * 2.1)
+                  - gap * (columns - 1);
+
+                if (usable <= 0) {
+                    usable = iconGrid.getCellWidth();
                 }
+
+                double calculatedWidth = Math.floor(usable / columns);
+
+                double height = switch (iconGrid.getViewMode()) {
+                    case ViewMode.Grid _ ->
+                        iconGrid.getCellHeight();
+                    case ViewMode.List _ ->
+                        iconGrid.getListRowHeight();
+                };
+
+                cell.setMinSize(calculatedWidth, height);
+                cell.setPrefSize(calculatedWidth, height);
+                cell.setMaxSize(calculatedWidth, height);
 
                 root.getChildren().add(cell);
             }

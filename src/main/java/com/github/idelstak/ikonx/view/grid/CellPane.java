@@ -63,7 +63,8 @@ final class CellPane extends StackPane {
         setupStage();
         setupActionsSubscription();
         setupCopyAction();
-        setupFavoriteAction();
+        setupToggleFavoriteAction();
+        setupViewDetailsAction();
     }
 
     void renderIkon(PackIkon ikon) {
@@ -132,13 +133,23 @@ final class CellPane extends StackPane {
         });
     }
 
-    private void setupFavoriteAction() {
+    private void setupToggleFavoriteAction() {
         favorite.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             event.consume();
             if (currentIkon == null) {
                 return;
             }
             flow.accept(new Action.FavoriteIkonToggled(currentIkon));
+        });
+    }
+
+    private void setupViewDetailsAction() {
+        details.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            event.consume();
+            if (currentIkon == null) {
+                return;
+            }
+            flow.accept(new Action.ViewIkonDetailsRequested(currentIkon));
         });
     }
 

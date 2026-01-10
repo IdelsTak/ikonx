@@ -120,7 +120,7 @@ public class HeaderView implements Initializable {
         toggleViewButton.setSelected(isGridView);
         toggleViewButton.getStyleClass().removeAll("grid", "list");
         toggleViewButton.getStyleClass().add(isGridView ? "grid" : "list");
-        var prefix = "View icons in a ";
+        var prefix = "Switch icon view to ";
         var targetView = isGridView ? "list" : "grid";
         toggleViewTip.setText(prefix + targetView);
 

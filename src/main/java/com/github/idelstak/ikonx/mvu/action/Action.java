@@ -63,15 +63,15 @@ public sealed interface Action {
 
     }
 
-    record ViewIkonRequested(PackIkon ikon) implements Action {
+    record ViewIkonDetailsRequested(PackIkon ikon) implements Action {
 
     }
 
-    record ViewIkonSucceeded(PackIkon ikon) implements Action {
+    record HideIkonDetailsRequested() implements Action {
 
     }
 
-    record ViewIkonFailed(PackIkon ikon, Throwable error) implements Action {
+    record ViewIkonDetailsFailed(Throwable error) implements Action {
 
     }
 

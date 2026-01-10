@@ -20,17 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.idelstak.ikonx.mvu.state;
+package com.github.idelstak.ikonx.icons;
 
-import com.github.idelstak.ikonx.icons.*;
 import java.util.*;
 import java.util.stream.*;
 
-<<<<<<<< HEAD:src/main/java/com/github/idelstak/ikonx/icons/IkonCatalog.java
 public final class IkonCatalog {
-========
-final class Ikons {
->>>>>>>> master:src/main/java/com/github/idelstak/ikonx/mvu/state/Ikons.java
 
     private final Map<Pack, List<PackIkon>> packs;
     private final Map<Style, List<PackIkon>> styles;
@@ -38,11 +33,7 @@ final class Ikons {
     private final List<Pack> orderedPacks;
     private final List<Style> orderedStyles;
 
-<<<<<<<< HEAD:src/main/java/com/github/idelstak/ikonx/icons/IkonCatalog.java
     public IkonCatalog(Pack[] packs) {
-========
-    Ikons(Pack[] packs) {
->>>>>>>> master:src/main/java/com/github/idelstak/ikonx/mvu/state/Ikons.java
         var allIcons = Arrays.stream(packs)
           .flatMap(pack -> Arrays.stream(pack.ikons())
             .map(ikon -> new PackIkon(pack, ikon)))
@@ -63,6 +54,7 @@ final class Ikons {
               Collectors.toUnmodifiableList()
             )
           );
+        this.styles.put(new Style.All(), all);
         this.orderedPacks = this.packs.keySet().stream()
           .sorted(Comparator.comparing(Enum::name))
           .toList();
@@ -71,23 +63,23 @@ final class Ikons {
           .toList();
     }
 
-    List<PackIkon> byPack(Pack pack) {
+    public List<PackIkon> byPack(Pack pack) {
         return packs.getOrDefault(pack, List.of());
     }
 
-    List<PackIkon> byStyle(Style style) {
+    public List<PackIkon> byStyle(Style style) {
         return styles.getOrDefault(style, List.of());
     }
 
-    List<PackIkon> all() {
+    public List<PackIkon> all() {
         return List.copyOf(all);
     }
 
-    List<Pack> orderedPacks() {
+    public List<Pack> orderedPacks() {
         return List.copyOf(orderedPacks);
     }
 
-    List<Style> orderedStyles() {
+    public List<Style> orderedStyles() {
         return List.copyOf(orderedStyles);
     }
 }

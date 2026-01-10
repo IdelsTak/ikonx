@@ -20,38 +20,17 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package com.github.idelstak.ikonx.view.grid;
+package com.github.idelstak.ikonx.mvu.state.view;
 
-public sealed interface ViewMode {
+public sealed interface PacksFilter {
 
-    String displayName();
-
-    @Override
-    public String toString();
-
-    record Grid() implements ViewMode {
-
-        @Override
-        public String displayName() {
-            return "Grid";
-        }
-
-        @Override
-        public String toString() {
-            return displayName();
-        }
+    record Show() implements PacksFilter {
     }
 
-    record List() implements ViewMode {
+    record Hidden() implements PacksFilter {
+    }
 
-        @Override
-        public String displayName() {
-            return "List";
-        }
+    record Failed(Throwable error) implements PacksFilter {
 
-        @Override
-        public String toString() {
-            return displayName();
-        }
     }
 }

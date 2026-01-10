@@ -47,9 +47,9 @@ public final class Update {
             case Action.SearchCleared _ ->
                 clearSearch(state);
             case Action.FilterPacksRequested _ ->
-                filterPacksRequested(state);
+                requestPacksFilter(state);
             case Action.FilterPacksSucceeded _ ->
-                filterPacksSucceeded(state);
+                hidePacksFilter(state);
             case Action.FilterPacksFailed a ->
                 filterPacksFailed(state, a);
             case Action.PackToggled a ->
@@ -111,18 +111,25 @@ public final class Update {
           .message(String.format("%d icons found", icons.size()));
     }
 
-    private ViewState filterPacksRequested(ViewState state) {
-        var newFilter = state.filter() instanceof PacksFilter.Show
-                      ? new PacksFilter.Hidden()
-                      : new PacksFilter.Show();
-        return state
-          .filter(newFilter)
-          .signal(new ActivityState.Loading())
-          .message("Filtering icons");
+    private ViewState requestPacksFilter(ViewState state) {
+        var filtersShowing = state.filter() instanceof PacksFilter.Show;
+        var newFilter = filtersShowing ? new PacksFilter.Hidden() : new PacksFilter.Show();
+        var newMessage = !filtersShowing ? "Filtering icons" : "Icons ready";
+        var newStatus = !filtersShowing ? new ActivityState.Loading() : new ActivityState.Success();
+        var next = state.filter(newFilter).signal(newStatus).message(newMessage);
+
+        var ikonDetailsShowing = !filtersShowing && (state.detailsDisplay() instanceof IkonDetailsDisplay.ShowRequested);
+
+        if (ikonDetailsShowing) {
+            return next.show(new IkonDetailsDisplay.HideRequested());
+        }
+
+        return next;
     }
 
-    private ViewState filterPacksSucceeded(ViewState state) {
+    private ViewState hidePacksFilter(ViewState state) {
         return state
+          .filter(new PacksFilter.Hidden())
           .signal(new ActivityState.Success())
           .message("Filtered icons. %d shown.".formatted(state.displayedIkons().size()));
     }
@@ -368,6 +375,7 @@ public final class Update {
 
     private ViewState showIkonDetails(ViewState state, Action.ViewIkonDetailsRequested action) {
         return state
+          .filter(new PacksFilter.Hidden())
           .show(new IkonDetailsDisplay.ShowRequested(action.ikon()))
           .signal(new ActivityState.Loading())
           .message("View '" + action.ikon().description() + "' details");
@@ -376,8 +384,7 @@ public final class Update {
     private ViewState hideIkonDetails(ViewState state) {
         return state
           .show(new IkonDetailsDisplay.HideRequested())
-          .signal(new ActivityState.Success())
-          .message("Viewed icon details");
+          .signal(new ActivityState.Success());
     }
 
     private ViewState viewIkonDetailsFailed(ViewState state, Action.ViewIkonDetailsFailed action) {

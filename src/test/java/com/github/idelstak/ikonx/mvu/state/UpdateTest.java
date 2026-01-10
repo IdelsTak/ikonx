@@ -814,22 +814,6 @@ final class UpdateTest {
     }
 
     @Test
-    void viewSucceededShowsMessage() {
-        var update = new Update();
-        var state = ViewState.initial();
-
-        var next = update.apply(
-          state,
-          new Action.HideIkonDetailsRequested()
-        );
-
-        assertThat(
-          next.statusMessage(),
-          is("Viewed icon details")
-        );
-    }
-
-    @Test
     void viewFailedSignalsError() {
         var update = new Update();
         var state = ViewState.initial();

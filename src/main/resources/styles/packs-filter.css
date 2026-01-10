@@ -62,7 +62,7 @@
 .toggle-all-button {
     /* text-xs text-indigo-600 hover:underline */
     -fx-font-size: 12px;
-    -fx-text-fill: #4f46e5;
+    -fx-text-fill: #0b57d0;
     -fx-background-color: transparent;
     -fx-padding: 0;
     -fx-cursor: hand;
@@ -108,11 +108,11 @@
 }
 .pack-checkbox:selected .mark {
     /* text-indigo-600 */
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #0b57d0;
 }
 .pack-checkbox:focused .box {
     /* focus:ring-indigo-500 */
-    -fx-border-color: #6366f1;
+    -fx-border-color: #0b57d0;
     -fx-border-width: 2px;
 }
 
@@ -150,7 +150,7 @@
 
 .style-button:selected {
     /* bg-indigo-600 text-white border-indigo-600 */
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #0b57d0;
     -fx-text-fill: white;
-    -fx-border-color: #4f46e5;
+    -fx-border-color: #0b57d0;
 }

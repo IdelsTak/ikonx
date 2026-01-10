@@ -37,7 +37,7 @@
     -fx-spacing: 12px
 }
 .logo-icon-wrapper {
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #0b57d0;
     -fx-padding: 8px;
     -fx-background-radius: 8px
 }
@@ -77,7 +77,7 @@
 /* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
 .icon-button:focused {
     -fx-background-color: white;
-    -fx-border-color: #6366f1; /* indigo-500 */
+    -fx-border-color: #0b57d0; /* indigo-500 */
 }
 .icon-button:hover {
     -fx-background-color: #f3f4f6
@@ -117,30 +117,15 @@
 /* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
 .copy-format-combo:focused {
     -fx-background-color: white;
-    -fx-border-color: #6366f1; /* indigo-500 */
+    -fx-border-color: #0b57d0; /* indigo-500 */
 }
 .copy-format-combo:focused .arrow-button {
     -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.5), 10, 0, 0, 0)
 }
 .search-bar {
-    /*    -fx-background-color: #f3f4f6;
-        -fx-background-radius: 8px;
-        -fx-border-radius: 8px;
-        -fx-border-width: 2px;
-        -fx-border-color: transparent;
-        -fx-alignment: CENTER_LEFT;*/
     -fx-pref-height: 40px;
     -fx-max-width: 'Infinity'
 }
-/*.search-bar:focused-within {
-    -fx-background-color: white;
-    -fx-border-color: #4f46e5
-}*/
-/*.search-bar-icon {
-    -fx-icon-size: 16px;
-    -fx-icon-color: #9ca3af;
-    -fx-padding: 0 0 0 12px
-}*/
 .search-input {
     /*    -fx-background-color: transparent;
         -fx-font-size: 14px;
@@ -171,7 +156,7 @@
 /* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
 .search-input:focused {
     -fx-background-color: white;
-    -fx-border-color: #6366f1; /* indigo-500 */
+    -fx-border-color: #0b57d0; /* indigo-500 */
 }
 
 /* --- ICONS --- */
@@ -238,7 +223,7 @@
 /* Corresponds to: focus:bg-white focus:ring-2 focus:ring-indigo-500 */
 .filter-button:focused {
     -fx-background-color: white;
-    -fx-border-color: #6366f1; /* indigo-500 */
+    -fx-border-color: #0b57d0; /* indigo-500 */
 }
 .filter-button-graphic {
     -fx-alignment: CENTER_LEFT;

@@ -69,10 +69,11 @@
     -fx-min-height: 80px;
     -fx-max-width: 80px;
     -fx-max-height: 80px;
-    -fx-border-color: #4f46e5;
-    -fx-border-width: 4px;
-    -fx-border-radius: 12px;
-    -fx-margin: 0 0 16px 0
+    -fx-margin: 0 0 18px 0
+}
+.icon-preview .ikonli-font-icon {
+    -fx-icon-size: 54px;
+    -fx-icon-color: derive(#d4d4d4, -60%);
 }
 .icon-title {
     -fx-font-family: 'Inter bold';
@@ -107,14 +108,15 @@
     -fx-spacing: 12px
 }
 .copy-button {
-    -fx-background-color: #4f46e5;
+    -fx-background-color: #0b57d0;
     -fx-text-fill: white;
     -fx-background-radius: 12px;
     -fx-font-family: 'Inter bold';
     -fx-padding: 12px;
     -fx-font-size: 14px;
-    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.2), 10, 0, 0, 4)
+    -fx-effect: dropshadow(gaussian, rgba(79, 70, 229, 0.2), 10, 0, 0, 4);
+    -fx-cursor: hand;
 }
 .copy-button:hover {
-    -fx-background-color: #4338ca
+    -fx-background-color: derive(#0b57d0, -30%)
 }

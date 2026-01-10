@@ -32,6 +32,7 @@ import io.reactivex.rxjava3.disposables.*;
 import java.net.*;
 import java.util.*;
 import javafx.application.*;
+import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.control.*;
 import javafx.scene.text.*;
@@ -48,7 +49,7 @@ public class HeaderView implements Initializable {
     @FXML
     private Tooltip toggleViewTip;
     @FXML
-    private ComboBox<?> copyFormatComboBox;
+    private ComboBox<String> copyFormatComboBox;
     @FXML
     private TextField searchInput;
     @FXML
@@ -69,6 +70,7 @@ public class HeaderView implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         setupStage();
         setupActionsSubscription();
+        setupCopyFormat();
         setupViewToggle();
         setupSearchInput();
         setupFilterButton();
@@ -84,6 +86,11 @@ public class HeaderView implements Initializable {
         });
     }
 
+    private void setupCopyFormat() {
+        copyFormatComboBox.setItems(FXCollections.observableArrayList("Icon code"));
+        Platform.runLater(copyFormatComboBox.getSelectionModel()::selectFirst);
+    }
+
     private void setupViewToggle() {
         toggleViewButton.setOnAction(_ -> flow.accept(new Action.ViewModeToggled()));
     }
@@ -97,6 +104,8 @@ public class HeaderView implements Initializable {
                 flow.accept(new Action.SearchCleared());
             }
         });
+        
+        Platform.runLater(searchInput::requestFocus);
 
         clearButton.setOnAction(_ -> flow.accept(new Action.SearchCleared()));
     }
@@ -126,7 +135,7 @@ public class HeaderView implements Initializable {
 
         var iconsCount = state.displayedIkons().size();
         searchInput.setPromptText("Search %d icons...".formatted(iconsCount));
-        
+
         var isSearching = state.query() instanceof IkonQuery.Searching;
         if (!isSearching) {
             searchInput.clear();

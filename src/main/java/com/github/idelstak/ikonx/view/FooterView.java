@@ -22,15 +22,76 @@
  */
 package com.github.idelstak.ikonx.view;
 
+import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.mvu.state.*;
+import io.reactivex.rxjava3.disposables.*;
 import java.net.*;
 import java.util.*;
+import javafx.application.*;
 import javafx.fxml.*;
+import javafx.scene.control.*;
+import javafx.scene.shape.*;
+import javafx.stage.*;
+import org.pdfsam.rxjavafx.schedulers.*;
 
 public class FooterView implements Initializable {
 
+    private final Stage stage;
+    private final Flow flow;
+    private Disposable subscription;
+    @FXML
+    private Circle statusIndicator;
+    @FXML
+    private Label statusLabel;
+    @FXML
+    private Label iconsCountLabel;
+
+    public FooterView(Stage stage, Flow flow) {
+        this.stage = stage;
+        this.flow = flow;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
-    
+        setupStage();
+        setupActionsSubscription();
+    }
+
+    private void setupStage() {
+        stage.setOnCloseRequest(_ -> this.dispose());
+    }
+
+    private void setupActionsSubscription() {
+        Platform.runLater(() -> {
+            subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+        });
+    }
+
+    private void render(ViewState state) {
+        var activityState = state.status();
+        statusIndicator.setVisible(!(activityState instanceof ActivityState.Idle));
+        statusIndicator.getStyleClass().removeAll("loading", "success", "error");
+        statusIndicator.getStyleClass().add(switch (activityState) {
+            case ActivityState.Idle _ ->
+                "";
+            case ActivityState.Loading _ ->
+                "loading";
+            case ActivityState.Success _ ->
+                "success";
+            case ActivityState.Error _ ->
+                "error";
+        });
+
+        var message = state.statusMessage();
+        statusLabel.setText(message);
+
+        var iconsCount = state.displayedIkons().size();
+        iconsCountLabel.setText("%d icons available".formatted(iconsCount));
+    }
+
+    private void dispose() {
+        if (subscription != null && !subscription.isDisposed()) {
+            subscription.dispose();
+        }
+    }
 }

@@ -56,14 +56,17 @@ public class Ikonx extends Application {
                 if (type == HeaderView.class) {
                     return new HeaderView(primaryStage, flow);
                 }
-                if (type == OverlayView.class) {
-                    return new OverlayView(primaryStage, flow);
+                if (type == FooterView.class) {
+                    return new FooterView(primaryStage, flow);
                 }
                 if (type == InnerMainView.class) {
                     return new InnerMainView(primaryStage, flow);
                 }
                 if (type == SidebarView.class) {
                     return new SidebarView(primaryStage, flow);
+                }
+                if (type == OverlayView.class) {
+                    return new OverlayView(primaryStage, flow);
                 }
                 if (type == PacksFilterView.class) {
                     return new PacksFilterView(primaryStage, flow);

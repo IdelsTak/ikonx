@@ -22,36 +22,77 @@
  */
 package com.github.idelstak.ikonx.view;
 
-import java.io.*;
+import com.github.idelstak.ikonx.mvu.*;
+import com.github.idelstak.ikonx.mvu.state.*;
+import com.github.idelstak.ikonx.mvu.state.icons.*;
+import com.github.idelstak.ikonx.mvu.state.version.*;
+import io.reactivex.rxjava3.disposables.*;
 import java.net.*;
 import java.util.*;
 import javafx.application.*;
 import javafx.fxml.*;
-import javafx.scene.*;
-import javafx.scene.layout.*;
+import javafx.scene.image.*;
+import javafx.stage.*;
+import org.pdfsam.rxjavafx.schedulers.*;
 
 public class IkonxView implements Initializable {
 
-    @FXML
-    private StackPane rootStack;
-    @FXML
-    private BorderPane mainLayout;
+    private final Stage stage;
+    private final Flow flow;
+    private Disposable subscription;
+
+    public IkonxView(Stage stage, Flow flow) {
+        this.stage = stage;
+        this.flow = flow;
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println("[IKONX VIEW] init...");
+        setupStage();
+        setupActionsSubscription();
+    }
 
-        Platform.runLater(() -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/inner-main.fxml"));
-                loader.setController(new InnerMainView());
-                Node inner = loader.load();
-                if (mainLayout != null) {
-                    mainLayout.setCenter(inner);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+    private void setupStage() {
+        stage.setOnCloseRequest(_ -> {
+            this.dispose();
+            Platform.exit();
+            System.exit(0);
         });
+    }
+
+    private void setupActionsSubscription() {
+        Platform.runLater(() -> {
+            subscription = flow.observe().observeOn(JavaFxScheduler.platform()).subscribe(this::render);
+        });
+    }
+
+    private void render(ViewState state) {
+        var title = switch (state.version()) {
+            case AppVersion.Ready(String appValue, String ikonliValue) ->
+                "IkonX v%s - for Ikonli v%s".formatted(appValue, ikonliValue);
+            case AppVersion.Failed _ ->
+                "IkonX (version unavailable)";
+            case AppVersion.Unknown _ ->
+                "IkonX";
+        };
+
+        stage.setTitle(title);
+
+        List<Image> images = switch (state.stageIcons()) {
+            case StageIcons.Ready(List<Image> readyImages) ->
+                List.copyOf(readyImages);
+            case StageIcons.Failed _ ->
+                List.of();
+            case StageIcons.Unknown _ ->
+                List.of();
+        };
+
+        stage.getIcons().setAll(images);
+    }
+
+    private void dispose() {
+        if (subscription != null && !subscription.isDisposed()) {
+            subscription.dispose();
+        }
     }
 }

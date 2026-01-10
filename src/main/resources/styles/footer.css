@@ -34,17 +34,27 @@
     -fx-text-fill: #737373
 }
 .status-indicator {
-    -fx-fill: #10b981
+    -fx-fill: #9ca3af; /* Gray for inactive/idle */
 }
+
+.status-indicator.loading {
+    -fx-fill: #3b82f6; /* Blue for in-progress */
+    -fx-effect: dropshadow(gaussian, #3b82f6, 5, 0, 0, 0);
+    -fx-opacity: 0.8;
+    -fx-transition: all 0.5s ease-in-out;
+}
+
+.status-indicator.success {
+    -fx-fill: #10b981; /* Green for success */
+}
+
+.status-indicator.error {
+    -fx-fill: #ef4444; /* Red for error */
+}
+
 .separator {
     -fx-orientation: vertical;
     -fx-max-height: 12px
-}
-.version-label {
-    -fx-cursor: hand
-}
-.version-label:hover {
-    -fx-text-fill: #4f46e5
 }
 .footer .label {
     -fx-text-fill: #737373

@@ -123,7 +123,9 @@ public class IconView {
         searchField.textProperty().addListener((_, _, text) ->
           flow.accept(new Action.SearchChanged(text))
         );
-        selectAllToggle.setOnAction(_ -> flow.accept(new Action.SelectAllPacksToggled()));
+        selectAllToggle.setOnAction(_ ->
+          flow.accept(new Action.SelectAllPacksToggled(selectAllToggle.isSelected()))
+        );
     }
 
     private void setupActionsSubscription() {

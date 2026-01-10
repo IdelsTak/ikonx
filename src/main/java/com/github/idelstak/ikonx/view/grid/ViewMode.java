@@ -26,19 +26,11 @@ public sealed interface ViewMode {
 
     String displayName();
 
-    @Override
-    public String toString();
-
     record Grid() implements ViewMode {
 
         @Override
         public String displayName() {
             return "Grid";
-        }
-
-        @Override
-        public String toString() {
-            return displayName();
         }
     }
 
@@ -47,11 +39,6 @@ public sealed interface ViewMode {
         @Override
         public String displayName() {
             return "List";
-        }
-
-        @Override
-        public String toString() {
-            return displayName();
         }
     }
 }

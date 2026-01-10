@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
     The MIT License
@@ -28,7 +27,7 @@
 <?import java.net.*?>
 <?import javafx.scene.layout.*?>
 
-<StackPane styleClass="inner-main-stack" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.github.idelstak.ikonx.view.InnerMainView">
+<StackPane fx:id="innerMainStack" styleClass="inner-main-stack" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <BorderPane fx:id="innerMainLayout">
           <left>
